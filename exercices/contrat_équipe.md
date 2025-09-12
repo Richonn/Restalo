@@ -24,7 +24,7 @@
 | Nom et prénom | Numéro d'identification |
 |---------------|-------------------------|
 | Barrier Clement |  537393824 |
-|               |                         |
+|Ariane Bérubé Martin|  536963681         |
 |               |                         |
 |               |                         |
 
