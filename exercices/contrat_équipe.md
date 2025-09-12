@@ -22,10 +22,10 @@
 ## Signatures
 
 | Nom et prénom        | Numéro d'identification |
-|----------------------|------------------------|
-| Barrier Clement      |  537393824 |
-| Ariane Bérubé Martin |  536963681         |
-| Leprest Antonin      |  537393903         |
-|                      |                        |
+|----------------------|-------------------------|
+| Barrier Clement      | 537393824               |
+| Ariane Bérubé Martin | 536963681               |
+| Leprest Antonin      | 537393903               |
+| Gauthier Jérémy      | 537288384               |
 
 **Date de signature du contrat :** 12 / 09 / 2025
