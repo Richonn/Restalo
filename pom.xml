@@ -45,7 +45,6 @@
 
     <build>
         <plugins>
-            <!-- Plugin pour exécuter la classe Main -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -61,15 +60,13 @@
                     <mainClass>ca.ulaval.glo2003.Main</mainClass>
                 </configuration>
             </plugin>
-
-            <!-- Tests unitaires -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.3</version>
             </plugin>
 
-            <!-- Spotless (formatage auto) -->
+            <!-- Spotless -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -90,7 +87,7 @@
                 </executions>
             </plugin>
 
-            <!-- Checkstyle (style et conventions) -->
+            <!-- Checkstyle -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -111,7 +108,7 @@
                 </executions>
             </plugin>
 
-            <!-- SpotBugs (détection de bugs potentiels) -->
+            <!-- SpotBugs -->
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
