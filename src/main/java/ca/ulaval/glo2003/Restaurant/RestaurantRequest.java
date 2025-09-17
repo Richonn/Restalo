@@ -17,7 +17,7 @@ public class RestaurantRequest {
     }
     LocalTime opening = LocalTime.parse(this.openingHour);
     LocalTime closing = LocalTime.parse(this.closingHour);
-    if (opening.isBefore(opening.plusHours(1))) {
+    if (closing.isBefore(opening.plusHours(1))) {
       throw new IllegalArgumentException("Opening hour cannot be before closing hour");
     }
   }
