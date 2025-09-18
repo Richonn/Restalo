@@ -1,26 +1,26 @@
 package ca.ulaval.glo2003;
 
+import static org.junit.Assert.assertEquals;
+
 import ca.ulaval.glo2003.Restaurant.RestaurantRequest;
 import ca.ulaval.glo2003.Restaurant.RestaurantResource;
 import jakarta.ws.rs.core.Response;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 public class RestaurantResourceTest {
 
-    private final RestaurantResource resource = new RestaurantResource();
+  private final RestaurantResource resource = new RestaurantResource();
 
-    @Test
-    public void givenValidRequest_whenPostRestaurant_thenReturns201() {
-        RestaurantRequest request = new RestaurantRequest();
-        request.name = "Chez Mario";
-        request.capacity = 10;
-        request.openingHour = "10:00:00";
-        request.closingHour = "22:00:00";
+  @Test
+  public void givenValidRequest_whenPostRestaurant_thenReturns201() {
+    RestaurantRequest request = new RestaurantRequest();
+    request.name = "Chez Mario";
+    request.capacity = 10;
+    request.openingHour = "10:00:00";
+    request.closingHour = "22:00:00";
 
-        Response response = resource.createRestaurant(request);
+    Response response = resource.createRestaurant(request);
 
-        assertEquals(201, response.getStatus());
-    }
+    assertEquals(201, response.getStatus());
+  }
 }

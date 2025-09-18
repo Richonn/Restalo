@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 public class RestaurantRequest {
   public String name;
-  public int capacity;
+  public Integer capacity;
   public String openingHour;
   public String closingHour;
 
