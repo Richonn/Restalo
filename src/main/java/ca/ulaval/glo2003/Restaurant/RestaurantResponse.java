@@ -1,20 +1,17 @@
 package ca.ulaval.glo2003.Restaurant;
 
-import java.time.LocalTime;
-
 public class RestaurantResponse {
   private String id;
   private String name;
   private Integer capacity;
-  private LocalTime openingHour;
-  private LocalTime closedHour;
+  private Hours hours;
 
   public RestaurantResponse(Restaurant restaurant) {
     this.id = restaurant.getId();
     this.name = restaurant.getName();
     this.capacity = restaurant.getCapacity();
-    this.openingHour = restaurant.getOpeningHour();
-    this.closedHour = restaurant.getClosingHour();
+    this.hours =
+        new Hours(restaurant.getOpeningHour().toString(), restaurant.getClosingHour().toString());
   }
 
   public String getId() {
@@ -29,11 +26,25 @@ public class RestaurantResponse {
     return capacity;
   }
 
-  public LocalTime getOpeningHour() {
-    return openingHour;
+  public Hours getHours() {
+    return hours;
   }
 
-  public LocalTime getClosedHour() {
-    return closedHour;
+  public static class Hours {
+    public String open;
+    public String close;
+
+    public Hours(String open, String close) {
+      this.open = open;
+      this.close = close;
+    }
+
+    public String getOpen() {
+      return open;
+    }
+
+    public String getClose() {
+      return close;
+    }
   }
 }

@@ -5,6 +5,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/restaurants")
 @Produces(MediaType.APPLICATION_JSON)
@@ -13,8 +15,17 @@ public class RestaurantResource {
   private static final RestaurantRepository repository = new RestaurantRepository();
 
   @POST
-  public Response createRestaurant(RestaurantRequest request) {
+  public Response createRestaurant(
+      @HeaderParam("Owner") String ownerId, RestaurantRequest request) {
+
     try {
+
+      if (ownerId == null || ownerId.isBlank()) {
+        return Response.status(Response.Status.BAD_REQUEST)
+            .entity(new ErrorResponse("MISSING_PARAMETER", "Missing Owner header"))
+            .build();
+      }
+
       request.validate();
 
       Restaurant restaurant =
@@ -22,7 +33,9 @@ public class RestaurantResource {
               request.getName(),
               request.getCapacity(),
               LocalTime.parse(request.getOpeningHour()),
-              LocalTime.parse(request.getClosingHour()));
+              LocalTime.parse(request.getClosingHour()),
+              ownerId);
+
       repository.save(restaurant);
 
       return Response.status(Response.Status.CREATED)
@@ -41,5 +54,21 @@ public class RestaurantResource {
           .entity(new ErrorResponse("INVALID_PARAMETER", e.getMessage()))
           .build();
     }
+  }
+
+  @GET
+  public Response listRestaurants(@HeaderParam("Owner") String ownerId) {
+    if (ownerId == null || ownerId.isBlank()) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(new ErrorResponse("MISSING_PARAMETER", "Missing Owner header"))
+          .build();
+    }
+
+    List<Restaurant> ownedRestaurants = repository.findByOwnerId(ownerId);
+
+    List<RestaurantResponse> responseList =
+        ownedRestaurants.stream().map(RestaurantResponse::new).collect(Collectors.toList());
+
+    return Response.ok(responseList).build();
   }
 }
