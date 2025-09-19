@@ -3,9 +3,9 @@ package ca.ulaval.glo2003;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import ca.ulaval.glo2003.Restaurant.RestaurantRequest;
-import ca.ulaval.glo2003.Restaurant.RestaurantResource;
-import ca.ulaval.glo2003.Restaurant.RestaurantResponse;
+import ca.ulaval.glo2003.API.Restaurant.RestaurantRequest;
+import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
+import ca.ulaval.glo2003.API.Restaurant.RestaurantResponse;
 import jakarta.ws.rs.core.Response;
 import org.junit.Test;
 

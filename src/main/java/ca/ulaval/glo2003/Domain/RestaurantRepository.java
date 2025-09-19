@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Restaurant;
+package ca.ulaval.glo2003.Domain;
 
 import java.util.HashMap;
 import java.util.List;

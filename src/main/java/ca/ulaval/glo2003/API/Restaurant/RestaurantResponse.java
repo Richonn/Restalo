@@ -1,4 +1,6 @@
-package ca.ulaval.glo2003.Restaurant;
+package ca.ulaval.glo2003.API.Restaurant;
+
+import ca.ulaval.glo2003.Domain.Restaurant;
 
 public class RestaurantResponse {
   private String id;
