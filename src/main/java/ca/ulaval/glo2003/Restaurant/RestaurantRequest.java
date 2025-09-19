@@ -1,24 +1,77 @@
 package ca.ulaval.glo2003.Restaurant;
 
-import java.time.LocalTime;
+import java.security.InvalidParameterException;
 
 public class RestaurantRequest {
-  public String name;
-  public Integer capacity;
-  public String openingHour;
-  public String closingHour;
+  private String id;
+  private String name;
+  private Integer capacity;
+  private String openingHour;
+  private String closingHour;
+
+  public RestaurantRequest() {}
+
+  public RestaurantRequest(
+      String id, String name, Integer capacity, String openingHour, String closingHour) {
+    this.id = id;
+    this.name = name;
+    this.capacity = capacity;
+    this.openingHour = openingHour;
+    this.closingHour = closingHour;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getCapacity() {
+    return capacity;
+  }
+
+  public void setCapacity(Integer capacity) {
+    this.capacity = capacity;
+  }
+
+  public String getOpeningHour() {
+    return openingHour;
+  }
+
+  public void setOpeningHour(String openingHour) {
+    this.openingHour = openingHour;
+  }
+
+  public String getClosingHour() {
+    return closingHour;
+  }
+
+  public void setClosingHour(String closingHour) {
+    this.closingHour = closingHour;
+  }
 
   public void validate() {
-    if (name == null || name.trim().isEmpty()) {
-      throw new IllegalArgumentException("Name cannot be empty");
+    if (name == null || name.isBlank()) {
+      throw new MissingParameterException("name is required");
     }
-    if (capacity < 1) {
-      throw new IllegalArgumentException("Capacity cannot be less than 1");
+    if (capacity == null) {
+      throw new MissingParameterException("capacity is required");
     }
-    LocalTime opening = LocalTime.parse(this.openingHour);
-    LocalTime closing = LocalTime.parse(this.closingHour);
-    if (closing.isBefore(opening.plusHours(1))) {
-      throw new IllegalArgumentException("Opening hour cannot be before closing hour");
+    if (capacity <= 0) {
+      throw new InvalidParameterException("capacity must be positive");
+    }
+    if (openingHour == null || closingHour == null) {
+      throw new MissingParameterException("openingHour and closingHour are required");
     }
   }
 }

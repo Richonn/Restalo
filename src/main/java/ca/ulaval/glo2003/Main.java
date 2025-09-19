@@ -10,7 +10,11 @@ public class Main {
 
   public static HttpServer startServer() {
 
-    final ResourceConfig rc = new ResourceConfig().packages("ca.ulaval.glo2003");
+    final ResourceConfig rc =
+        new ResourceConfig()
+            .packages("ca.ulaval.glo2003")
+            .register(ca.ulaval.glo2003.Restaurant.BadRequestExceptionMapper.class);
+    ;
 
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }

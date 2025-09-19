@@ -14,10 +14,10 @@ public class RestaurantResourceTest {
   @Test
   public void givenValidRequest_whenPostRestaurant_thenReturns201() {
     RestaurantRequest request = new RestaurantRequest();
-    request.name = "Chez Mario";
-    request.capacity = 10;
-    request.openingHour = "10:00:00";
-    request.closingHour = "22:00:00";
+    request.setName("Chez Mario");
+    request.setCapacity(10);
+    request.setOpeningHour("10:00:00");
+    request.setClosingHour("22:00:00");
 
     Response response = resource.createRestaurant(request);
 

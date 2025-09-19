@@ -10,11 +10,10 @@ public class BadRequestExceptionMapper implements ExceptionMapper<IllegalArgumen
 
   @Override
   public Response toResponse(IllegalArgumentException exception) {
-    ErrorResponse errorResponse = new ErrorResponse("INVALID_PARAMETER", exception.getMessage());
-
+    ErrorResponse err = new ErrorResponse("INVALID_PARAMETER", exception.getMessage());
     return Response.status(Response.Status.BAD_REQUEST)
         .type(MediaType.APPLICATION_JSON)
-        .entity(errorResponse)
+        .entity(err)
         .build();
   }
 }

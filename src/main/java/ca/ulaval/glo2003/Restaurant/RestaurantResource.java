@@ -19,10 +19,10 @@ public class RestaurantResource {
 
       Restaurant restaurant =
           new Restaurant(
-              request.name,
-              request.capacity,
-              LocalTime.parse(request.openingHour),
-              LocalTime.parse(request.closingHour));
+              request.getName(),
+              request.getCapacity(),
+              LocalTime.parse(request.getOpeningHour()),
+              LocalTime.parse(request.getClosingHour()));
       repository.save(restaurant);
 
       return Response.status(Response.Status.CREATED)
