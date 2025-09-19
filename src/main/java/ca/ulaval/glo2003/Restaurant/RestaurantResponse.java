@@ -4,7 +4,7 @@ public class RestaurantResponse {
   private String id;
   private String name;
   private Integer capacity;
-  public Hours hours;
+  private Hours hours;
 
   public RestaurantResponse(Restaurant restaurant) {
     this.id = restaurant.getId();

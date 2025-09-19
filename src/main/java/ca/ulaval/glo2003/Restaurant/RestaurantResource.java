@@ -66,11 +66,8 @@ public class RestaurantResource {
 
     List<Restaurant> ownedRestaurants = repository.findByOwnerId(ownerId);
 
-    // Use the DTO here:
     List<RestaurantResponse> responseList =
-        ownedRestaurants.stream()
-            .map(RestaurantResponse::new) // convert each Restaurant to RestaurantResponse
-            .collect(Collectors.toList());
+        ownedRestaurants.stream().map(RestaurantResponse::new).collect(Collectors.toList());
 
     return Response.ok(responseList).build();
   }
