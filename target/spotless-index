@@ -1,0 +1,14 @@
+Hj+itTH2b8LkFHqiq47oIiHSKCW6v5CP+ucsD9oZPfk=
+src/main/java/ca/ulaval/glo2003/HealthResource.java 2025-09-19T18:53:44.954331240Z
+src/main/java/ca/ulaval/glo2003/HealthResponse.java 2025-09-19T18:53:44.954551007Z
+src/main/java/ca/ulaval/glo2003/Main.java 2025-09-19T21:24:12.404052897Z
+src/main/java/ca/ulaval/glo2003/Restaurant/BadRequestExceptionMapper.java 2025-09-19T18:53:44.955024159Z
+src/main/java/ca/ulaval/glo2003/Restaurant/ErrorResponse.java 2025-09-19T18:53:44.955170693Z
+src/main/java/ca/ulaval/glo2003/Restaurant/MissingParameterException.java 2025-09-19T18:53:44.955327226Z
+src/main/java/ca/ulaval/glo2003/Restaurant/NullPointerExceptionMapper.java 2025-09-19T18:53:44.955474463Z
+src/main/java/ca/ulaval/glo2003/Restaurant/Restaurant.java 2025-09-19T19:43:21.599194473Z
+src/main/java/ca/ulaval/glo2003/Restaurant/RestaurantRepository.java 2025-09-19T20:05:46.119224903Z
+src/main/java/ca/ulaval/glo2003/Restaurant/RestaurantRequest.java 2025-09-19T20:01:39.807567453Z
+src/main/java/ca/ulaval/glo2003/Restaurant/RestaurantResource.java 2025-09-19T21:29:26.006221977Z
+src/main/java/ca/ulaval/glo2003/Restaurant/RestaurantResponse.java 2025-09-19T21:31:14.360066846Z
+src/test/java/ca/ulaval/glo2003/RestaurantResourceTest.java 2025-09-19T18:53:44.958110562Z

@@ -12,7 +12,7 @@ public class Main {
 
     final ResourceConfig rc =
         new ResourceConfig()
-            .packages("ca.ulaval.glo2003")
+            .packages("ca.ulaval.glo2003", "ca.ulaval.glo2003.Restaurant")
             .register(ca.ulaval.glo2003.Restaurant.BadRequestExceptionMapper.class);
     ;
 

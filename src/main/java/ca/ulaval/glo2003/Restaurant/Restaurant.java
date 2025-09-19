@@ -9,13 +9,16 @@ public class Restaurant {
   private final int capacity;
   private final LocalTime openingHour;
   private final LocalTime closingHour;
+  private final String ownerId;
 
-  public Restaurant(String name, int capacity, LocalTime openingHour, LocalTime closingHour) {
+  public Restaurant(
+      String name, int capacity, LocalTime openingHour, LocalTime closingHour, String ownerId) {
     this.id = UUID.randomUUID().toString();
     this.name = name;
     this.capacity = capacity;
     this.openingHour = openingHour;
     this.closingHour = closingHour;
+    this.ownerId = ownerId;
   }
 
   public String getId() {
@@ -36,5 +39,9 @@ public class Restaurant {
 
   public LocalTime getClosingHour() {
     return closingHour;
+  }
+
+  public String getOwnerId() {
+    return ownerId;
   }
 }
