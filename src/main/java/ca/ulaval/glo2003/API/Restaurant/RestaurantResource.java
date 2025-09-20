@@ -18,18 +18,19 @@ import java.util.List;
 public class RestaurantResource {
   private static final RestaurantRepository repository = new RestaurantRepository();
 
+  private void validateHeaders(String ownerId) {
+    if (ownerId == null || ownerId.isBlank()) {
+      throw new MissingParameterException("Missing Owner header");
+    }
+  }
+
   @POST
   public Response createRestaurant(
       @HeaderParam("Owner") String ownerId, RestaurantRequest request) {
 
     try {
 
-      if (ownerId == null || ownerId.isBlank()) {
-        return Response.status(Response.Status.BAD_REQUEST)
-            .entity(new ErrorResponse("MISSING_PARAMETER", "Missing Owner header"))
-            .build();
-      }
-
+      validateHeaders(ownerId);
       request.validate();
 
       Restaurant restaurant =
@@ -61,13 +62,11 @@ public class RestaurantResource {
 
   @GET
   public Response listRestaurants(@HeaderParam("Owner") String ownerId) {
-    if (ownerId == null || ownerId.isBlank()) {
-      return Response.status(Response.Status.BAD_REQUEST)
-          .entity(new ErrorResponse("MISSING_PARAMETER", "Missing Owner header"))
-          .build();
-    }
 
     try {
+
+      validateHeaders(ownerId);
+
       List<RestaurantDTO> restaurantListOfOwner = repository.findRestaurantByOwnerId(ownerId);
 
       return Response.status(Response.Status.OK)
