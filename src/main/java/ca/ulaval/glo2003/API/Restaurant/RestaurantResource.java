@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.API.Restaurant;
 
-import ca.ulaval.glo2003.API.Restaurant.DTO.RestaurantDTO;
+import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.ErrorResponse;
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import ca.ulaval.glo2003.Domain.Restaurant;

@@ -1,5 +1,6 @@
-package ca.ulaval.glo2003.API.Restaurant.DTO;
+package ca.ulaval.glo2003.DTOAssembler;
 
+import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.Domain.Restaurant;
 
 public class RestaurantDTOAssembler {

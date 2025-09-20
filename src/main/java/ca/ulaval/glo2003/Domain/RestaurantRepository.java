@@ -1,7 +1,7 @@
 package ca.ulaval.glo2003.Domain;
 
-import ca.ulaval.glo2003.API.Restaurant.DTO.RestaurantDTO;
-import ca.ulaval.glo2003.API.Restaurant.DTO.RestaurantDTOAssembler;
+import ca.ulaval.glo2003.DTO.RestaurantDTO;
+import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.List;

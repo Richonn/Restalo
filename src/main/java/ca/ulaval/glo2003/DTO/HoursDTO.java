@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.API.Restaurant.DTO;
+package ca.ulaval.glo2003.DTO;
 
 import java.time.LocalTime;
 
