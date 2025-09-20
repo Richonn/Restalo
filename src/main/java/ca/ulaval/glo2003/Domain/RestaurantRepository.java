@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.Domain;
 
-import java.security.InvalidParameterException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,15 +15,9 @@ public class RestaurantRepository {
   }
 
   public List<Restaurant> findAllRestaurantByOwnerId(String ownerId) {
-    List<Restaurant> restaurantListOfOwner =
-        restaurants.values().stream()
-            .filter(r -> r.getOwnerId().equals(ownerId))
-            .collect(Collectors.toList());
-
-    if (restaurantListOfOwner.isEmpty()) {
-      throw new InvalidParameterException("The specified OwnerID doesn't own any restaurants.");
-    }
-    return restaurantListOfOwner;
+    return restaurants.values().stream()
+        .filter(r -> r.getOwnerId().equals(ownerId))
+        .collect(Collectors.toList());
   }
 
   public Restaurant findRestaurantByOwnerIdAndRestaurantId(String ownerId, String restaurantId) {
@@ -34,6 +28,6 @@ public class RestaurantRepository {
         return restaurant;
       }
     }
-    throw new InvalidParameterException("The specified restaurant ID doesn't exist.");
+    throw new NotFoundException();
   }
 }
