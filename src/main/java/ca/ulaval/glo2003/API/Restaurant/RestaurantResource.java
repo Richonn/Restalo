@@ -45,7 +45,6 @@ public class RestaurantResource {
       return Response.status(Response.Status.CREATED)
           .header(
               "Location", String.format("http://localhost:8080/restaurants/%s", restaurant.getId()))
-          .entity(new RestaurantResponse(restaurant))
           .build();
 
     } catch (MissingParameterException e) {

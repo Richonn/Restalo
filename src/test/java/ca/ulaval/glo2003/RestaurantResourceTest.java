@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import ca.ulaval.glo2003.API.Restaurant.RestaurantRequest;
 import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
-import ca.ulaval.glo2003.API.Restaurant.RestaurantResponse;
 import jakarta.ws.rs.core.Response;
 import org.junit.Test;
 
@@ -26,13 +25,14 @@ public class RestaurantResourceTest {
 
     assertEquals(201, response.getStatus());
 
-    RestaurantResponse body = (RestaurantResponse) response.getEntity();
-    assertNotNull(body);
-    assertEquals("Chez Mario", body.getName());
-    assertEquals(Integer.valueOf(10), body.getCapacity());
-    assertEquals("10:00", body.getHours().getOpen());
-    assertEquals("22:00", body.getHours().getClose());
-
-    assertNotNull(body.getId());
+    // POST request doesn't return a body
+//    RestaurantResponse body = (RestaurantResponse) response.getEntity();
+//    assertNotNull(body);
+//    assertEquals("Chez Mario", body.getName());
+//    assertEquals(Integer.valueOf(10), body.getCapacity());
+//    assertEquals("10:00", body.getHours().getOpen());
+//    assertEquals("22:00", body.getHours().getClose());
+//
+//    assertNotNull(body.getId());
   }
 }
