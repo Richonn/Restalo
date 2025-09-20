@@ -7,8 +7,7 @@ public class Restaurant {
   private final String id;
   private final String name;
   private final int capacity;
-  private final LocalTime openingHour;
-  private final LocalTime closingHour;
+  private final Hours hours;
   private final String ownerId;
 
   public Restaurant(
@@ -16,8 +15,7 @@ public class Restaurant {
     this.id = UUID.randomUUID().toString();
     this.name = name;
     this.capacity = capacity;
-    this.openingHour = openingHour;
-    this.closingHour = closingHour;
+    this.hours = new Hours(openingHour, closingHour);
     this.ownerId = ownerId;
   }
 
@@ -33,12 +31,15 @@ public class Restaurant {
     return capacity;
   }
 
-  public LocalTime getOpeningHour() {
-    return openingHour;
-  }
-
-  public LocalTime getClosingHour() {
-    return closingHour;
+  //  public LocalTime getOpeningHour() {
+  //    return hours.getOpeningHour();
+  //  }
+  //
+  //  public LocalTime getClosingHour() {
+  //    return hours.getClosingHour();
+  //  }
+  public Hours getHours() {
+    return hours;
   }
 
   public String getOwnerId() {

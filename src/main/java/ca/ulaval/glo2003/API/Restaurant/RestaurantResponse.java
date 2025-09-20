@@ -13,7 +13,9 @@ public class RestaurantResponse {
     this.name = restaurant.getName();
     this.capacity = restaurant.getCapacity();
     this.hours =
-        new Hours(restaurant.getOpeningHour().toString(), restaurant.getClosingHour().toString());
+        new Hours(
+            restaurant.getHours().getOpeningHour().toString(),
+            restaurant.getHours().getClosingHour().toString());
   }
 
   public String getId() {

@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.API.Restaurant;
 
+import ca.ulaval.glo2003.API.Restaurant.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.ErrorResponse;
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import ca.ulaval.glo2003.Domain.Restaurant;
@@ -10,7 +11,6 @@ import jakarta.ws.rs.core.Response;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/restaurants")
 @Produces(MediaType.APPLICATION_JSON)
@@ -68,11 +68,18 @@ public class RestaurantResource {
           .build();
     }
 
-    List<Restaurant> ownedRestaurants = repository.findByOwnerId(ownerId);
+    try {
+      List<RestaurantDTO> restaurantListOfOwner = repository.findRestaurantByOwnerId(ownerId);
 
-    List<RestaurantResponse> responseList =
-        ownedRestaurants.stream().map(RestaurantResponse::new).collect(Collectors.toList());
+      return Response.status(Response.Status.OK)
+          .header("Location", "http://localhost:8080/restaurants/")
+          .entity(restaurantListOfOwner)
+          .build();
 
-    return Response.ok(responseList).build();
+    } catch (InvalidParameterException e) {
+      return Response.status(Response.Status.BAD_REQUEST)
+          .entity(new ErrorResponse("INVALID_PARAMETER", e.getMessage()))
+          .build();
+    }
   }
 }
