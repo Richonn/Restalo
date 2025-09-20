@@ -98,4 +98,46 @@ Un message de commit doit commencer par un **tag** entre crochets (`[ ]`), indiq
 
 ---
 
-En suivant ces conventions, nous garantissons un historique Git plus **lisible**, **professionnel** et **facilement exploitable** par tous les membres de l’équipe.
+## Stratégie de Branches Git
+
+Afin de garder un historique clair et une organisation structurée du projet, nous suivons une convention stricte pour la création et la gestion des branches.
+
+### Règles générales
+
+- Une **branche par fonctionnalité**.
+- Les branches doivent toujours être créées à partir de `main`.
+- La création d’une branche se fait directement via **GitHub** à partir du ticket correspondant dans le projet.
+
+## Étapes pour créer une branche
+
+1. Accédez au ticket relié à la fonctionnalité sur GitHub.
+2. Cliquez sur **"Create a branch"** dans le menu du ticket.
+3. Modifiez le nom de la branche pour qu’il respecte notre norme.
+
+## Nommage des branches
+
+Le nom d’une branche doit suivre la structure :
+
+```
+X-SCOPE-FEATURE
+```
+
+- **X** : Numéro du ticket ou identifiant de la tâche
+- **SCOPE** : Domaine concerné (`backend`, `frontend`, `devops`, `processus`, `tests`).
+- **FEATURE** : Brève description de la fonctionnalité, en *kebab-case* (mots séparés par des tirets `-`)
+
+### Exemple
+
+Pour le ticket n°2 concernant l’obtention d’un restaurant côté backend :
+
+```
+2-backend-get-restaurant-by-id
+```
+
+## Bonnes pratiques
+
+- Utiliser des noms de branche **courts mais explicites**.
+- Toujours associer une branche à un **ticket GitHub**.
+- Ne pas travailler directement sur `main`.
+
+---
