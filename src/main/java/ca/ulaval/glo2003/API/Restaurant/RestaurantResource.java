@@ -44,4 +44,17 @@ public class RestaurantResource {
         .entity(restaurantService.findAllRestaurantsByOwnerId(ownerId))
         .build();
   }
+
+  @GET
+  @Path("/{id}")
+  public Response listRestaurants(
+      @HeaderParam("Owner") String ownerId, @PathParam("id") String restaurantId) {
+
+    validateHeaders(ownerId);
+
+    return Response.status(Response.Status.OK)
+        .header("Location", String.format("http://localhost:8080/restaurants/%s", restaurantId))
+        .entity(restaurantService.findRestaurantByOwnerIdAndRestaurantId(ownerId, restaurantId))
+        .build();
+  }
 }
