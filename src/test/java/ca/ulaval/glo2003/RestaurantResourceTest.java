@@ -3,10 +3,12 @@ package ca.ulaval.glo2003;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import ca.ulaval.glo2003.Restaurant.RestaurantRequest;
-import ca.ulaval.glo2003.Restaurant.RestaurantResource;
-import ca.ulaval.glo2003.Restaurant.RestaurantResponse;
+import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
+import ca.ulaval.glo2003.DTO.RestaurantDTO;
+import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
+import ca.ulaval.glo2003.Domain.Restaurant;
 import jakarta.ws.rs.core.Response;
+import java.time.LocalTime;
 import org.junit.Test;
 
 public class RestaurantResourceTest {
@@ -15,24 +17,17 @@ public class RestaurantResourceTest {
 
   @Test
   public void givenValidRequest_whenPostRestaurant_thenReturns201() {
-    RestaurantRequest request = new RestaurantRequest();
-    request.setName("Chez Mario");
-    request.setCapacity(10);
-    request.setOpeningHour("10:00:00");
-    request.setClosingHour("22:00:00");
+    String ownerId = "george";
+    String nom = "Chez Mario";
+    int capacity = 10;
+    LocalTime open = LocalTime.parse("10:00:00");
+    LocalTime close = LocalTime.parse("22:00:00");
 
-    String ownerId = "user123";
-    Response response = resource.createRestaurant(ownerId, request);
+    Restaurant restaurant = new Restaurant(nom, capacity, open, close, ownerId);
+    RestaurantDTO restaurantDTO = RestaurantDTOAssembler.toRestaurantDTO(restaurant);
+    Response response = resource.createRestaurant(ownerId, restaurantDTO);
 
     assertEquals(201, response.getStatus());
-
-    RestaurantResponse body = (RestaurantResponse) response.getEntity();
-    assertNotNull(body);
-    assertEquals("Chez Mario", body.getName());
-    assertEquals(Integer.valueOf(10), body.getCapacity());
-    assertEquals("10:00", body.getHours().getOpen());
-    assertEquals("22:00", body.getHours().getClose());
-
-    assertNotNull(body.getId());
+    assertNotNull(response.getLocation());
   }
 }

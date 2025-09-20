@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Restaurant;
+package ca.ulaval.glo2003.API.Restaurant.Exceptions;
 
 public class ErrorResponse {
   private String error;

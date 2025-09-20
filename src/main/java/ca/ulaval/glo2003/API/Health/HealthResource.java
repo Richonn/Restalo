@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003;
+package ca.ulaval.glo2003.API.Health;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
