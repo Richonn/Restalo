@@ -152,3 +152,22 @@ Pour le ticket n°2 concernant l’obtention d’un restaurant côté backend :
 Inspiré par le  [model de Vincent Driessen](https://nvie.com/posts/a-successful-git-branching-model/)
 
 ---
+
+## Déclaration d'utilisation de l'IA
+
+Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI comme outil d'intelligence artificielle.
+
+### Outils utilisés
+- ChatGPT pour aider à structurer les étapes d'implémentation.
+- ChatGPT pour aider à tester les requêtes.
+
+### Comment nous avons intégré l'IA dans notre travail
+- Nous avons demandé à ChatGPT d'aider à subdiviser et structurer les étapes globales du travail.
+- Nous avons utilisé ChatGPT pour générer des exemples de commandes `curl` pour tester l'API REST.
+
+### Rôle de l'IA dans la réalisation du projet
+- L'IA a servi d'assistant pour organiser le projet en sous-tâches et faciliter la compréhension des interactions avec l'API.
+- Elle a facilité la mise en place des tests à l'aide du terminal.
+- Elle a fourni des suggestions pour améliorer la clarté du code et la validation des données.
+
+Nous certifions que le code soumis est le fruit de notre travail personnel, avec l'appui de l'outil mentionné.
