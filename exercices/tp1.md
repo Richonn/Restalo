@@ -214,5 +214,6 @@ Nous certifions que le code soumis est le fruit de notre travail personnel, avec
 
 #### 1 screenshot de l'arbre de commits et branches (≥10 commits)
 
+![tree-commit-branches3](/exercices/screen-shots/treecommitbranches3.png)
 ![tree-commit-branches2](/exercices/screen-shots/treecommitbranches2.png)
 ![tree-commit-branches1](/exercices/screen-shots/treecommitbranches1.png)
