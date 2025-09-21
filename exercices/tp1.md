@@ -170,21 +170,21 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 - Elle a facilité la mise en place des tests à l'aide du terminal.
 - Elle a fourni des suggestions pour améliorer la clarté du code et la validation des données.
 
-Nous certifions que le code soumis est le fruit de notre travail personnel, avec l'appui de l'outil mentionné.
+**Nous certifions que le code soumis est le fruit de notre travail personnel, avec l'appui de l'outil mentionné**.
 
 ## Captures d'écran
 
-### 1 screenshot du GitHub Project (colonnes + issues)
+### Screenshot du GitHub Project (colonnes + issues)
 
 ![github-projet](/exercices/screen-shots/github-project.png)
 
-### 1 screenshot du Milestone (titre, description, date, issues)
+### Screenshots du Milestone (titre, description, date, issues)
 
 ![milestone1](/exercices/screen-shots/milestone1.png)
 ![milestone2](/exercices/screen-shots/milestone2.png)
 ![milestone3](/exercices/screen-shots/milestone3.png)
 
-### 3 screenshots d'issues
+### Screenshots de 3 issues
 
 #### Issue 1
 ![issue1-1](/exercices/screen-shots/issue1-1.png)
@@ -199,7 +199,7 @@ Nous certifions que le code soumis est le fruit de notre travail personnel, avec
 ![issue3-1](/exercices/screen-shots/issue3-1.png)
 ![issue3-2](/exercices/screen-shots/issue3-2.png)
 
-### 3-6 screenshots de Pull Requests (avec reviews)
+### Screenshot de 3 Pull Requests (avec reviews)
 
 #### Pull request 1
 ![pull-request1](/exercices/screen-shots/pullrequest1.png)
@@ -212,7 +212,7 @@ Nous certifions que le code soumis est le fruit de notre travail personnel, avec
 ![pull-request3-2](/exercices/screen-shots/pullrequest3-2.png)
 ![pull-request3-3](/exercices/screen-shots/pullrequest3-3.png)
 
-#### 1 screenshot de l'arbre de commits et branches (≥10 commits)
+#### Screenshots de 'arbre de commits et branches (≥10 commits)
 
 ![tree-commit-branches3](/exercices/screen-shots/treecommitbranches3.png)
 ![tree-commit-branches2](/exercices/screen-shots/treecommitbranches2.png)
