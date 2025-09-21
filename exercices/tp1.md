@@ -171,3 +171,44 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 - Elle a fourni des suggestions pour améliorer la clarté du code et la validation des données.
 
 Nous certifions que le code soumis est le fruit de notre travail personnel, avec l'appui de l'outil mentionné.
+
+## Captures d'écran
+
+### 1 screenshot du GitHub Project (colonnes + issues)
+
+![github-projet](/exercices/screen-shots/github-project.png)
+
+### 1 screenshot du Milestone (titre, description, date, issues)
+
+![milestone1](/exercices/screen-shots/milestone1.png)
+![milestone2](/exercices/screen-shots/milestone2.png)
+![milestone3](/exercices/screen-shots/milestone3.png)
+
+### 3 screenshots d'issues
+
+#### Issue 1
+![issue1-1](/exercices/screen-shots/issue1-1.png)
+![issue1-2](/exercices/screen-shots/issue1-2.png)
+
+#### Issue 2
+
+![issue2](/exercices/screen-shots/issue2.png)
+
+#### Issue 3
+
+![issue3-1](/exercices/screen-shots/issue3-1.png)
+![issue3-2](/exercices/screen-shots/issue3-2.png)
+
+### 3-6 screenshots de Pull Requests (avec reviews)
+
+#### Pull request 1
+![pull-request1](/exercices/screen-shots/pullrequest1.png)
+
+#### Pull request 2
+![pull-request2](/exercices/screen-shots/pullrequest2.png)
+
+#### Pull request 3
+![pull-request3-1](/exercices/screen-shots/pullrequest3-1.png)
+![pull-request3-2](/exercices/screen-shots/pullrequest3-2.png)
+![pull-request3-3](/exercices/screen-shots/pullrequest3-3.png)
+
