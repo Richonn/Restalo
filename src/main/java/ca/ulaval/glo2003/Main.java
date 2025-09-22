@@ -15,7 +15,6 @@ public class Main {
         new ResourceConfig()
             .packages("ca.ulaval.glo2003")
             .register(IllegalArgumentExceptionMapper.class);
-    ;
 
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }

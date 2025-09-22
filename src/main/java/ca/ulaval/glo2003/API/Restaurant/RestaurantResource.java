@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class RestaurantResource {
   private static final RestaurantService restaurantService = new RestaurantService();
+  private static final String OWNER_HEADER = "Owner";
 
   private void validateHeaders(String ownerId) {
     if (ownerId == null || ownerId.isBlank()) {
@@ -21,7 +22,7 @@ public class RestaurantResource {
 
   @POST
   public Response createRestaurant(
-      @HeaderParam("Owner") String ownerId, RestaurantDTO restaurantDTO) {
+      @HeaderParam(OWNER_HEADER) String ownerId, RestaurantDTO restaurantDTO) {
 
     validateHeaders(ownerId);
 
@@ -35,7 +36,7 @@ public class RestaurantResource {
   }
 
   @GET
-  public Response getRestaurantListOfOwner(@HeaderParam("Owner") String ownerId) {
+  public Response getRestaurantListOfOwner(@HeaderParam(OWNER_HEADER) String ownerId) {
 
     validateHeaders(ownerId);
 
@@ -48,7 +49,7 @@ public class RestaurantResource {
   @GET
   @Path("/{id}")
   public Response getRestaurantByIdOfOwner(
-      @HeaderParam("Owner") String ownerId, @PathParam("id") String restaurantId) {
+      @HeaderParam(OWNER_HEADER) String ownerId, @PathParam("id") String restaurantId) {
 
     validateHeaders(ownerId);
 
