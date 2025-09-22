@@ -1,5 +1,9 @@
 package ca.ulaval.glo2003;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+
 import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
 import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
@@ -7,10 +11,7 @@ import ca.ulaval.glo2003.Domain.Restaurant;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
-import org.junit.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RestaurantResourceTest {
 
@@ -61,8 +62,10 @@ public class RestaurantResourceTest {
   @Test
   public void givenInvalidRequest_whenGetRestaurantById_thenReturns404() {
     String ownerId = "george";
-    String nonExistantRestaurantId = "123";
+    String nonExistentRestaurantId = "123";
 
-    Assert.assertThrows(NotFoundException.class, () -> resource.getRestaurantByIdOfOwner(ownerId, nonExistantRestaurantId));
+    assertThrows(
+        NotFoundException.class,
+        () -> resource.getRestaurantByIdOfOwner(ownerId, nonExistentRestaurantId));
   }
 }
