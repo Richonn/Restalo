@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.API.Application.Restaurant;
+package ca.ulaval.glo2003.Application.Restaurant;
 
 import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;

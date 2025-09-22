@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.API.Restaurant;
 
-import ca.ulaval.glo2003.API.Application.Restaurant.RestaurantService;
+import ca.ulaval.glo2003.Application.Restaurant.RestaurantService;
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import jakarta.ws.rs.*;
