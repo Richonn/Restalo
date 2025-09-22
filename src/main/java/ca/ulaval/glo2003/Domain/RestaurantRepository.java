@@ -14,14 +14,14 @@ public class RestaurantRepository {
     restaurants.put(restaurant.getId(), restaurant);
   }
 
-  public List<Restaurant> findAllRestaurantByOwnerId(String ownerId) {
+  public List<Restaurant> getRestaurantListOfOwner(String ownerId) {
     return restaurants.values().stream()
         .filter(r -> r.getOwnerId().equals(ownerId))
         .collect(Collectors.toList());
   }
 
-  public Restaurant findRestaurantByOwnerIdAndRestaurantId(String ownerId, String restaurantId) {
-    List<Restaurant> restaurantListOfOwner = findAllRestaurantByOwnerId(ownerId);
+  public Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
+    List<Restaurant> restaurantListOfOwner = getRestaurantListOfOwner(ownerId);
 
     for (Restaurant restaurant : restaurantListOfOwner) {
       if (restaurant.getId().equals(restaurantId)) {

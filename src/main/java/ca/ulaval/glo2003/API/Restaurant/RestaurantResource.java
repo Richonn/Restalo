@@ -35,26 +35,26 @@ public class RestaurantResource {
   }
 
   @GET
-  public Response listRestaurants(@HeaderParam("Owner") String ownerId) {
+  public Response getRestaurantListOfOwner(@HeaderParam("Owner") String ownerId) {
 
     validateHeaders(ownerId);
 
     return Response.status(Response.Status.OK)
         .header("Location", "http://localhost:8080/restaurants/")
-        .entity(restaurantService.findAllRestaurantsByOwnerId(ownerId))
+        .entity(restaurantService.getRestaurantListOfOwner(ownerId))
         .build();
   }
 
   @GET
   @Path("/{id}")
-  public Response listRestaurants(
+  public Response getRestaurantByIdOfOwner(
       @HeaderParam("Owner") String ownerId, @PathParam("id") String restaurantId) {
 
     validateHeaders(ownerId);
 
     return Response.status(Response.Status.OK)
         .header("Location", String.format("http://localhost:8080/restaurants/%s", restaurantId))
-        .entity(restaurantService.findRestaurantByOwnerIdAndRestaurantId(ownerId, restaurantId))
+        .entity(restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId))
         .build();
   }
 }
