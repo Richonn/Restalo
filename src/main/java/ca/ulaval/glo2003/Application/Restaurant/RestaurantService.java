@@ -36,8 +36,7 @@ public class RestaurantService {
   }
 
   public RestaurantDTO getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
-    Restaurant restaurant =
-        repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
+    Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
     return RestaurantDTOAssembler.toRestaurantDTO(restaurant);
   }
 }

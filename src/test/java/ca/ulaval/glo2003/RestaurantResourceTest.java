@@ -1,19 +1,21 @@
 package ca.ulaval.glo2003;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
 import ca.ulaval.glo2003.DTO.RestaurantDTO;
 import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
 import ca.ulaval.glo2003.Domain.Restaurant;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
+import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class RestaurantResourceTest {
 
   private final RestaurantResource resource = new RestaurantResource();
+  private String restaurantId;
 
   @Test
   public void givenValidRequest_whenPostRestaurant_thenReturns201() {
@@ -27,7 +29,40 @@ public class RestaurantResourceTest {
     RestaurantDTO restaurantDTO = RestaurantDTOAssembler.toRestaurantDTO(restaurant);
     Response response = resource.createRestaurant(ownerId, restaurantDTO);
 
+    String[] segmentsList = response.getLocation().getPath().split("/");
+    restaurantId = segmentsList[segmentsList.length - 1];
+
     assertEquals(201, response.getStatus());
-    assertNotNull(response.getLocation());
+    assertNotNull(restaurantId);
+  }
+
+  @Test
+  public void givenValidRequest_whenGetRestaurantList_thenReturns200() {
+    String ownerId = "george";
+
+    Response response = resource.getRestaurantListOfOwner(ownerId);
+
+    assertEquals(200, response.getStatus());
+    assertNotNull(response.getEntity());
+  }
+
+  @Test
+  public void givenValidRequest_whenGetRestaurantById_thenReturns200() {
+    givenValidRequest_whenPostRestaurant_thenReturns201();
+
+    String ownerId = "george";
+
+    Response response = resource.getRestaurantByIdOfOwner(ownerId, restaurantId);
+
+    assertEquals(200, response.getStatus());
+    assertNotNull(response.getEntity());
+  }
+
+  @Test
+  public void givenInvalidRequest_whenGetRestaurantById_thenReturns404() {
+    String ownerId = "george";
+    String nonExistantRestaurantId = "123";
+
+    Assert.assertThrows(NotFoundException.class, () -> resource.getRestaurantByIdOfOwner(ownerId, nonExistantRestaurantId));
   }
 }
