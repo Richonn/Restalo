@@ -1,3 +1,3 @@
-package ca.ulaval.glo2003.API.Health;
+package ca.ulaval.glo2003.api.health;
 
 public record HealthResponse(String status) {}
