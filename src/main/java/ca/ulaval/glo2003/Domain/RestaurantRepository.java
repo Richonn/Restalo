@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.domain;
+package ca.ulaval.glo2003.Domain;
 
 import jakarta.ws.rs.NotFoundException;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ public class RestaurantRepository {
   private final Map<String, Restaurant> restaurants = new HashMap<>();
 
   public void save(Restaurant restaurant) {
-    restaurant.validateFields();
+    restaurant.validateAll();
     restaurants.put(restaurant.getId(), restaurant);
   }
 

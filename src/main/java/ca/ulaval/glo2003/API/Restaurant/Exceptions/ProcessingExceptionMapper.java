@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api.restaurant.exceptions;
+package ca.ulaval.glo2003.API.Restaurant.Exceptions;
 
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.MediaType;

@@ -1,6 +1,6 @@
-package ca.ulaval.glo2003.domain;
+package ca.ulaval.glo2003.Domain;
 
-import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -50,10 +50,10 @@ public class Restaurant {
     return ownerId;
   }
 
-  public void validateFields() {
+  public void validateAll() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
-    hours.validateFields();
+    hours.validateAll();
   }
 
   private void validateFieldsAreDefined() {

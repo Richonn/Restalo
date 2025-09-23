@@ -3,10 +3,10 @@ package ca.ulaval.glo2003;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import ca.ulaval.glo2003.api.restaurant.RestaurantResource;
-import ca.ulaval.glo2003.domain.Restaurant;
-import ca.ulaval.glo2003.dto.RestaurantDto;
-import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
+import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
+import ca.ulaval.glo2003.DTO.RestaurantDTO;
+import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
+import ca.ulaval.glo2003.Domain.Restaurant;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
 import org.junit.Test;
@@ -24,8 +24,8 @@ public class RestaurantResourceTest {
     LocalTime close = LocalTime.parse("22:00:00");
 
     Restaurant restaurant = new Restaurant(nom, capacity, open, close, ownerId);
-    RestaurantDto restaurantDto = RestaurantDtoAssembler.toRestaurantDto(restaurant);
-    Response response = resource.createRestaurant(ownerId, restaurantDto);
+    RestaurantDTO restaurantDTO = RestaurantDTOAssembler.toRestaurantDTO(restaurant);
+    Response response = resource.createRestaurant(ownerId, restaurantDTO);
 
     assertEquals(201, response.getStatus());
     assertNotNull(response.getLocation());
