@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.API.Restaurant.Exceptions;
+package ca.ulaval.glo2003.api.restaurant.exceptions;
 
 import static ca.ulaval.glo2003.API.Restaurant.Exceptions.ErrorCodes.*;
 

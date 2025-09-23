@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.Domain;
+package ca.ulaval.glo2003.domain;
 
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import java.security.InvalidParameterException;

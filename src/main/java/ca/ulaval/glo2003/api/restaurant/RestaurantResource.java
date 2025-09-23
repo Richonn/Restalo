@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.API.Restaurant;
+package ca.ulaval.glo2003.api.restaurant;
 
 import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import ca.ulaval.glo2003.Application.Restaurant.RestaurantService;
