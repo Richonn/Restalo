@@ -5,7 +5,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
-/** Handle missing parameter exception. */
 @Provider
 public class MissingParameterExceptionMapper implements ExceptionMapper<MissingParameterException> {
 

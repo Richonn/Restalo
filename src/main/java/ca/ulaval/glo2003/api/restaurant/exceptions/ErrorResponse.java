@@ -1,6 +1,5 @@
 package ca.ulaval.glo2003.api.restaurant.exceptions;
 
-/** Handle Error response. */
 public class ErrorResponse {
   private String error;
   private String description;
