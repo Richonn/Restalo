@@ -3,10 +3,8 @@ package ca.ulaval.glo2003;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import ca.ulaval.glo2003.API.Restaurant.RestaurantResource;
-import ca.ulaval.glo2003.DTO.RestaurantDTO;
-import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
-import ca.ulaval.glo2003.Domain.Restaurant;
+import ca.ulaval.glo2003.api.restaurant.RestaurantResource;
+import ca.ulaval.glo2003.domain.Restaurant;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
 import org.junit.Test;
