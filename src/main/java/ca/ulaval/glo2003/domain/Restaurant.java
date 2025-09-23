@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.domain;
 
-import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
+import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.UUID;

@@ -1,9 +1,9 @@
-package ca.ulaval.glo2003.Application.Restaurant;
+package ca.ulaval.glo2003.application.restaurant;
 
-import ca.ulaval.glo2003.DTO.RestaurantDTO;
-import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
-import ca.ulaval.glo2003.Domain.Restaurant;
-import ca.ulaval.glo2003.Domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.Restaurant;
+import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.dto.RestaurantDTO;
+import ca.ulaval.glo2003.dtoassembler.RestaurantDTOAssembler;
 import java.util.ArrayList;
 import java.util.List;
 
