@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.api.application.restaurant;
 
+import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.Restaurant;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.dto.RestaurantDto;
@@ -7,18 +8,17 @@ import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Restaurant service. */
 public class RestaurantService {
   private static final RestaurantRepository repository = new RestaurantRepository();
 
-  /**
-   * Create a restaurant using the owner id and a restaurant dto.
-   *
-   * @param ownerId The id of the owner of the restaurant
-   * @param restaurantDto The restaurant dto
-   * @return The created restaurant
-   */
+  private void validateHeaders(String ownerId) {
+    if (ownerId == null || ownerId.isBlank()) {
+      throw new MissingParameterException("Missing Owner header");
+    }
+  }
+
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
+    validateHeaders(ownerId);
     Restaurant restaurant =
         new Restaurant(
             restaurantDto.name(),
@@ -32,13 +32,8 @@ public class RestaurantService {
     return restaurant.getId();
   }
 
-  /**
-   * Find all restaurant for a specific owner id.
-   *
-   * @param ownerId The id of the owner of the restaurant
-   * @return The restaurants linked with the owner id
-   */
   public List<RestaurantDto> findAllRestaurantsByOwnerId(String ownerId) {
+    validateHeaders(ownerId);
     List<Restaurant> listRestaurant = repository.findAllRestaurantByOwnerId(ownerId);
     List<RestaurantDto> listRestaurantDto = new ArrayList<>();
 
@@ -49,14 +44,8 @@ public class RestaurantService {
     return listRestaurantDto;
   }
 
-  /**
-   * Find restaurant using its id and the id of the owner of the restaurant.
-   *
-   * @param ownerId The id of the owner of the restaurant
-   * @param restaurantId The id of the restaurant
-   * @return The restaurant with the id restaurantId
-   */
   public RestaurantDto findRestaurantByOwnerIdAndRestaurantId(String ownerId, String restaurantId) {
+    validateHeaders(ownerId);
     Restaurant restaurant =
         repository.findRestaurantByOwnerIdAndRestaurantId(ownerId, restaurantId);
     return RestaurantDtoAssembler.toRestaurantDto(restaurant);
