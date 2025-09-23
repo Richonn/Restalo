@@ -21,7 +21,7 @@ public class Hours {
     return close;
   }
 
-  public void validateAll() {
+  public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
   }

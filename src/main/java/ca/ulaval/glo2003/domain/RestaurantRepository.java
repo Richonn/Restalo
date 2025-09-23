@@ -10,7 +10,7 @@ public class RestaurantRepository {
   private final Map<String, Restaurant> restaurants = new HashMap<>();
 
   public void save(Restaurant restaurant) {
-    restaurant.validateAll();
+    restaurant.validateFields();
     restaurants.put(restaurant.getId(), restaurant);
   }
 
