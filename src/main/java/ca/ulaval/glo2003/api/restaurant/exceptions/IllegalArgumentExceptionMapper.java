@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.API.Restaurant.Exceptions;
+package ca.ulaval.glo2003.api.restaurant.exceptions;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -6,7 +6,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class BadRequestExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
   @Override
   public Response toResponse(IllegalArgumentException exception) {

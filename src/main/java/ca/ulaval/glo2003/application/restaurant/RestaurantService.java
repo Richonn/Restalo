@@ -1,9 +1,9 @@
-package ca.ulaval.glo2003.API.Application.Restaurant;
+package ca.ulaval.glo2003.application.restaurant;
 
-import ca.ulaval.glo2003.DTO.RestaurantDTO;
-import ca.ulaval.glo2003.DTOAssembler.RestaurantDTOAssembler;
-import ca.ulaval.glo2003.Domain.Restaurant;
-import ca.ulaval.glo2003.Domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.Restaurant;
+import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.dto.RestaurantDTO;
+import ca.ulaval.glo2003.dtoassembler.RestaurantDTOAssembler;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +24,8 @@ public class RestaurantService {
     return restaurant.getId();
   }
 
-  public List<RestaurantDTO> findAllRestaurantsByOwnerId(String ownerId) {
-    List<Restaurant> listRestaurant = repository.findAllRestaurantByOwnerId(ownerId);
+  public List<RestaurantDTO> getRestaurantListOfOwner(String ownerId) {
+    List<Restaurant> listRestaurant = repository.getRestaurantListOfOwner(ownerId);
     List<RestaurantDTO> listRestaurantDTO = new ArrayList<>();
 
     for (Restaurant restaurant : listRestaurant) {
@@ -35,9 +35,8 @@ public class RestaurantService {
     return listRestaurantDTO;
   }
 
-  public RestaurantDTO findRestaurantByOwnerIdAndRestaurantId(String ownerId, String restaurantId) {
-    Restaurant restaurant =
-        repository.findRestaurantByOwnerIdAndRestaurantId(ownerId, restaurantId);
+  public RestaurantDTO getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
+    Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
     return RestaurantDTOAssembler.toRestaurantDTO(restaurant);
   }
 }

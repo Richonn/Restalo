@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.DTO;
+package ca.ulaval.glo2003.dto;
 
 import java.time.LocalTime;
 

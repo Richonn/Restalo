@@ -1,4 +1,6 @@
-package ca.ulaval.glo2003.API.Restaurant.Exceptions;
+package ca.ulaval.glo2003.api.restaurant.exceptions;
+
+import static ca.ulaval.glo2003.api.restaurant.exceptions.ErrorCodes.*;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -10,7 +12,7 @@ public class MissingParameterExceptionMapper implements ExceptionMapper<MissingP
 
   @Override
   public Response toResponse(MissingParameterException exception) {
-    ErrorResponse err = new ErrorResponse("MISSING_PARAMETER", exception.getMessage());
+    ErrorResponse err = new ErrorResponse(ERROR_MISSING_PARAMETER, exception.getMessage());
     return Response.status(Response.Status.BAD_REQUEST)
         .type(MediaType.APPLICATION_JSON)
         .entity(err)

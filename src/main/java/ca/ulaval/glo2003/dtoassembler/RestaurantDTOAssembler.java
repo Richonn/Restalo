@@ -1,7 +1,7 @@
-package ca.ulaval.glo2003.DTOAssembler;
+package ca.ulaval.glo2003.dtoassembler;
 
-import ca.ulaval.glo2003.DTO.RestaurantDTO;
-import ca.ulaval.glo2003.Domain.Restaurant;
+import ca.ulaval.glo2003.domain.Restaurant;
+import ca.ulaval.glo2003.dto.RestaurantDTO;
 
 public class RestaurantDTOAssembler {
   public static RestaurantDTO toRestaurantDTO(Restaurant restaurant) {
