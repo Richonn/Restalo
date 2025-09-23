@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.API.Restaurant.Exceptions.MissingParameterException;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
 
+/** The Hours class. */
 public class Hours {
   private final LocalTime open;
   private final LocalTime close;

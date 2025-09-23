@@ -5,6 +5,7 @@ import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.UUID;
 
+/** Restaurant class. */
 public class Restaurant {
   private final String id;
   private final String name;
@@ -12,6 +13,15 @@ public class Restaurant {
   private final Hours hours;
   private final String ownerId;
 
+  /**
+   * The Restaurant contructor.
+   *
+   * @param name Name of the restaurant
+   * @param capacity Capacity of the restaurant
+   * @param openingHour Opening hour of the restaurant (format HH:MM:SS)
+   * @param closingHour Closing hour of the restaurant (format HH:MM:SS)
+   * @param ownerId Id of the owner of the restaurant
+   */
   public Restaurant(
       String name, Integer capacity, LocalTime openingHour, LocalTime closingHour, String ownerId) {
 
@@ -50,6 +60,7 @@ public class Restaurant {
     return ownerId;
   }
 
+  /** Validate all fields. */
   public void validateAll() {
     validateFieldsAreDefined();
     validateFieldsAreValid();

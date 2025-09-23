@@ -5,6 +5,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
+/** Handle null pointer exception. */
 @Provider
 public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerException> {
 

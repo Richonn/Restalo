@@ -6,9 +6,15 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
+/** Main class of the app. */
 public class Main {
   public static final String BASE_URI = "http://0.0.0.0:8080/";
 
+  /**
+   * Start the server.
+   *
+   * @return The started server
+   */
   public static HttpServer startServer() {
 
     final ResourceConfig rc =

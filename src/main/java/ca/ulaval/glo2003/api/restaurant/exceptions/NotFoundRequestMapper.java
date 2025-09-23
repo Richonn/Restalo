@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
+/** Handle not found request. */
 @Provider
 public class NotFoundRequestMapper implements ExceptionMapper<NotFoundException> {
 
