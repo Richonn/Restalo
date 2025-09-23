@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.API.Restaurant.Exceptions.BadRequestExceptionMapper;
+import ca.ulaval.glo2003.api.restaurant.exceptions.BadRequestExceptionMapper;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
