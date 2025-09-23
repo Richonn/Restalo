@@ -1,5 +1,7 @@
 package ca.ulaval.glo2003.API.Restaurant.Exceptions;
 
+import static ca.ulaval.glo2003.API.Restaurant.Exceptions.ErrorCodes.*;
+
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -11,7 +13,7 @@ public class ProcessingExceptionMapper implements ExceptionMapper<ProcessingExce
 
   @Override
   public Response toResponse(ProcessingException exception) {
-    ErrorResponse err = new ErrorResponse("INVALID_PARAMETER", "The parameter type is invalid");
+    ErrorResponse err = new ErrorResponse(ERROR_INVALID_PARAMETER, "The parameter type is invalid");
     return Response.status(Response.Status.BAD_REQUEST)
         .type(MediaType.APPLICATION_JSON)
         .entity(err)

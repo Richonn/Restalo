@@ -14,6 +14,10 @@ public class RestaurantResource {
   private static final RestaurantService restaurantService = new RestaurantService();
   private static final String OWNER_HEADER = "Owner";
 
+  private static final String BASE_URL = "http://localhost:8080";
+  private static final String RESTAURANTS_BASE = BASE_URL + "/restaurants";
+  private static final String RESTAURANT_BY_ID = RESTAURANTS_BASE + "/%s";
+
   private void validateHeaders(String ownerId) {
     if (ownerId == null || ownerId.isBlank()) {
       throw new MissingParameterException("Missing Owner header");
@@ -29,9 +33,7 @@ public class RestaurantResource {
     String restaurantGeneratedId = restaurantService.createRestaurant(ownerId, restaurantDTO);
 
     return Response.status(Response.Status.CREATED)
-        .header(
-            "Location",
-            String.format("http://localhost:8080/restaurants/%s", restaurantGeneratedId))
+        .header("Location", String.format(RESTAURANT_BY_ID, restaurantGeneratedId))
         .build();
   }
 
@@ -41,7 +43,7 @@ public class RestaurantResource {
     validateHeaders(ownerId);
 
     return Response.status(Response.Status.OK)
-        .header("Location", "http://localhost:8080/restaurants/")
+        .header("Location", RESTAURANTS_BASE + "/")
         .entity(restaurantService.getRestaurantListOfOwner(ownerId))
         .build();
   }
@@ -54,7 +56,7 @@ public class RestaurantResource {
     validateHeaders(ownerId);
 
     return Response.status(Response.Status.OK)
-        .header("Location", String.format("http://localhost:8080/restaurants/%s", restaurantId))
+        .header("Location", String.format(RESTAURANT_BY_ID, restaurantId))
         .entity(restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId))
         .build();
   }
