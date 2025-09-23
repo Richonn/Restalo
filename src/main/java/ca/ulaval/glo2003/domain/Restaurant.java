@@ -50,10 +50,10 @@ public class Restaurant {
     return ownerId;
   }
 
-  public void validateAll() {
+  public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
-    hours.validateAll();
+    hours.validateFields();
   }
 
   private void validateFieldsAreDefined() {
