@@ -19,6 +19,11 @@ public class RestaurantService {
 
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
     validateHeaders(ownerId);
+
+    if (restaurantDto == null) {
+      throw new MissingParameterException("Missing body");
+    }
+
     Restaurant restaurant =
         new Restaurant(
             restaurantDto.name(),
