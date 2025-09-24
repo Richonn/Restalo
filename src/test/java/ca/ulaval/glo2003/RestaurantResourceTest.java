@@ -6,8 +6,8 @@ import static org.junit.Assert.assertThrows;
 
 import ca.ulaval.glo2003.api.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.domain.Restaurant;
-import ca.ulaval.glo2003.dto.RestaurantDTO;
-import ca.ulaval.glo2003.dtoassembler.RestaurantDTOAssembler;
+import ca.ulaval.glo2003.dto.RestaurantDto;
+import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
@@ -27,8 +27,8 @@ public class RestaurantResourceTest {
     LocalTime close = LocalTime.parse("22:00:00");
 
     Restaurant restaurant = new Restaurant(nom, capacity, open, close, ownerId);
-    RestaurantDTO restaurantDTO = RestaurantDTOAssembler.toRestaurantDTO(restaurant);
-    Response response = resource.createRestaurant(ownerId, restaurantDTO);
+    RestaurantDto restaurantDto = RestaurantDtoAssembler.toRestaurantDto(restaurant);
+    Response response = resource.createRestaurant(ownerId, restaurantDto);
 
     String[] segmentsList = response.getLocation().getPath().split("/");
     restaurantId = segmentsList[segmentsList.length - 1];
