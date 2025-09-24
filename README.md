@@ -9,6 +9,12 @@ Le meilleur logiciel de réservation en restauration!
 
 ## Commandes
 
+### Clean
+
+```
+mvn clean
+```
+
 ### Compilation
 
 ```
