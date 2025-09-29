@@ -1,6 +1,7 @@
 package ca.ulaval.glo2003.domain;
 
 import jakarta.ws.rs.NotFoundException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,36 @@ public class RestaurantRepository {
       }
     }
     throw new NotFoundException();
+  }
+
+  private boolean matchesName(Restaurant restaurant, String nameQuery) {
+    if (nameQuery == null || nameQuery.isBlank()) return true;
+
+    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase();
+    String normalizedName = restaurant.getName().replaceAll("\\s+", "").toLowerCase();
+    return normalizedName.contains(normalizedQuery);
+  }
+
+  private boolean matchesOpenHours(Restaurant restaurant, LocalTime from, LocalTime to) {
+    LocalTime openingHour = restaurant.getOpeningHour();
+    LocalTime closingHour = restaurant.getClosingHour();
+
+    if (from != null && to != null && from.isAfter(to)) {
+      return false;
+    } else if (from != null && to != null) {
+      return !openingHour.isAfter(from) && !closingHour.isBefore(to);
+    } else if (from != null) {
+      return !openingHour.isAfter(from);
+    } else if (to != null) {
+      return !closingHour.isBefore(to);
+    }
+    return true;
+  }
+
+  public List<Restaurant> getRestaurantBySearch(String name, LocalTime from, LocalTime to) {
+    return restaurants.values().stream()
+        .filter(r -> matchesName(r, name))
+        .filter(r -> matchesOpenHours(r, from, to))
+        .collect(Collectors.toList());
   }
 }
