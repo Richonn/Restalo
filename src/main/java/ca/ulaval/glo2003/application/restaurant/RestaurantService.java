@@ -3,8 +3,10 @@ package ca.ulaval.glo2003.application.restaurant;
 import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.Restaurant;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.dto.OpenedHoursDto;
 import ca.ulaval.glo2003.dto.RestaurantDto;
 import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,5 +55,14 @@ public class RestaurantService {
     validateHeaders(ownerId);
     Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
     return RestaurantDtoAssembler.toRestaurantDto(restaurant);
+  }
+
+  public List<RestaurantDto> getRestaurantBySearch(String name, OpenedHoursDto openedHours) {
+    LocalTime from = openedHours != null ? openedHours.from() : null;
+    LocalTime to = openedHours != null ? openedHours.to() : null;
+
+    List<Restaurant> listRestaurant = repository.getRestaurantBySearch(name, from, to);
+
+    return listRestaurant.stream().map(RestaurantDtoAssembler::toRestaurantDto).toList();
   }
 }
