@@ -1,9 +1,8 @@
 package ca.ulaval.glo2003.api.restaurant;
 
-import ca.ulaval.glo2003.application.restaurant.RestaurantService;
-import ca.ulaval.glo2003.dto.OpenedHoursDto;
-import ca.ulaval.glo2003.dto.RestaurantDto;
-import ca.ulaval.glo2003.dto.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.application.restaurant.RestaurantService;
+import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -61,11 +60,8 @@ public class RestaurantResource {
   @POST
   @Path("/search/restaurants")
   public Response searchRestaurants(SearchRestaurantsDto searchRequest) {
-    String name = searchRequest.name();
-    OpenedHoursDto hours = searchRequest.opened();
-
     return Response.status(Response.Status.OK)
-        .entity(restaurantService.getRestaurantBySearch(name, hours))
+        .entity(restaurantService.getRestaurantBySearch(searchRequest))
         .build();
   }
 }
