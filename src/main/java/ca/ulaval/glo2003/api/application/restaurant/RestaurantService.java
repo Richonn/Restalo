@@ -1,17 +1,18 @@
-package ca.ulaval.glo2003.application.restaurant;
+package ca.ulaval.glo2003.api.application.restaurant;
 
+import ca.ulaval.glo2003.api.domain.Restaurant;
+import ca.ulaval.glo2003.api.domain.RestaurantRepository;
+import ca.ulaval.glo2003.api.infra.persistence.InMemoryRestaurantRepository;
+import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
-import ca.ulaval.glo2003.domain.Restaurant;
-import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.dto.OpenedHoursDto;
-import ca.ulaval.glo2003.dto.RestaurantDto;
-import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
+import ca.ulaval.glo2003.api.restaurant.mapper.RestaurantMapper;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantService {
-  private static final RestaurantRepository repository = new RestaurantRepository();
+  private static final RestaurantRepository repository = new InMemoryRestaurantRepository();
 
   private void validateHeaders(String ownerId) {
     if (ownerId == null || ownerId.isBlank()) {
@@ -45,7 +46,7 @@ public class RestaurantService {
     List<RestaurantDto> listRestaurantDto = new ArrayList<>();
 
     for (Restaurant restaurant : listRestaurant) {
-      listRestaurantDto.add(RestaurantDtoAssembler.toRestaurantDto(restaurant));
+      listRestaurantDto.add(RestaurantMapper.toRestaurantDto(restaurant));
     }
 
     return listRestaurantDto;
@@ -54,15 +55,21 @@ public class RestaurantService {
   public RestaurantDto getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
     validateHeaders(ownerId);
     Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
-    return RestaurantDtoAssembler.toRestaurantDto(restaurant);
+    return RestaurantMapper.toRestaurantDto(restaurant);
   }
 
-  public List<RestaurantDto> getRestaurantBySearch(String name, OpenedHoursDto openedHours) {
-    LocalTime from = openedHours != null ? openedHours.from() : null;
-    LocalTime to = openedHours != null ? openedHours.to() : null;
+  public List<RestaurantDto> getRestaurantBySearch(SearchRestaurantsDto searchRequest) {
+    LocalTime from = null;
+    LocalTime to = null;
 
-    List<Restaurant> listRestaurant = repository.getRestaurantBySearch(name, from, to);
+    if (searchRequest.opened() != null) {
+      from = searchRequest.opened().from();
+      to = searchRequest.opened().to();
+    }
 
-    return listRestaurant.stream().map(RestaurantDtoAssembler::toRestaurantDto).toList();
+    List<Restaurant> listRestaurant =
+        repository.getRestaurantBySearch(searchRequest.name(), from, to);
+
+    return listRestaurant.stream().map(RestaurantMapper::toRestaurantDto).toList();
   }
 }
