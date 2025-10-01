@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
+import ca.ulaval.glo2003.api.domain.Restaurant;
 import ca.ulaval.glo2003.api.restaurant.RestaurantResource;
-import ca.ulaval.glo2003.domain.Restaurant;
-import ca.ulaval.glo2003.dto.RestaurantDto;
-import ca.ulaval.glo2003.dtoassembler.RestaurantDtoAssembler;
+import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.mapper.RestaurantMapper;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
@@ -27,7 +27,7 @@ public class RestaurantResourceTest {
     LocalTime close = LocalTime.parse("22:00:00");
 
     Restaurant restaurant = new Restaurant(nom, capacity, open, close, ownerId);
-    RestaurantDto restaurantDto = RestaurantDtoAssembler.toRestaurantDto(restaurant);
+    RestaurantDto restaurantDto = RestaurantMapper.toRestaurantDto(restaurant);
     Response response = resource.createRestaurant(ownerId, restaurantDto);
 
     String[] segmentsList = response.getLocation().getPath().split("/");
