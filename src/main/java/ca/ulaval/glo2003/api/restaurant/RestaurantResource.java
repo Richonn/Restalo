@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.api.restaurant;
 
-import ca.ulaval.glo2003.api.application.restaurant.RestaurantService;
+import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
 import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import jakarta.ws.rs.Consumes;

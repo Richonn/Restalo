@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
-import ca.ulaval.glo2003.api.domain.Restaurant;
+import ca.ulaval.glo2003.domain.Restaurant;
 import ca.ulaval.glo2003.api.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
 import ca.ulaval.glo2003.api.restaurant.mapper.RestaurantMapper;

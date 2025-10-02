@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.api.restaurant.mapper;
 
-import ca.ulaval.glo2003.api.domain.Hours;
+import ca.ulaval.glo2003.domain.Hours;
 import ca.ulaval.glo2003.api.restaurant.dto.HoursDto;
 
 public class HoursMapper {
