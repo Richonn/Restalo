@@ -1,6 +1,6 @@
-package ca.ulaval.glo2003.api.domain;
+package ca.ulaval.glo2003.domain;
 
-import java.time.LocalTime;
+import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import java.util.List;
 
 public interface RestaurantRepository {
@@ -10,5 +10,5 @@ public interface RestaurantRepository {
 
   Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId);
 
-  List<Restaurant> getRestaurantBySearch(String name, LocalTime from, LocalTime to);
+  List<Restaurant> getRestaurantBySearch(SearchRestaurantsDto searchRequest);
 }
