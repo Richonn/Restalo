@@ -1,7 +1,5 @@
-package ca.ulaval.glo2003.api.domain;
+package ca.ulaval.glo2003.domain;
 
-import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
-import java.security.InvalidParameterException;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -48,29 +46,5 @@ public class Restaurant {
 
   public String getOwnerId() {
     return ownerId;
-  }
-
-  public void validateFields() {
-    validateFieldsAreDefined();
-    validateFieldsAreValid();
-    hours.validateFields();
-  }
-
-  private void validateFieldsAreDefined() {
-    if (name == null) {
-      throw new MissingParameterException("The name of the restaurant is required");
-    }
-    if (capacity == null) {
-      throw new MissingParameterException("The capacity of the restaurant is required");
-    }
-  }
-
-  private void validateFieldsAreValid() {
-    if (name.isBlank()) {
-      throw new MissingParameterException("The name of the restaurant cannot be blank");
-    }
-    if (capacity <= 0) {
-      throw new InvalidParameterException("The capacity of the restaurant must be positive");
-    }
   }
 }
