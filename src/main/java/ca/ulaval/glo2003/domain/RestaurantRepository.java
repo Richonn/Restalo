@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.domain;
 
-import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
+import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.util.List;
 
 public interface RestaurantRepository {
@@ -10,5 +10,5 @@ public interface RestaurantRepository {
 
   Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId);
 
-  List<Restaurant> getRestaurantBySearch(SearchRestaurantsDto searchRequest);
+  List<Restaurant> getRestaurantList();
 }
