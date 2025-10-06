@@ -1,33 +1,14 @@
 package ca.ulaval.glo2003.domain;
 
-import jakarta.ws.rs.NotFoundException;
-import java.util.HashMap;
+import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class RestaurantRepository {
-  private final Map<String, Restaurant> restaurants = new HashMap<>();
+public interface RestaurantRepository {
+  void save(Restaurant restaurant);
 
-  public void save(Restaurant restaurant) {
-    restaurant.validateFields();
-    restaurants.put(restaurant.getId(), restaurant);
-  }
+  List<Restaurant> getRestaurantListOfOwner(String ownerId);
 
-  public List<Restaurant> getRestaurantListOfOwner(String ownerId) {
-    return restaurants.values().stream()
-        .filter(r -> r.getOwnerId().equals(ownerId))
-        .collect(Collectors.toList());
-  }
+  Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId);
 
-  public Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
-    List<Restaurant> restaurantListOfOwner = getRestaurantListOfOwner(ownerId);
-
-    for (Restaurant restaurant : restaurantListOfOwner) {
-      if (restaurant.getId().equals(restaurantId)) {
-        return restaurant;
-      }
-    }
-    throw new NotFoundException();
-  }
+  List<Restaurant> getRestaurantBySearch(SearchRestaurantsDto searchRequest);
 }

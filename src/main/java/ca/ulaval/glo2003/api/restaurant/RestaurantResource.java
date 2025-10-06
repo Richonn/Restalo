@@ -1,7 +1,8 @@
 package ca.ulaval.glo2003.api.restaurant;
 
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
-import ca.ulaval.glo2003.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -12,7 +13,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/restaurants")
+@Path("")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class RestaurantResource {
@@ -24,6 +25,7 @@ public class RestaurantResource {
   private static final String RESTAURANT_BY_ID = RESTAURANTS_BASE + "/%s";
 
   @POST
+  @Path("restaurants")
   public Response createRestaurant(
       @HeaderParam(OWNER_HEADER) String ownerId, RestaurantDto restaurantDto) {
 
@@ -35,6 +37,7 @@ public class RestaurantResource {
   }
 
   @GET
+  @Path("restaurants")
   public Response getRestaurantListOfOwner(@HeaderParam(OWNER_HEADER) String ownerId) {
 
     return Response.status(Response.Status.OK)
@@ -44,13 +47,21 @@ public class RestaurantResource {
   }
 
   @GET
-  @Path("/{id}")
+  @Path("restaurants/{id}")
   public Response getRestaurantByIdOfOwner(
       @HeaderParam(OWNER_HEADER) String ownerId, @PathParam("id") String restaurantId) {
 
     return Response.status(Response.Status.OK)
         .header("Location", String.format(RESTAURANT_BY_ID, restaurantId))
         .entity(restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId))
+        .build();
+  }
+
+  @POST
+  @Path("/search/restaurants")
+  public Response searchRestaurants(SearchRestaurantsDto searchRequest) {
+    return Response.status(Response.Status.OK)
+        .entity(restaurantService.getRestaurantBySearch(searchRequest))
         .build();
   }
 }

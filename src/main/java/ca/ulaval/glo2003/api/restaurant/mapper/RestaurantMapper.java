@@ -1,14 +1,14 @@
-package ca.ulaval.glo2003.dtoassembler;
+package ca.ulaval.glo2003.api.restaurant.mapper;
 
 import ca.ulaval.glo2003.domain.Restaurant;
-import ca.ulaval.glo2003.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
 
-public class RestaurantDtoAssembler {
+public class RestaurantMapper {
   public static RestaurantDto toRestaurantDto(Restaurant restaurant) {
     return new RestaurantDto(
         restaurant.getId(),
         restaurant.getName(),
         restaurant.getCapacity(),
-        HoursDtoAssembler.toHoursDto(restaurant.getHours()));
+        HoursMapper.toHoursDto(restaurant.getHours()));
   }
 }
