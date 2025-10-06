@@ -18,16 +18,16 @@ jobs:
           java-version: 21
           cache: 'maven'
 
-      - name: Verify code style
+      - name: Run Checkstyle
         run: mvn checkstyle:check
 
-      - name: Compile and run tests
-        run: mvn clean verify
+      - name: Run SpotBugs (static analysis)
+        run: mvn spotbugs:check
 
-      - name: Package application
-        run: mvn package -DskipTests
+      - name: Build project without tests
+        run: mvn clean package -DskipTests
 
-      - name: Upload build artifact (JAR)
+      - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: restalo-jar
