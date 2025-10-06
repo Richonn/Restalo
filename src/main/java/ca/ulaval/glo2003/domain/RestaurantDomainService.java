@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
 import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
 import java.security.InvalidParameterException;
 import java.time.LocalTime;
+import java.util.Locale;
 
 public class RestaurantDomainService {
 
@@ -51,8 +52,9 @@ public class RestaurantDomainService {
   public boolean matchesName(Restaurant restaurant, String nameQuery) {
     if (nameQuery == null || nameQuery.isBlank()) return true;
 
-    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase();
-    String normalizedName = restaurant.getName().replaceAll("\\s+", "").toLowerCase();
+    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    String normalizedName = restaurant.getName().replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+
     return normalizedName.contains(normalizedQuery);
   }
 
