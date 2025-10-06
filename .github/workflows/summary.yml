@@ -1,0 +1,78 @@
+name: Summary
+
+on:
+  workflow_call:
+    inputs:
+      build-result:
+        required: false
+        type: string
+        default: 'unknown'
+      unit-tests-result:
+        required: false
+        type: string
+        default: 'unknown'
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Summary Report
+        run: |
+          echo "## CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.build-result }}" == "success" ]; then
+            echo "| Build | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.build-result }}" == "failure" ]; then
+            echo "| Build | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.build-result }}" == "cancelled" ]; then
+            echo "| Build | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.build-result }}" == "skipped" ]; then
+            echo "| Build | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Build | ❓ Unknown |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.unit-tests-result }}" == "success" ]; then
+            echo "| Unit Tests | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.unit-tests-result }}" == "failure" ]; then
+            echo "| Unit Tests | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.unit-tests-result }}" == "cancelled" ]; then
+            echo "| Unit Tests | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.unit-tests-result }}" == "skipped" ]; then
+            echo "| Unit Tests | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Unit Tests | ❓ Unknown |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ inputs.build-result }}" == "success" ] && \
+             [ "${{ inputs.unit-tests-result }}" == "success" ] then
+            echo "### 🎉 All checks passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Some checks failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "**Pipeline Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.head_ref || github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ github.head_ref }}" == "main" ]; then
+            echo "**Note:** Security scan will run automatically on this PR to main." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ inputs.build-result }}" == "failure" ] || \
+             [ "${{ inputs.unit-tests-result }}" == "failure" ] then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Failed Jobs:" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.build-result }}" == "failure" ] && echo "- ❌ Build" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.unit-tests-result }}" == "failure" ] && echo "- ❌ Backend Tests" >> $GITHUB_STEP_SUMMARY
+          fi
