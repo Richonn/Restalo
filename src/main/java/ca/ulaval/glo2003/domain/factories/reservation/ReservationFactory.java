@@ -25,9 +25,9 @@ public class ReservationFactory {
     Reservation reservation =
         new Reservation(date, startTime, groupSize, name, email, phoneNumber, restaurant.getId());
 
-    reservation.adjustStartTimeto15minSlice();
+    reservation.adjustStartTimeTo15minSlice();
     reservation.validateFields();
-    reservation.setReservationEndTime(restaurant.defineReservationEndTime(startTime));
+    reservation.setReservationEndTime(restaurant.defineReservationEndTime(reservation.getStartTime()));
 
     return reservation;
   }

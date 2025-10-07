@@ -33,6 +33,21 @@ public class Reservation {
     this.restaurantId = restaurantId;
   }
 
+  public Reservation(
+      LocalDate date,
+      ReservationTime reservationTime,
+      Integer groupSize,
+      Customer customer,
+      String restaurantId) {
+
+    this.id = UUID.randomUUID().toString();
+    this.date = date;
+    this.reservationTime = reservationTime;
+    this.groupSize = groupSize;
+    this.customer = customer;
+    this.restaurantId = restaurantId;
+  }
+
   public String getId() {
     return id;
   }
@@ -41,33 +56,37 @@ public class Reservation {
     return restaurantId;
   }
 
+  public LocalTime getStartTime() {
+      return reservationTime.getStartTime();
+  }
+
   public void setReservationEndTime(LocalTime endTime) {
     reservationTime.setEndTime(endTime);
   }
 
-  public void adjustStartTimeto15minSlice() {
-    reservationTime.adjustStartTimeto15minSlice();
+  public void adjustStartTimeTo15minSlice() {
+    reservationTime.adjustStartTimeTo15minSlice();
   }
 
   public void validateFields() {
-    dateIsValid();
-    groupSizeIsValid();
+    fieldsAreDefined();
+    fieldsAreValid();
     reservationTime.validateStartTimeIsDefined();
     customer.validateFields();
   }
 
-  private void dateIsValid() {
+  private void fieldsAreDefined() {
     if (date == null) {
       throw new MissingParameterException("The date of the reservation is required");
     }
-    if (date.isBefore(LocalDate.now())) {
-      throw new InvalidParameterException("The date of the reservation cannot be in the past");
+    if (groupSize == null) {
+      throw new MissingParameterException("The group size of the reservation is required");
     }
   }
 
-  private void groupSizeIsValid() {
-    if (groupSize == null) {
-      throw new MissingParameterException("The group size of the reservation is required");
+  private void fieldsAreValid() {
+    if (date.isBefore(LocalDate.now())) {
+      throw new InvalidParameterException("The date of the reservation cannot be in the past");
     }
     if (groupSize <= 0) {
       throw new InvalidParameterException("The group size of the reservation must be positive");

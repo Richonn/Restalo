@@ -31,7 +31,7 @@ public class ReservationTime {
     }
   }
 
-  public void adjustStartTimeto15minSlice() {
+  public void adjustStartTimeTo15minSlice() {
     int minutes = startTime.getMinute();
     int modulo = minutes % 15;
 
