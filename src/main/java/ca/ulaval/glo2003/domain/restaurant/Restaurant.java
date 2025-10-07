@@ -23,6 +23,15 @@ public class Restaurant {
     this.ownerId = ownerId;
   }
 
+  public Restaurant(String name, Integer capacity, Hours hours, String ownerId) {
+
+    this.id = UUID.randomUUID().toString();
+    this.name = name;
+    this.capacity = capacity;
+    this.hours = hours;
+    this.ownerId = ownerId;
+  }
+
   public String getId() {
     return id;
   }

@@ -3,7 +3,11 @@ package ca.ulaval.glo2003.api.ressources.reservation;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
