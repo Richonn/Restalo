@@ -3,9 +3,9 @@ package ca.ulaval.glo2003.domain.reservation;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.time.LocalTime;
 
 public class ReservationTimeTest {
 

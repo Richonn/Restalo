@@ -57,7 +57,7 @@ public class Reservation {
   }
 
   public LocalTime getStartTime() {
-      return reservationTime.getStartTime();
+    return reservationTime.getStartTime();
   }
 
   public void setReservationEndTime(LocalTime endTime) {
