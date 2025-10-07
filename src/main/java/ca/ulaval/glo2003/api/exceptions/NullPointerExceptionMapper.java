@@ -1,6 +1,6 @@
-package ca.ulaval.glo2003.api.restaurant.exceptions;
+package ca.ulaval.glo2003.api.exceptions;
 
-import static ca.ulaval.glo2003.api.restaurant.exceptions.ErrorCodes.ERROR_MISSING_PARAMETER;
+import static ca.ulaval.glo2003.api.exceptions.ErrorCodes.ERROR_MISSING_PARAMETER;
 
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;

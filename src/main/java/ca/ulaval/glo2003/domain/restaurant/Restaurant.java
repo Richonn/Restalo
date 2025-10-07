@@ -19,7 +19,7 @@ public class Restaurant {
     this.id = UUID.randomUUID().toString();
     this.name = name;
     this.capacity = capacity;
-    this.hours = new Hours(openingHour, closingHour);
+    this.hours = new Hours(openingHour, closingHour, null);
     this.ownerId = ownerId;
   }
 
@@ -86,5 +86,9 @@ public class Restaurant {
     String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
     String normalizedName = name.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
     return normalizedName.contains(normalizedQuery);
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime) {
+    return hours.defineReservationEndTime(startTime);
   }
 }

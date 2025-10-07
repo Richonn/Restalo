@@ -41,4 +41,9 @@ public class InMemoryRestaurantRepository implements RestaurantRepository {
   public List<Restaurant> getRestaurantList() {
     return new ArrayList<>(restaurants.values());
   }
+
+  @Override
+  public Restaurant getRestaurantById(String restaurantId) {
+    return restaurants.get(restaurantId);
+  }
 }

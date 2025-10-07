@@ -3,14 +3,17 @@ package ca.ulaval.glo2003.domain.restaurant;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Hours {
   private final LocalTime open;
   private final LocalTime close;
+  private final Integer reservationLength;
 
-  public Hours(LocalTime open, LocalTime close) {
+  public Hours(LocalTime open, LocalTime close, Integer reservationLength) {
     this.open = open;
     this.close = close;
+    this.reservationLength = Objects.requireNonNullElse(reservationLength, 60);
   }
 
   public LocalTime getOpeningHour() {
@@ -43,6 +46,10 @@ public class Hours {
     if (open.plusHours(1).compareTo(close) > 0) {
       throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
     }
+    if (reservationLength <= 0) {
+      throw new InvalidParameterException(
+          "The restaurant reservation length needs to be bigger than 0 minutes");
+    }
   }
 
   public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
@@ -55,5 +62,17 @@ public class Hours {
       return open.isBefore(to) && !close.isBefore(to);
     }
     return true;
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime) {
+    if (startTime.isBefore(open)) {
+      throw new InvalidParameterException(
+          "The restaurant is not open for the selected reservation start time");
+    }
+    if (startTime.plusMinutes(reservationLength).isAfter(close)) {
+      throw new InvalidParameterException(
+          "The restaurant closes before the end of the reservation");
+    }
+    return startTime.plusMinutes(reservationLength);
   }
 }

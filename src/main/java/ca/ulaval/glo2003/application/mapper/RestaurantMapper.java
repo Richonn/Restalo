@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.application.mapper;
 
-import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 
 public class RestaurantMapper {

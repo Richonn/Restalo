@@ -1,0 +1,37 @@
+package ca.ulaval.glo2003.api.ressources.reservation;
+
+import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
+import ca.ulaval.glo2003.application.reservation.ReservationService;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path("")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class ReservationResource {
+  private final ReservationService reservationService;
+
+  private static final String BASE_URL = "http://0.0.0.0:8080";
+  private static final String RESERVATION_BASE = BASE_URL + "/reservations";
+  private static final String RESERVATION_BY_ID = RESERVATION_BASE + "/%s";
+
+  @Inject
+  public ReservationResource(ReservationService reservationService) {
+    this.reservationService = reservationService;
+  }
+
+  @Path("restaurants/{id}/reservations")
+  @POST
+  public Response createReservation(
+      ReservationDto reservationDto, @PathParam("id") String restaurantId) {
+
+    String reservationGeneratedId =
+        reservationService.createReservation(reservationDto, restaurantId);
+
+    return Response.status(Response.Status.CREATED)
+        .header("Location", String.format(RESERVATION_BY_ID, reservationGeneratedId))
+        .build();
+  }
+}

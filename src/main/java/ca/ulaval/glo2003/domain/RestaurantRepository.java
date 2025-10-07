@@ -11,4 +11,6 @@ public interface RestaurantRepository {
   Restaurant getRestaurantByIdOfOwner(String ownerId, String restaurantId);
 
   List<Restaurant> getRestaurantList();
+
+  Restaurant getRestaurantById(String restaurantId);
 }

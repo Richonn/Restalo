@@ -1,20 +1,28 @@
 package ca.ulaval.glo2003.application.restaurant;
 
-import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
-import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
-import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
 import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
+import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
-import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantService {
-  RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
-  InMemoryRestaurantRepository repository = new InMemoryRestaurantRepository();
+  RestaurantDomainService restaurantDomainService;
+  RestaurantRepository repository;
+
+  @Inject
+  public RestaurantService(
+      RestaurantRepository restaurantRepository, RestaurantDomainService restaurantDomainService) {
+    this.repository = restaurantRepository;
+    this.restaurantDomainService = restaurantDomainService;
+  }
 
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
     restaurantDomainService.validateHeaders(ownerId);

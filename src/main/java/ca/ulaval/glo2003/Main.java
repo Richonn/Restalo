@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.api.restaurant.exceptions.IllegalArgumentExceptionMapper;
+import ca.ulaval.glo2003.api.exceptions.IllegalArgumentExceptionMapper;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -15,6 +15,8 @@ public class Main {
         new ResourceConfig()
             .packages("ca.ulaval.glo2003")
             .register(IllegalArgumentExceptionMapper.class);
+
+    rc.register(new ApplicationBinder());
 
     return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
   }

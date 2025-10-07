@@ -1,8 +1,9 @@
-package ca.ulaval.glo2003.api.restaurant;
+package ca.ulaval.glo2003.api.ressources.restaurant;
 
-import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
-import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -17,12 +18,17 @@ import jakarta.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class RestaurantResource {
-  private static final RestaurantService restaurantService = new RestaurantService();
+  private final RestaurantService restaurantService;
   private static final String OWNER_HEADER = "Owner";
 
-  private static final String BASE_URL = "http://localhost:8080";
+  private static final String BASE_URL = "http://0.0.0.0:8080";
   private static final String RESTAURANTS_BASE = BASE_URL + "/restaurants";
   private static final String RESTAURANT_BY_ID = RESTAURANTS_BASE + "/%s";
+
+  @Inject
+  public RestaurantResource(RestaurantService restaurantService) {
+    this.restaurantService = restaurantService;
+  }
 
   @POST
   @Path("restaurants")
