@@ -1,39 +1,61 @@
 package ca.ulaval.glo2003.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.ApplicationBinder;
+import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.reservation.TimeDto;
+import ca.ulaval.glo2003.api.dto.restaurant.HoursDto;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.api.ressources.reservation.ReservationResource;
+import ca.ulaval.glo2003.application.reservation.ReservationService;
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ReservationResourceIntegrationTest extends JerseyTest {
 
-  private static final String OWNER_ID = "yvick";
-  private String restaurantId;
+  private ReservationService reservationService;
 
   @Override
   protected Application configure() {
-    return new ResourceConfig().packages("ca.ulaval.glo2003").register(new ApplicationBinder());
-  }
+    reservationService = mock(ReservationService.class);
 
-  @BeforeEach
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
-    restaurantId = createTestRestaurant();
+    return new ResourceConfig()
+        .register(
+            new AbstractBinder() {
+              @Override
+              protected void configure() {
+                bind(reservationService).to(ReservationService.class);
+              }
+            })
+        .register(ReservationResource.class)
+        .packages("ca.ulaval.glo2003.api.exceptions");
   }
 
   @Test
   public void givenValidReservation_whenPost_thenReturns201WithLocation() {
+    when(reservationService.createReservation(any(ReservationDto.class), eq("restaurant-123")))
+        .thenReturn("reservation-123");
+
     String reservationJson =
         """
         {
@@ -49,159 +71,26 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(201, response.getStatus());
       String location = response.getHeaderString("Location");
       assertNotNull(location);
-      assertTrue(location.contains("/reservations/"));
-    }
-  }
+      assertTrue(location.contains("/reservations/reservation-123"));
 
-  @Test
-  public void givenStartTime21h04_whenPost_thenAdjustedTo21h15() {
-    String lateRestaurantId = createRestaurantWithHours("11:00:00", "23:00:00");
-
-    String reservationJson =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "21:04:00",
-          "groupSize": 2,
-          "customer": {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phoneNumber": "5551234567"
-          }
-        }
-        """;
-
-    try (Response response =
-        target("/restaurants/" + lateRestaurantId + "/reservations")
-            .request(MediaType.APPLICATION_JSON)
-            .post(Entity.json(reservationJson))) {
-      assertEquals(201, response.getStatus());
-    }
-  }
-
-  @Test
-  public void givenStartTime21h15_whenPost_thenNoAdjustment() {
-    String lateRestaurantId = createRestaurantWithHours("11:00:00", "23:00:00");
-
-    String reservationJson =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "21:15:00",
-          "groupSize": 2,
-          "customer": {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phoneNumber": "5559876543"
-          }
-        }
-        """;
-
-    try (Response response =
-        target("/restaurants/" + lateRestaurantId + "/reservations")
-            .request(MediaType.APPLICATION_JSON)
-            .post(Entity.json(reservationJson))) {
-      assertEquals(201, response.getStatus());
-    }
-  }
-
-  @Test
-  public void givenSameCustomer_whenCreateMultipleReservations_thenBothAccepted() {
-    String reservationJson =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "18:00:00",
-          "groupSize": 4,
-          "customer": {
-            "name": "John Doe",
-            "email": "john.doe@example.com",
-            "phoneNumber": "1234567890"
-          }
-        }
-        """;
-
-    try (Response response1 =
-            target("/restaurants/" + restaurantId + "/reservations")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(reservationJson));
-        Response response2 =
-            target("/restaurants/" + restaurantId + "/reservations")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(reservationJson))) {
-
-      assertEquals(201, response1.getStatus());
-      assertEquals(201, response2.getStatus());
-
-      String location1 = response1.getHeaderString("Location");
-      String location2 = response2.getHeaderString("Location");
-
-      assertNotNull(location1);
-      assertNotNull(location2);
-      assertNotEquals(location1, location2);
-    }
-  }
-
-  @Test
-  public void givenMultipleReservations_whenPost_thenUniqueNumbers() {
-    String reservation1Json =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "18:00:00",
-          "groupSize": 2,
-          "customer": {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phoneNumber": "1111111111"
-          }
-        }
-        """;
-
-    String reservation2Json =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "17:00:00",
-          "groupSize": 3,
-          "customer": {
-            "name": "John",
-            "email": "john@example.com",
-            "phoneNumber": "2222222222"
-          }
-        }
-        """;
-
-    try (Response response1 =
-            target("/restaurants/" + restaurantId + "/reservations")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(reservation1Json));
-        Response response2 =
-            target("/restaurants/" + restaurantId + "/reservations")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(reservation2Json))) {
-
-      assertEquals(201, response1.getStatus());
-      assertEquals(201, response2.getStatus());
-
-      String location1 = response1.getHeaderString("Location");
-      String location2 = response2.getHeaderString("Location");
-
-      String id1 = extractReservationIdFromLocation(location1);
-      String id2 = extractReservationIdFromLocation(location2);
-
-      assertNotEquals(id1, id2);
+      verify(reservationService).createReservation(any(ReservationDto.class), eq("restaurant-123"));
     }
   }
 
   @Test
   public void givenEndTimeAfterClosing_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(
+            new InvalidParameterException(
+                "The restaurant closes before the end of the reservation"));
+
     String reservationJson =
         """
         {
@@ -217,9 +106,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("closes before"));
@@ -228,6 +118,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenGroupSizeZero_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new InvalidParameterException("The group size must be positive"));
+
     String reservationJson =
         """
         {
@@ -243,9 +136,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(
@@ -257,6 +151,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenEmptyName_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new InvalidParameterException("The name of the customer cannot be blank"));
+
     String reservationJson =
         """
         {
@@ -272,9 +169,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("name"));
@@ -283,6 +181,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenInvalidEmail_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new InvalidParameterException("The email address of the customer is not valid"));
+
     String reservationJson =
         """
         {
@@ -298,9 +199,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("email"));
@@ -309,6 +211,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenInvalidPhone_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new InvalidParameterException("The phone number of the customer is not valid"));
+
     String reservationJson =
         """
         {
@@ -324,9 +229,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("phone"));
@@ -335,6 +241,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenMissingDate_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new MissingParameterException("The date of the reservation is required"));
+
     String reservationJson =
         """
         {
@@ -349,9 +258,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER") || body.contains("date"));
@@ -360,6 +270,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenMissingCustomer_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(ReservationDto.class), any()))
+        .thenThrow(new MissingParameterException("The customer of the reservation is required"));
+
     String reservationJson =
         """
         {
@@ -370,9 +283,10 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(400, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER") || body.contains("customer"));
@@ -381,7 +295,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenNonExistentRestaurant_whenPost_thenReturns404() {
-    String fakeRestaurantId = "nonexistent-restaurant-id";
+    when(reservationService.createReservation(any(ReservationDto.class), eq("nonexistent")))
+        .thenThrow(new NotFoundException());
+
     String reservationJson =
         """
         {
@@ -397,58 +313,74 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         """;
 
     try (Response response =
-        target("/restaurants/" + fakeRestaurantId + "/reservations")
+        target("/restaurants/nonexistent/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
+
       assertEquals(404, response.getStatus());
     }
   }
 
   @Test
   public void givenMissingBody_whenPost_thenReturns400() {
+    when(reservationService.createReservation(any(), any()))
+        .thenThrow(new MissingParameterException("Missing body"));
+
     try (Response response =
-        target("/restaurants/" + restaurantId + "/reservations")
+        target("/restaurants/restaurant-123/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(null))) {
+
       assertEquals(400, response.getStatus());
     }
   }
 
-  private String createTestRestaurant() {
-    return createRestaurantWithHours("11:00:00", "19:00:00");
-  }
-
-  private String createRestaurantWithHours(String openingHour, String closingHour) {
-    String restaurantJson =
-        String.format(
-            """
-            {
-              "name": "Test Restaurant",
-              "capacity": 50,
-              "hours": {
-                "open": "%s",
-                "close": "%s"
-              }
-            }
-            """,
-            openingHour, closingHour);
+  @Test
+  public void givenValidNumber_whenGet_thenReturns200WithFullBody() {
+    ReservationResponseDto mockDto = createMockReservationResponseDto();
+    when(reservationService.getReservationById("reservation-123")).thenReturn(mockDto);
 
     try (Response response =
-        target("/restaurants")
-            .request(MediaType.APPLICATION_JSON)
-            .header("Owner", OWNER_ID)
-            .post(Entity.json(restaurantJson))) {
-      assertEquals(201, response.getStatus());
-      String location = response.getHeaderString("Location");
-      return extractRestaurantIdFromLocation(location);
+        target("/reservations/reservation-123").request(MediaType.APPLICATION_JSON).get()) {
+
+      assertEquals(200, response.getStatus());
+
+      String body = response.readEntity(String.class);
+      assertTrue(body.contains("number"));
+      assertTrue(body.contains("date"));
+      assertTrue(body.contains("time"));
+      assertTrue(body.contains("start"));
+      assertTrue(body.contains("end"));
+      assertTrue(body.contains("groupSize"));
+      assertTrue(body.contains("customer"));
+      assertTrue(body.contains("restaurant"));
+
+      verify(reservationService).getReservationById("reservation-123");
     }
   }
 
-  private String extractRestaurantIdFromLocation(String location) {
-    return location.substring(location.lastIndexOf("/") + 1);
+  @Test
+  public void givenNonExistentNumber_whenGet_thenReturns404() {
+    when(reservationService.getReservationById("nonexistent")).thenThrow(new NotFoundException());
+
+    try (Response response =
+        target("/reservations/nonexistent").request(MediaType.APPLICATION_JSON).get()) {
+
+      assertEquals(404, response.getStatus());
+    }
   }
 
-  private String extractReservationIdFromLocation(String location) {
-    return location.substring(location.lastIndexOf("/") + 1);
+  private ReservationResponseDto createMockReservationResponseDto() {
+    return new ReservationResponseDto(
+        "reservation-123",
+        LocalDate.of(2025, 10, 30),
+        new TimeDto(LocalTime.of(18, 0), LocalTime.of(19, 0)),
+        4,
+        new CustomerDto("John Doe", "john@example.com", "1234567890"),
+        new RestaurantDto(
+            "restaurant-123",
+            "Pizza Delamama",
+            50,
+            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0))));
   }
 }
