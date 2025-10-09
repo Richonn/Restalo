@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class ReservationResourceIntegrationTest extends JerseyTest {
 
-  private static final String OWNER_ID = "owner123";
+  private static final String OWNER_ID = "yvick";
   private String restaurantId;
 
   @Override
@@ -41,8 +41,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "18:00:00",
           "groupSize": 4,
           "customer": {
-            "name": "John Deer",
-            "email": "john.deer@example.com",
+            "name": "John Doe",
+            "email": "john@example.com",
             "phoneNumber": "1234567890"
           }
         }
@@ -70,8 +70,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "21:04:00",
           "groupSize": 2,
           "customer": {
-            "name": "Jane Doe",
-            "email": "jane@example.com",
+            "name": "John Doe",
+            "email": "john@example.com",
             "phoneNumber": "5551234567"
           }
         }
@@ -96,8 +96,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "21:15:00",
           "groupSize": 2,
           "customer": {
-            "name": "Bob Smith",
-            "email": "bob@example.com",
+            "name": "John Doe",
+            "email": "john@example.com",
             "phoneNumber": "5559876543"
           }
         }
@@ -120,8 +120,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "18:00:00",
           "groupSize": 4,
           "customer": {
-            "name": "John Deer",
-            "email": "john.deer@example.com",
+            "name": "John Doe",
+            "email": "john.doe@example.com",
             "phoneNumber": "1234567890"
           }
         }
@@ -157,8 +157,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "18:00:00",
           "groupSize": 2,
           "customer": {
-            "name": "Alice",
-            "email": "alice@example.com",
+            "name": "John Doe",
+            "email": "john@example.com",
             "phoneNumber": "1111111111"
           }
         }
@@ -171,8 +171,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "17:00:00",
           "groupSize": 3,
           "customer": {
-            "name": "Bob",
-            "email": "bob@example.com",
+            "name": "John",
+            "email": "john@example.com",
             "phoneNumber": "2222222222"
           }
         }
@@ -209,8 +209,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "18:30:00",
           "groupSize": 2,
           "customer": {
-            "name": "Late Person",
-            "email": "late@example.com",
+            "name": "John Doe",
+            "email": "john@example.com",
             "phoneNumber": "5555555555"
           }
         }
@@ -235,8 +235,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "startTime": "18:00:00",
           "groupSize": 0,
           "customer": {
-            "name": "Nobody",
-            "email": "nobody@example.com",
+            "name": "John doe",
+            "email": "john@example.com",
             "phoneNumber": "1234567890"
           }
         }
@@ -265,7 +265,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
           "groupSize": 4,
           "customer": {
             "name": "",
-            "email": "test@example.com",
+            "email": "john@example.com",
             "phoneNumber": "1234567890"
           }
         }
@@ -401,6 +401,16 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
       assertEquals(404, response.getStatus());
+    }
+  }
+
+  @Test
+  public void givenMissingBody_whenPost_thenReturns400() {
+    try (Response response =
+        target("/restaurants/" + restaurantId + "/reservations")
+            .request(MediaType.APPLICATION_JSON)
+            .post(Entity.json(null))) {
+      assertEquals(400, response.getStatus());
     }
   }
 
