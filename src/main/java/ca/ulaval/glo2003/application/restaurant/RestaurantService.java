@@ -1,19 +1,28 @@
 package ca.ulaval.glo2003.application.restaurant;
 
-import ca.ulaval.glo2003.api.restaurant.dto.RestaurantDto;
-import ca.ulaval.glo2003.api.restaurant.dto.SearchRestaurantsDto;
-import ca.ulaval.glo2003.api.restaurant.exceptions.MissingParameterException;
-import ca.ulaval.glo2003.api.restaurant.mapper.RestaurantMapper;
-import ca.ulaval.glo2003.domain.Restaurant;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
+import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
-import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
+import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantService {
-  RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
-  InMemoryRestaurantRepository repository =
-      new InMemoryRestaurantRepository(restaurantDomainService);
+  RestaurantDomainService restaurantDomainService;
+  RestaurantRepository repository;
+
+  @Inject
+  public RestaurantService(
+      RestaurantRepository restaurantRepository, RestaurantDomainService restaurantDomainService) {
+    this.repository = restaurantRepository;
+    this.restaurantDomainService = restaurantDomainService;
+  }
 
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
     restaurantDomainService.validateHeaders(ownerId);
@@ -22,13 +31,13 @@ public class RestaurantService {
       throw new MissingParameterException("Missing body");
     }
 
-    Restaurant restaurant =
-        new Restaurant(
-            restaurantDto.name(),
-            restaurantDto.capacity(),
-            restaurantDto.hours().open(),
-            restaurantDto.hours().close(),
-            ownerId);
+    if (restaurantDto.hours() == null) {
+      throw new MissingParameterException("Missing hours body");
+    }
+
+    Restaurant restaurant = RestaurantMapper.toRestaurant(restaurantDto, ownerId);
+
+    restaurantDomainService.validateRestaurant(restaurant);
 
     repository.save(restaurant);
 
@@ -50,11 +59,25 @@ public class RestaurantService {
   public RestaurantDto getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
     restaurantDomainService.validateHeaders(ownerId);
     Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
-    return RestaurantMapper.toRestaurantDto(restaurant);
+    if (restaurant != null) {
+      return RestaurantMapper.toRestaurantDto(restaurant);
+    }
+    throw new NotFoundException();
   }
 
   public List<RestaurantDto> getRestaurantBySearch(SearchRestaurantsDto searchRequest) {
-    List<Restaurant> listRestaurant = repository.getRestaurantBySearch(searchRequest);
-    return listRestaurant.stream().map(RestaurantMapper::toRestaurantDto).toList();
+    restaurantDomainService.isTimeRangeValid(
+        OpenedHoursMapper.toOpenedHours(searchRequest.opened()));
+
+    List<Restaurant> listAllRestaurant = repository.getRestaurantList();
+
+    return listAllRestaurant.stream()
+        .filter(restaurant -> restaurant.matchesName(searchRequest.name()))
+        .filter(
+            restaurant ->
+                restaurant.isFullyOpenDuring(
+                    searchRequest.opened().from(), searchRequest.opened().to()))
+        .map(RestaurantMapper::toRestaurantDto)
+        .toList();
   }
 }
