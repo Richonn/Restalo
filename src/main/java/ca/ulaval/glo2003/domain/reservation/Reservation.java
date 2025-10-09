@@ -60,6 +60,22 @@ public class Reservation {
     return reservationTime.getStartTime();
   }
 
+  public LocalTime getEndTime() {
+    return reservationTime.getEndTime();
+  }
+
+  public LocalDate getDate() {
+    return date;
+  }
+
+  public Integer getGroupSize() {
+    return groupSize;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
   public void setReservationEndTime(LocalTime endTime) {
     reservationTime.setEndTime(endTime);
   }

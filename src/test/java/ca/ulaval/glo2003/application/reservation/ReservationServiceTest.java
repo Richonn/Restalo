@@ -1,6 +1,7 @@
 package ca.ulaval.glo2003.application.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -9,11 +10,15 @@ import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
+import ca.ulaval.glo2003.domain.reservation.ReservationTime;
+import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -86,6 +91,68 @@ public class ReservationServiceTest {
         assertThrows(
             NotFoundException.class,
             () -> reservationService.createReservation(reservationDto, restaurantId));
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void givenValidNumber_whenGetReservation_thenReturnsDto() {
+    String reservationId = "reservation-123";
+    String restaurantId = "restaurant-123";
+
+    Reservation mockReservation =
+        new Reservation(
+            LocalDate.of(2025, 10, 30),
+            new ReservationTime(LocalTime.of(18, 0), LocalTime.of(19, 0)),
+            4,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            restaurantId);
+
+    Restaurant mockRestaurant =
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123");
+
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(mockRestaurant);
+
+    ReservationResponseDto result = reservationService.getReservationById(reservationId);
+
+    assertNotNull(result);
+    assertNotNull(result.number());
+    assertNotNull(result.restaurant());
+  }
+
+  @Test
+  void givenNonExistentNumber_whenGetReservation_thenThrows404() {
+    String reservationId = "nonexistent";
+
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class, () -> reservationService.getReservationById(reservationId));
+
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void givenReservationWithNonExistentRestaurant_whenGetReservation_thenThrows404() {
+    String reservationId = "reservation-123";
+    String restaurantId = "restaurant-123";
+
+    Reservation mockReservation =
+        new Reservation(
+            LocalDate.of(2025, 10, 30),
+            new ReservationTime(LocalTime.of(18, 0), LocalTime.of(19, 0)),
+            4,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            restaurantId);
+
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class, () -> reservationService.getReservationById(reservationId));
+
     assertThat(exception).isInstanceOf(NotFoundException.class);
   }
 }

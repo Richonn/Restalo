@@ -1,11 +1,14 @@
 package ca.ulaval.glo2003.application.reservation;
 
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.application.mapper.ReservationMapper;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
+import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 
@@ -45,5 +48,21 @@ public class ReservationService {
       return reservation.getId();
     }
     throw new NotFoundException();
+  }
+
+  public ReservationResponseDto getReservationById(String reservationId) {
+    Reservation reservation = reservationRepository.getReservationById(reservationId);
+
+    if (reservation == null) {
+      throw new NotFoundException();
+    }
+
+    Restaurant restaurant = restaurantRepository.getRestaurantById(reservation.getRestaurantId());
+
+    if (restaurant == null) {
+      throw new NotFoundException();
+    }
+
+    return ReservationMapper.toReservationResponseDto(reservation, restaurant);
   }
 }
