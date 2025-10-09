@@ -1,9 +1,11 @@
 package ca.ulaval.glo2003.api.ressources.reservation;
 
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -37,5 +39,14 @@ public class ReservationResource {
     return Response.status(Response.Status.CREATED)
         .header("Location", String.format(RESERVATION_BY_ID, reservationGeneratedId))
         .build();
+  }
+
+  @GET
+  @Path("reservations/{number}")
+  public Response getReservation(@PathParam("number") String reservationNumber) {
+
+    ReservationResponseDto reservation = reservationService.getReservationById(reservationNumber);
+
+    return Response.status(Response.Status.OK).entity(reservation).build();
   }
 }
