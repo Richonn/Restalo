@@ -7,23 +7,23 @@ import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 
 public class InMemoryRestaurantRepositoryFixture {
 
-  private String ownerId = "ownerId";
-  private String restaurantId = "restaurantId";
-  private final Restaurant restaurant = mock(Restaurant.class);
+  private String OWNER_ID = "ownerId";
+  private String RESTAURANT_ID = "restaurantId";
+  private final Restaurant RESTAURANT = mock(Restaurant.class);
 
   public Restaurant build() {
-    when(restaurant.getId()).thenReturn(restaurantId);
-    when(restaurant.getOwnerId()).thenReturn(ownerId);
-    return restaurant;
+    when(RESTAURANT.getId()).thenReturn(RESTAURANT_ID);
+    when(RESTAURANT.getOwnerId()).thenReturn(OWNER_ID);
+    return RESTAURANT;
   }
 
   public InMemoryRestaurantRepositoryFixture withOwnerId(String ownerId) {
-    this.ownerId = ownerId;
+    this.OWNER_ID = ownerId;
     return this;
   }
 
   public InMemoryRestaurantRepositoryFixture withRestaurantId(String restaurantId) {
-    this.restaurantId = restaurantId;
+    this.RESTAURANT_ID = restaurantId;
     return this;
   }
 }
