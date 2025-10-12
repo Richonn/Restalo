@@ -1,0 +1,106 @@
+package ca.ulaval.glo2003.api.exceptions;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+public class NullPointerExceptionMapperTest {
+
+    private NullPointerExceptionMapper mapper;
+
+    @BeforeEach
+    public void setUp() {
+        mapper = new NullPointerExceptionMapper();
+    }
+
+    @Test
+    void givenNullPointerException_whenToResponse_thenReturns400WithErrorResponse() {
+        // Arrange
+        NullPointerException exception = new NullPointerException("Cannot invoke method on null object");
+
+        // Act
+        Response response = mapper.toResponse(exception);
+
+        // Assert
+        assertEquals(400, response.getStatus());
+        assertNotNull(response.getEntity());
+        assertThat(response.getMediaType().toString()).contains(MediaType.APPLICATION_JSON);
+    }
+
+    @Test
+    void givenNullPointerException_whenToResponse_thenErrorResponseContainsCorrectCode() {
+        // Arrange
+        NullPointerException exception = new NullPointerException("Cannot invoke method on null object");
+
+        // Act
+        Response response = mapper.toResponse(exception);
+        ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+
+        // Assert
+        assertThat(errorResponse.getError()).isEqualTo(ErrorCodes.ERROR_MISSING_PARAMETER);
+    }
+
+    @Test
+    void givenNullPointerException_whenToResponse_thenErrorResponseContainsExceptionMessage() {
+        // Arrange
+        String expectedMessage = "Cannot invoke method on null object";
+        NullPointerException exception = new NullPointerException(expectedMessage);
+
+        // Act
+        Response response = mapper.toResponse(exception);
+        ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+
+        // Assert
+        assertThat(errorResponse.getDescription()).isEqualTo(expectedMessage);
+    }
+
+    @Test
+    void givenNullPointerExceptionWithNullMessage_whenToResponse_thenReturns400() {
+        // Arrange
+        NullPointerException exception = new NullPointerException();
+
+        // Act
+        Response response = mapper.toResponse(exception);
+
+        // Assert
+        assertEquals(400, response.getStatus());
+        assertNotNull(response.getEntity());
+    }
+
+    @Test
+    void givenNullPointerExceptionWithEmptyMessage_whenToResponse_thenReturns400WithEmptyDescription() {
+        // Arrange
+        NullPointerException exception = new NullPointerException("");
+
+        // Act
+        Response response = mapper.toResponse(exception);
+        ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+
+        // Assert
+        assertEquals(400, response.getStatus());
+        assertThat(errorResponse.getDescription()).isEqualTo("");
+    }
+
+    @Test
+    void givenMultipleCalls_whenToResponse_thenEachReturnsIndependentResponse() {
+        // Arrange
+        NullPointerException exception1 = new NullPointerException("First error");
+        NullPointerException exception2 = new NullPointerException("Second error");
+
+        // Act
+        Response response1 = mapper.toResponse(exception1);
+        Response response2 = mapper.toResponse(exception2);
+
+        ErrorResponse errorResponse1 = (ErrorResponse) response1.getEntity();
+        ErrorResponse errorResponse2 = (ErrorResponse) response2.getEntity();
+
+        // Assert
+        assertThat(errorResponse1.getDescription()).isEqualTo("First error");
+        assertThat(errorResponse2.getDescription()).isEqualTo("Second error");
+    }
+}
