@@ -72,7 +72,6 @@ public class RestaurantDomainServiceTest {
 
     @Test
     void givenRestaurantWithNullName_whenValidateRestaurant_thenThrowsMissingParameterException() {
-        // Arrange
         Restaurant restaurant = new Restaurant(
                 null,
                 50,
@@ -81,7 +80,6 @@ public class RestaurantDomainServiceTest {
                 "owner-123"
         );
 
-        // Act & Assert
         MissingParameterException exception =
                 assertThrows(
                         MissingParameterException.class,
@@ -92,7 +90,6 @@ public class RestaurantDomainServiceTest {
 
     @Test
     void givenRestaurantWithBlankName_whenValidateRestaurant_thenThrowsMissingParameterException() {
-        // Arrange
         Restaurant restaurant = new Restaurant(
                 "   ",
                 50,
@@ -101,7 +98,6 @@ public class RestaurantDomainServiceTest {
                 "owner-123"
         );
 
-        // Act & Assert
         MissingParameterException exception =
                 assertThrows(
                         MissingParameterException.class,
@@ -112,7 +108,6 @@ public class RestaurantDomainServiceTest {
 
     @Test
     void givenRestaurantWithNullCapacity_whenValidateRestaurant_thenThrowsMissingParameterException() {
-        // Arrange
         Restaurant restaurant = new Restaurant(
                 "Chez Luigi",
                 null,
@@ -121,7 +116,6 @@ public class RestaurantDomainServiceTest {
                 "owner-123"
         );
 
-        // Act & Assert
         MissingParameterException exception =
                 assertThrows(
                         MissingParameterException.class,

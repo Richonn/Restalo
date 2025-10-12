@@ -43,8 +43,6 @@ public class RestaurantServiceTest {
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto);
   }
 
-  // ============ Tests pour createRestaurant ============
-
   @Test
   void givenValidRestaurantDto_whenCreateRestaurant_thenReturnExpectedId() {
     String ownerId = "owner-456";
@@ -104,8 +102,6 @@ public class RestaurantServiceTest {
         () -> restaurantService.createRestaurant(invalidOwnerId, restaurantDto));
   }
 
-  // ============ Tests pour getRestaurantListOfOwner ============
-
   @Test
   void givenValidOwnerId_whenGetRestaurantListOfOwner_thenReturnsList() {
     String ownerId = "owner-123";
@@ -151,8 +147,6 @@ public class RestaurantServiceTest {
         MissingParameterException.class,
         () -> restaurantService.getRestaurantListOfOwner(invalidOwnerId));
   }
-
-  // ============ Tests pour getRestaurantByIdOfOwner ============
 
   @Test
   void givenValidOwnerAndRestaurantId_whenGetRestaurantByIdOfOwner_thenReturnsRestaurantDto() {
@@ -201,8 +195,6 @@ public class RestaurantServiceTest {
         MissingParameterException.class,
         () -> restaurantService.getRestaurantByIdOfOwner(invalidOwnerId, restaurantId));
   }
-
-  // ============ Tests pour getRestaurantBySearch ============
 
   @Test
   void givenValidSearchRequest_whenGetRestaurantBySearch_thenReturnsFilteredList() {
