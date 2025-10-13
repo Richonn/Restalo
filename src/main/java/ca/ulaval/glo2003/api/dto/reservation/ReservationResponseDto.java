@@ -9,4 +9,5 @@ public record ReservationResponseDto(
     TimeDto time,
     Integer groupSize,
     CustomerDto customer,
-    RestaurantDto restaurant) {}
+    RestaurantDto restaurant,
+    Integer duration) {}

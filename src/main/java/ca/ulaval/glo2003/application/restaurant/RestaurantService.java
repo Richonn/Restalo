@@ -17,6 +17,8 @@ public class RestaurantService {
   RestaurantDomainService restaurantDomainService;
   RestaurantRepository repository;
 
+  private static final int DEFAULT_RESERVATION_DURATION = 60;
+
   @Inject
   public RestaurantService(
       RestaurantRepository restaurantRepository, RestaurantDomainService restaurantDomainService) {
@@ -33,6 +35,15 @@ public class RestaurantService {
 
     if (restaurantDto.hours() == null) {
       throw new MissingParameterException("Missing hours body");
+    }
+
+    Integer reservationDuration =
+        (restaurantDto.reservations() != null && restaurantDto.reservations().duration() != null)
+            ? restaurantDto.reservations().duration()
+            : DEFAULT_RESERVATION_DURATION;
+
+    if (reservationDuration < 5 || reservationDuration > 180) {
+      throw new IllegalArgumentException("Reservation duration must be between 5 and 180 minutes.");
     }
 
     Restaurant restaurant = RestaurantMapper.toRestaurant(restaurantDto, ownerId);

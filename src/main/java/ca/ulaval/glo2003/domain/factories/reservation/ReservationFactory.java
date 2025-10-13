@@ -16,19 +16,23 @@ public class ReservationFactory {
       String name,
       String email,
       String phoneNumber,
-      Restaurant restaurant) {
+      Restaurant restaurant,
+      Integer duration) {
 
     if (restaurant == null) {
       return null;
     }
+
+    Integer effectiveDuration = (duration != null) ? duration : restaurant.getReservationDuration();
 
     Reservation reservation =
         new Reservation(date, startTime, groupSize, name, email, phoneNumber, restaurant.getId());
 
     reservation.adjustStartTimeTo15minSlice();
     reservation.validateFields();
+
     reservation.setReservationEndTime(
-        restaurant.defineReservationEndTime(reservation.getStartTime()));
+        restaurant.defineReservationEndTime(reservation.getStartTime(), effectiveDuration));
 
     return reservation;
   }

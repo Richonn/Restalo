@@ -12,15 +12,22 @@ public class Restaurant {
   private final Integer capacity;
   private final Hours hours;
   private final String ownerId;
+  private Integer reservationDuration;
 
   public Restaurant(
-      String name, Integer capacity, LocalTime openingHour, LocalTime closingHour, String ownerId) {
+      String name,
+      Integer capacity,
+      LocalTime openingHour,
+      LocalTime closingHour,
+      String ownerId,
+      Integer reservationDuration) {
 
     this.id = UUID.randomUUID().toString();
     this.name = name;
     this.capacity = capacity;
     this.hours = new Hours(openingHour, closingHour, null);
     this.ownerId = ownerId;
+    this.reservationDuration = reservationDuration;
   }
 
   public Restaurant(String name, Integer capacity, Hours hours, String ownerId) {
@@ -58,6 +65,18 @@ public class Restaurant {
 
   public String getOwnerId() {
     return ownerId;
+  }
+
+  public Integer getReservationDuration() {
+    return reservationDuration;
+  }
+
+  public void setReservationDuration(Integer reservationDuration) {
+    this.reservationDuration = reservationDuration;
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {
+    return startTime.plusMinutes(duration);
   }
 
   public void validateFields() {

@@ -33,6 +33,13 @@ public class ReservationService {
       throw new MissingParameterException("Missing body");
     }
 
+    Restaurant restaurant = restaurantRepository.getRestaurantById(restaurantId);
+    if (restaurant == null) {
+      throw new NotFoundException("Restaurant not found.");
+    }
+
+    Integer duration = restaurant.getReservationDuration();
+
     Reservation reservation =
         reservationFactory.createReservation(
             reservationDto.date(),
@@ -41,7 +48,8 @@ public class ReservationService {
             reservationDto.customer().name(),
             reservationDto.customer().email(),
             reservationDto.customer().phoneNumber(),
-            restaurantRepository.getRestaurantById(restaurantId));
+            restaurant,
+            duration);
 
     if (reservation != null) {
       reservationRepository.save(reservation);

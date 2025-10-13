@@ -11,6 +11,8 @@ public class ReservationMapper {
   public static ReservationResponseDto toReservationResponseDto(
       Reservation reservation, Restaurant restaurant) {
 
+    Integer reservationDuration = restaurant.getReservationDuration();
+
     return new ReservationResponseDto(
         reservation.getId(),
         reservation.getDate(),
@@ -20,6 +22,7 @@ public class ReservationMapper {
             reservation.getCustomer().getName(),
             reservation.getCustomer().getEmail(),
             reservation.getCustomer().getPhoneNumber()),
-        RestaurantMapper.toRestaurantDto(restaurant));
+        RestaurantMapper.toRestaurantDto(restaurant),
+        reservationDuration);
   }
 }
