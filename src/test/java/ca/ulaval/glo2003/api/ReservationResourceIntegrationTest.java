@@ -10,12 +10,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationConfigDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.reservation.TimeDto;
 import ca.ulaval.glo2003.api.dto.restaurant.HoursDto;
 import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationConfigDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.api.ressources.reservation.ReservationResource;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
@@ -381,11 +381,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         new RestaurantDto(
             "restaurant-123",
             "Pizza Delamama",
-                50,
-                new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0)),
-                new ReservationConfigDto(60)
-        ),
-            60
-    );
+            50,
+            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0)),
+            new ReservationConfigDto(60)),
+        60);
   }
 }

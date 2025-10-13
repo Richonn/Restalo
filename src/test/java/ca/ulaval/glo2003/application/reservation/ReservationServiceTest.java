@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
@@ -68,7 +69,7 @@ public class ReservationServiceTest {
             anyString(),
             any(Restaurant.class),
             anyInt()))
-            .thenReturn(reservation);
+        .thenReturn(reservation);
     when(reservation.getId()).thenReturn(expectedId);
 
     assertThat(reservationService.createReservation(reservationDto, "123")).isEqualTo(expectedId);
@@ -101,8 +102,8 @@ public class ReservationServiceTest {
             anyString(),
             anyString(),
             any(Restaurant.class),
-            anyInt())
-    ).thenReturn(null);
+            anyInt()))
+        .thenReturn(null);
 
     NotFoundException exception =
         assertThrows(
@@ -125,7 +126,8 @@ public class ReservationServiceTest {
             restaurantId);
 
     Restaurant mockRestaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 80);
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 80);
 
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
     when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(mockRestaurant);

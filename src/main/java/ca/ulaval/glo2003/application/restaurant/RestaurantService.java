@@ -77,17 +77,25 @@ public class RestaurantService {
   }
 
   public List<RestaurantDto> getRestaurantBySearch(SearchRestaurantsDto searchRequest) {
-    restaurantDomainService.isTimeRangeValid(
-        OpenedHoursMapper.toOpenedHours(searchRequest.opened()));
+
+    if (searchRequest.opened() != null) {
+      restaurantDomainService.isTimeRangeValid(
+          OpenedHoursMapper.toOpenedHours(searchRequest.opened()));
+    }
 
     List<Restaurant> listAllRestaurant = repository.getRestaurantList();
 
     return listAllRestaurant.stream()
         .filter(restaurant -> restaurant.matchesName(searchRequest.name()))
         .filter(
-            restaurant ->
-                restaurant.isFullyOpenDuring(
-                    searchRequest.opened().from(), searchRequest.opened().to()))
+            restaurant -> {
+              if (searchRequest.opened() != null) {
+                return restaurant.isFullyOpenDuring(
+                    searchRequest.opened().from(), searchRequest.opened().to());
+              } else {
+                return true;
+              }
+            })
         .map(RestaurantMapper::toRestaurantDto)
         .toList();
   }

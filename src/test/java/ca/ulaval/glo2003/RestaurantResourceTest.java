@@ -35,7 +35,8 @@ public class RestaurantResourceTest {
     LocalTime close = LocalTime.parse("22:00:00");
     int reservationDuration = 60;
 
-    Restaurant restaurant = new Restaurant(nom, capacity, open, close, ownerId, reservationDuration);
+    Restaurant restaurant =
+        new Restaurant(nom, capacity, open, close, ownerId, reservationDuration);
     RestaurantDto restaurantDto = RestaurantMapper.toRestaurantDto(restaurant);
     Response response = resource.createRestaurant(ownerId, restaurantDto);
 
