@@ -4,10 +4,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
@@ -58,8 +59,16 @@ public class ReservationServiceTest {
 
     String expectedId = "456";
 
-    when((reservationFactory).createReservation(any(), any(), any(), any(), any(), any(), any()))
-        .thenReturn(reservation);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class),
+            anyInt()))
+            .thenReturn(reservation);
     when(reservation.getId()).thenReturn(expectedId);
 
     assertThat(reservationService.createReservation(reservationDto, "123")).isEqualTo(expectedId);
@@ -84,8 +93,16 @@ public class ReservationServiceTest {
 
     String restaurantId = "this restaurant dosent exist";
 
-    when((reservationFactory).createReservation(any(), any(), any(), any(), any(), any(), any()))
-        .thenReturn(null);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class),
+            anyInt())
+    ).thenReturn(null);
 
     NotFoundException exception =
         assertThrows(
@@ -108,7 +125,7 @@ public class ReservationServiceTest {
             restaurantId);
 
     Restaurant mockRestaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123");
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 80);
 
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
     when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(mockRestaurant);
