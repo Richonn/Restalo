@@ -50,7 +50,13 @@ public class ReservationServiceTest {
     when(customerDto.name()).thenReturn("John Deer");
     when(customerDto.email()).thenReturn("john.deer@gmail.com");
     when(customerDto.phoneNumber()).thenReturn("1234567890");
-    when(restaurantRepository.getRestaurantById(null)).thenReturn(null);
+    // when(restaurantRepository.getRestaurantById(null)).thenReturn(null);
+
+    Restaurant mockRestaurant =
+        new Restaurant("Restaurant Name", 50, LocalTime.NOON, LocalTime.MIDNIGHT, "owner-123", 100);
+    when(restaurantRepository.getRestaurantById("123")).thenReturn(mockRestaurant);
+
+    when(restaurantRepository.getRestaurantById("999")).thenReturn(null);
 
     doNothing().when(reservationRepository).save(reservation);
   }
