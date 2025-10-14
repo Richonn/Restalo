@@ -7,6 +7,8 @@ import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
 import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.restaurant.Hours;
+import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -16,8 +18,6 @@ import java.util.List;
 public class RestaurantService {
   RestaurantDomainService restaurantDomainService;
   RestaurantRepository repository;
-
-  private static final int DEFAULT_RESERVATION_DURATION = 60;
 
   @Inject
   public RestaurantService(
@@ -37,14 +37,13 @@ public class RestaurantService {
       throw new MissingParameterException("Missing hours body");
     }
 
-    Integer reservationDuration =
-        (restaurantDto.reservations() != null && restaurantDto.reservations().duration() != null)
-            ? restaurantDto.reservations().duration()
-            : DEFAULT_RESERVATION_DURATION;
+    Hours hours =
+        new Hours(
+            restaurantDto.hours().open(),
+            restaurantDto.hours().close(),
+            restaurantDto.reservations() != null ? restaurantDto.reservations().duration() : null);
 
-    if (reservationDuration < 5 || reservationDuration > 180) {
-      throw new IllegalArgumentException("Reservation duration must be between 5 and 180 minutes.");
-    }
+    hours.validateFields();
 
     Restaurant restaurant = RestaurantMapper.toRestaurant(restaurantDto, ownerId);
 
@@ -78,24 +77,16 @@ public class RestaurantService {
 
   public List<RestaurantDto> getRestaurantBySearch(SearchRestaurantsDto searchRequest) {
 
-    if (searchRequest.opened() != null) {
-      restaurantDomainService.isTimeRangeValid(
-          OpenedHoursMapper.toOpenedHours(searchRequest.opened()));
-    }
+    OpenedHours openedHours = OpenedHoursMapper.toOpenedHours(searchRequest.opened());
+
+    restaurantDomainService.isTimeRangeValid(openedHours);
 
     List<Restaurant> listAllRestaurant = repository.getRestaurantList();
 
     return listAllRestaurant.stream()
         .filter(restaurant -> restaurant.matchesName(searchRequest.name()))
         .filter(
-            restaurant -> {
-              if (searchRequest.opened() != null) {
-                return restaurant.isFullyOpenDuring(
-                    searchRequest.opened().from(), searchRequest.opened().to());
-              } else {
-                return true;
-              }
-            })
+            restaurant -> restaurant.isFullyOpenDuring(openedHours.getFrom(), openedHours.getTo()))
         .map(RestaurantMapper::toRestaurantDto)
         .toList();
   }

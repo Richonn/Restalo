@@ -11,15 +11,13 @@ public class RestaurantMapper {
         restaurant.getName(),
         restaurant.getCapacity(),
         HoursMapper.toHoursDto(restaurant.getHours()),
-        new ReservationConfigDto(restaurant.getReservationDuration()));
+        new ReservationConfigDto(restaurant.getReservationLength()));
   }
 
   public static Restaurant toRestaurant(RestaurantDto restaurantDto, String ownerId) {
 
     Integer reservationDuration =
-        (restaurantDto.reservations() != null && restaurantDto.reservations().duration() != null)
-            ? restaurantDto.reservations().duration()
-            : 60;
+        (restaurantDto.reservations() != null) ? restaurantDto.reservations().duration() : null;
 
     return new Restaurant(
         restaurantDto.name(),

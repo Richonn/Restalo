@@ -8,12 +8,15 @@ import java.util.Objects;
 public class Hours {
   private final LocalTime open;
   private final LocalTime close;
-  private final Integer reservationLength;
+  private final int reservationLength;
+
+  private static final int DEFAULT_RESERVATION_LENGTH = 60;
 
   public Hours(LocalTime open, LocalTime close, Integer reservationLength) {
     this.open = open;
     this.close = close;
-    this.reservationLength = Objects.requireNonNullElse(reservationLength, 60);
+    this.reservationLength =
+        Objects.requireNonNullElse(reservationLength, DEFAULT_RESERVATION_LENGTH);
   }
 
   public LocalTime getOpeningHour() {
@@ -22,6 +25,10 @@ public class Hours {
 
   public LocalTime getClosingHour() {
     return close;
+  }
+
+  public int getReservationLength() {
+    return reservationLength;
   }
 
   public void validateFields() {
@@ -49,6 +56,11 @@ public class Hours {
     if (reservationLength <= 0) {
       throw new InvalidParameterException(
           "The restaurant reservation length needs to be bigger than 0 minutes");
+    }
+
+    if (reservationLength < 5 || reservationLength > 180) {
+      throw new InvalidParameterException(
+          "Reservation duration must be between 5 and 180 minutes.");
     }
   }
 

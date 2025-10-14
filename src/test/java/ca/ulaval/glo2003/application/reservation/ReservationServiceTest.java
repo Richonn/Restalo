@@ -73,8 +73,7 @@ public class ReservationServiceTest {
             anyString(),
             anyString(),
             anyString(),
-            any(Restaurant.class),
-            anyInt()))
+            any(Restaurant.class)))
         .thenReturn(reservation);
     when(reservation.getId()).thenReturn(expectedId);
 
@@ -107,8 +106,7 @@ public class ReservationServiceTest {
             anyString(),
             anyString(),
             anyString(),
-            any(Restaurant.class),
-            anyInt()))
+            any(Restaurant.class)))
         .thenReturn(null);
 
     NotFoundException exception =

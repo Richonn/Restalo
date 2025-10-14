@@ -31,7 +31,7 @@ public class ReservationFactoryTest {
   void givenNullRestaurant_whenCreateReservation_thenReturnNull() {
     Reservation a_reservation =
         reservationFactory.createReservation(
-            DATE, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, null, 80);
+            DATE, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, null);
 
     assertThat(a_reservation).isEqualTo(null);
   }

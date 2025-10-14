@@ -13,6 +13,14 @@ public class OpenedHours {
     this.to = to;
   }
 
+  public LocalTime getFrom() {
+    return from;
+  }
+
+  public LocalTime getTo() {
+    return to;
+  }
+
   public void isTimeRangeValid() {
     if (from != null && to != null && from.isAfter(to)) {
       throw new InvalidParameterException("Closing hour cannot be before opening hours");

@@ -4,8 +4,4 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record ReservationDto(
-    LocalDate date,
-    LocalTime startTime,
-    Integer groupSize,
-    CustomerDto customer,
-    ReservationConfigDto reservations) {}
+    LocalDate date, LocalTime startTime, Integer groupSize, CustomerDto customer) {}

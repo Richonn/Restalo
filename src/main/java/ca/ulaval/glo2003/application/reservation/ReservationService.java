@@ -38,8 +38,6 @@ public class ReservationService {
       throw new NotFoundException("Restaurant not found.");
     }
 
-    Integer duration = restaurant.getReservationDuration();
-
     Reservation reservation =
         reservationFactory.createReservation(
             reservationDto.date(),
@@ -48,8 +46,7 @@ public class ReservationService {
             reservationDto.customer().name(),
             reservationDto.customer().email(),
             reservationDto.customer().phoneNumber(),
-            restaurant,
-            duration);
+            restaurant);
 
     if (reservation != null) {
       reservationRepository.save(reservation);

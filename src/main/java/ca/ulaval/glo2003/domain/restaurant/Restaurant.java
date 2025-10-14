@@ -12,7 +12,6 @@ public class Restaurant {
   private final Integer capacity;
   private final Hours hours;
   private final String ownerId;
-  private Integer reservationDuration;
 
   public Restaurant(
       String name,
@@ -27,7 +26,6 @@ public class Restaurant {
     this.capacity = capacity;
     this.hours = new Hours(openingHour, closingHour, null);
     this.ownerId = ownerId;
-    this.reservationDuration = reservationDuration;
   }
 
   public Restaurant(String name, Integer capacity, Hours hours, String ownerId) {
@@ -67,12 +65,8 @@ public class Restaurant {
     return ownerId;
   }
 
-  public Integer getReservationDuration() {
-    return reservationDuration;
-  }
-
-  public void setReservationDuration(Integer reservationDuration) {
-    this.reservationDuration = reservationDuration;
+  public int getReservationLength() {
+    return hours.getReservationLength();
   }
 
   public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {
