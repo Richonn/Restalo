@@ -66,7 +66,7 @@ public class Restaurant {
   }
 
   public int getReservationLength() {
-    return hours.getReservationLength();
+    return hours.getReservationDuration();
   }
 
   public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {

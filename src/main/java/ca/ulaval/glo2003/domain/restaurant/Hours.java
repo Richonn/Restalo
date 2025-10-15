@@ -8,14 +8,14 @@ import java.util.Objects;
 public class Hours {
   private final LocalTime open;
   private final LocalTime close;
-  private final int reservationLength;
+  private final int reservationDuration;
 
   private static final int DEFAULT_RESERVATION_LENGTH = 60;
 
   public Hours(LocalTime open, LocalTime close, Integer reservationLength) {
     this.open = open;
     this.close = close;
-    this.reservationLength =
+    this.reservationDuration =
         Objects.requireNonNullElse(reservationLength, DEFAULT_RESERVATION_LENGTH);
   }
 
@@ -27,8 +27,8 @@ public class Hours {
     return close;
   }
 
-  public int getReservationLength() {
-    return reservationLength;
+  public int getReservationDuration() {
+    return reservationDuration;
   }
 
   public void validateFields() {
@@ -53,14 +53,14 @@ public class Hours {
     if (open.plusHours(1).compareTo(close) > 0) {
       throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
     }
-    if (reservationLength <= 0) {
+    if (reservationDuration <= 0) {
       throw new InvalidParameterException(
           "The restaurant reservation length needs to be bigger than 0 minutes");
     }
 
-    if (reservationLength < 5 || reservationLength > 180) {
+    if (reservationDuration < 5 || reservationDuration > 180) {
       throw new InvalidParameterException(
-          "Reservation duration must be between 5 and 180 minutes.");
+          "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
   }
 
@@ -81,10 +81,10 @@ public class Hours {
       throw new InvalidParameterException(
           "The restaurant is not open for the selected reservation start time");
     }
-    if (startTime.plusMinutes(reservationLength).isAfter(close)) {
+    if (startTime.plusMinutes(reservationDuration).isAfter(close)) {
       throw new InvalidParameterException(
           "The restaurant closes before the end of the reservation");
     }
-    return startTime.plusMinutes(reservationLength);
+    return startTime.plusMinutes(reservationDuration);
   }
 }

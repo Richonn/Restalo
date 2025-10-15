@@ -1,6 +1,7 @@
 package ca.ulaval.glo2003.application.restaurant;
 
 import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
@@ -41,7 +42,9 @@ public class RestaurantService {
         new Hours(
             restaurantDto.hours().open(),
             restaurantDto.hours().close(),
-            restaurantDto.reservations() != null ? restaurantDto.reservations().duration() : null);
+            restaurantDto.reservations() != null
+                ? restaurantDto.reservations().reservationDuration()
+                : null);
 
     hours.validateFields();
 
@@ -75,7 +78,8 @@ public class RestaurantService {
     throw new NotFoundException();
   }
 
-  public List<RestaurantDto> getRestaurantBySearch(SearchRestaurantsDto searchRequest) {
+  public List<RestaurantSearchResponseDto> getRestaurantBySearch(
+      SearchRestaurantsDto searchRequest) {
 
     OpenedHours openedHours = OpenedHoursMapper.toOpenedHours(searchRequest.opened());
 
@@ -87,7 +91,7 @@ public class RestaurantService {
         .filter(restaurant -> restaurant.matchesName(searchRequest.name()))
         .filter(
             restaurant -> restaurant.isFullyOpenDuring(openedHours.getFrom(), openedHours.getTo()))
-        .map(RestaurantMapper::toRestaurantDto)
+        .map(RestaurantMapper::toRestaurantSearchResponseDto)
         .toList();
   }
 }
