@@ -124,157 +124,157 @@ public class HoursTest {
         .isEqualTo("The restaurant needs to be open for at least one hour");
   }
 
-    @Test
-    void givenNegativeReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
-        Hours a_hours =
-                hoursFixture
-                        .withOpen(LocalTime.of(10, 0, 0))
-                        .withClose(LocalTime.of(12, 0, 0))
-                        .withReservationLength(-10)
-                        .build();
+  @Test
+  void givenNegativeReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
+    Hours a_hours =
+        hoursFixture
+            .withOpen(LocalTime.of(10, 0, 0))
+            .withClose(LocalTime.of(12, 0, 0))
+            .withReservationLength(-10)
+            .build();
 
-        InvalidParameterException exception =
-                assertThrows(InvalidParameterException.class, a_hours::validateFields);
+    InvalidParameterException exception =
+        assertThrows(InvalidParameterException.class, a_hours::validateFields);
 
-        assertThat(exception).isInstanceOf(InvalidParameterException.class);
-        assertThat(exception.getMessage())
-                .isEqualTo("The restaurant reservation length needs to be bigger than 0 minutes");
-    }
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The restaurant reservation length needs to be bigger than 0 minutes");
+  }
 
-    @Test
-    void givenZeroReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
-        Hours a_hours =
-                hoursFixture
-                        .withOpen(LocalTime.of(10, 0, 0))
-                        .withClose(LocalTime.of(12, 0, 0))
-                        .withReservationLength(0)
-                        .build();
+  @Test
+  void givenZeroReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
+    Hours a_hours =
+        hoursFixture
+            .withOpen(LocalTime.of(10, 0, 0))
+            .withClose(LocalTime.of(12, 0, 0))
+            .withReservationLength(0)
+            .build();
 
-        InvalidParameterException exception =
-                assertThrows(InvalidParameterException.class, a_hours::validateFields);
+    InvalidParameterException exception =
+        assertThrows(InvalidParameterException.class, a_hours::validateFields);
 
-        assertThat(exception).isInstanceOf(InvalidParameterException.class);
-        assertThat(exception.getMessage())
-                .isEqualTo("The restaurant reservation length needs to be bigger than 0 minutes");
-    }
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The restaurant reservation length needs to be bigger than 0 minutes");
+  }
 
-    @Test
-    void givenBothFromAndToNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenBothFromAndToNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), LocalTime.of(18, 0, 0));
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void givenBothFromAndToNotNull_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenBothFromAndToNotNull_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), LocalTime.of(18, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), LocalTime.of(18, 0, 0));
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenFromBeforeOpenAndToAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenFromBeforeOpenAndToAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), LocalTime.of(21, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), LocalTime.of(21, 0, 0));
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenOnlyFromNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyFromNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), null);
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), null);
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void givenOnlyFromNotNullBeforeOpen_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyFromNotNullBeforeOpen_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), null);
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), null);
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenOnlyFromNotNullAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyFromNotNullAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(20, 0, 0), null);
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(20, 0, 0), null);
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenOnlyToNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyToNotNull_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(18, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(18, 0, 0));
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void givenOnlyToNotNullBeforeOpen_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyToNotNullBeforeOpen_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(9, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(9, 0, 0));
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenOnlyToNotNullAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenOnlyToNotNullAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(21, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(null, LocalTime.of(21, 0, 0));
 
-        assertThat(result).isFalse();
-    }
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void givenBothFromAndToNull_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenBothFromAndToNull_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(null, null);
+    boolean result = a_hours.isFullyOpenDuring(null, null);
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void givenFromEqualsOpen_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenFromEqualsOpen_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(10, 0, 0), LocalTime.of(18, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(10, 0, 0), LocalTime.of(18, 0, 0));
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void givenToEqualsClose_whenIsFullyOpenDuring_thenReturnTrue() {
-        Hours a_hours =
-                hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+  @Test
+  void givenToEqualsClose_whenIsFullyOpenDuring_thenReturnTrue() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
 
-        boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), LocalTime.of(20, 0, 0));
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), LocalTime.of(20, 0, 0));
 
-        assertThat(result).isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 }

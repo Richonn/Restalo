@@ -13,49 +13,48 @@ import org.junit.jupiter.api.Test;
 
 public class HealthResourceTest extends JerseyTest {
 
-    @Override
-    protected Application configure() {
-        return new ResourceConfig()
-                .register(HealthResource.class);
-    }
+  @Override
+  protected Application configure() {
+    return new ResourceConfig().register(HealthResource.class);
+  }
 
-    @BeforeEach
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
+  @BeforeEach
+  @Override
+  public void setUp() throws Exception {
+    super.setUp();
+  }
 
-    @Test
-    public void givenHealthEndpoint_whenGet_thenReturns200() {
-        try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
-            assertEquals(200, response.getStatus());
-        }
+  @Test
+  public void givenHealthEndpoint_whenGet_thenReturns200() {
+    try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
+      assertEquals(200, response.getStatus());
     }
+  }
 
-    @Test
-    public void givenHealthEndpoint_whenGet_thenReturnsJsonMediaType() {
-        try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
-            assertNotNull(response.getMediaType());
-            assertEquals(MediaType.APPLICATION_JSON_TYPE, response.getMediaType());
-        }
+  @Test
+  public void givenHealthEndpoint_whenGet_thenReturnsJsonMediaType() {
+    try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
+      assertNotNull(response.getMediaType());
+      assertEquals(MediaType.APPLICATION_JSON_TYPE, response.getMediaType());
     }
+  }
 
-    @Test
-    public void givenHealthEndpoint_whenGet_thenEntityIsNotNull() {
-        try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
-            assertNotNull(response.getEntity());
-        }
+  @Test
+  public void givenHealthEndpoint_whenGet_thenEntityIsNotNull() {
+    try (Response response = target("/health").request(MediaType.APPLICATION_JSON).get()) {
+      assertNotNull(response.getEntity());
     }
+  }
 
-    @Test
-    public void givenMultipleCalls_whenGet_thenAlwaysReturns200() {
-        try (Response response1 = target("/health").request(MediaType.APPLICATION_JSON).get();
-             Response response2 = target("/health").request(MediaType.APPLICATION_JSON).get();
-             Response response3 = target("/health").request(MediaType.APPLICATION_JSON).get()) {
+  @Test
+  public void givenMultipleCalls_whenGet_thenAlwaysReturns200() {
+    try (Response response1 = target("/health").request(MediaType.APPLICATION_JSON).get();
+        Response response2 = target("/health").request(MediaType.APPLICATION_JSON).get();
+        Response response3 = target("/health").request(MediaType.APPLICATION_JSON).get()) {
 
-            assertEquals(200, response1.getStatus());
-            assertEquals(200, response2.getStatus());
-            assertEquals(200, response3.getStatus());
-        }
+      assertEquals(200, response1.getStatus());
+      assertEquals(200, response2.getStatus());
+      assertEquals(200, response3.getStatus());
     }
+  }
 }

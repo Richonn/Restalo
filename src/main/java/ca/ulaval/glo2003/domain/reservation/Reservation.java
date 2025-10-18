@@ -42,10 +42,8 @@ public class Reservation {
 
     this.id = UUID.randomUUID().toString();
     this.date = date;
-      this.reservationTime = new ReservationTime(
-              reservationTime.getStartTime(),
-              reservationTime.getEndTime()
-      );
+    this.reservationTime =
+        new ReservationTime(reservationTime.getStartTime(), reservationTime.getEndTime());
     this.groupSize = groupSize;
     this.customer = customer;
     this.restaurantId = restaurantId;

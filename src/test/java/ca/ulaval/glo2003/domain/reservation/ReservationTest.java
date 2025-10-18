@@ -22,13 +22,13 @@ public class ReservationTest {
   private final ReservationTime reservationTime = Mockito.mock(ReservationTime.class);
   private final Customer customer = Mockito.mock(Customer.class);
 
-    @BeforeEach
-    public void setUp() {
-        reservationFixture = new ReservationFixture();
+  @BeforeEach
+  public void setUp() {
+    reservationFixture = new ReservationFixture();
 
-        when(reservationTime.getStartTime()).thenReturn(LocalTime.of(18, 0));
-        when(reservationTime.getEndTime()).thenReturn(LocalTime.of(20, 0));
-    }
+    when(reservationTime.getStartTime()).thenReturn(LocalTime.of(18, 0));
+    when(reservationTime.getEndTime()).thenReturn(LocalTime.of(20, 0));
+  }
 
   @Test
   void givenValidReservation_whenValidateFields_thenNoExceptions() {
