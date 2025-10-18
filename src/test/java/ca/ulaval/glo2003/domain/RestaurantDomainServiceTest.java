@@ -64,7 +64,8 @@ public class RestaurantDomainServiceTest {
                 50,
                 LocalTime.of(11, 0),
                 LocalTime.of(22, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertDoesNotThrow(() -> restaurantDomainService.validateRestaurant(restaurant));
@@ -77,7 +78,8 @@ public class RestaurantDomainServiceTest {
                 50,
                 LocalTime.of(11, 0),
                 LocalTime.of(22, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         MissingParameterException exception =
@@ -95,7 +97,8 @@ public class RestaurantDomainServiceTest {
                 50,
                 LocalTime.of(11, 0),
                 LocalTime.of(22, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         MissingParameterException exception =
@@ -113,7 +116,8 @@ public class RestaurantDomainServiceTest {
                 null,
                 LocalTime.of(11, 0),
                 LocalTime.of(22, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         MissingParameterException exception =

@@ -10,10 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.restaurant.HoursDto;
-import ca.ulaval.glo2003.api.dto.restaurant.OpenedHoursDto;
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
-import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.dto.restaurant.*;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -40,14 +37,14 @@ public class RestaurantServiceTest {
     restaurantService = new RestaurantService(restaurantRepository, restaurantDomainService);
 
     hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
-    restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto);
+    restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
   }
 
   @Test
   void givenValidRestaurantDto_whenCreateRestaurant_thenReturnExpectedId() {
     String ownerId = "owner-456";
     Restaurant mockRestaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId);
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
 
     doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     doNothing().when(restaurantDomainService).validateRestaurant(any(Restaurant.class));
@@ -78,7 +75,7 @@ public class RestaurantServiceTest {
   @Test
   void givenRestaurantDtoWithNullHours_whenCreateRestaurant_thenThrowsMissingParameterException() {
     String ownerId = "owner-123";
-    RestaurantDto dtoWithoutHours = new RestaurantDto("id-123", "Pizza Delamama", 50, null);
+    RestaurantDto dtoWithoutHours = new RestaurantDto("id-123", "Pizza Delamama", 50, null, null);
     doNothing().when(restaurantDomainService).validateHeaders(ownerId);
 
     MissingParameterException exception =
@@ -106,9 +103,9 @@ public class RestaurantServiceTest {
   void givenValidOwnerId_whenGetRestaurantListOfOwner_thenReturnsList() {
     String ownerId = "owner-123";
     Restaurant restaurant1 =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId);
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
     Restaurant restaurant2 =
-        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), ownerId);
+        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), ownerId, null);
     List<Restaurant> mockRestaurants = Arrays.asList(restaurant1, restaurant2);
 
     doNothing().when(restaurantDomainService).validateHeaders(ownerId);
@@ -153,7 +150,7 @@ public class RestaurantServiceTest {
     String ownerId = "owner-123";
     String restaurantId = "restaurant-456";
     Restaurant mockRestaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId);
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
 
     doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId))
@@ -202,18 +199,18 @@ public class RestaurantServiceTest {
     SearchRestaurantsDto searchRequest = new SearchRestaurantsDto("Pizza", openedHours);
 
     Restaurant restaurant1 =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1");
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1", null);
     Restaurant restaurant2 =
-        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), "owner-2");
+        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), "owner-2", null);
     Restaurant restaurant3 =
-        new Restaurant("Pizza Hut", 40, LocalTime.of(11, 0), LocalTime.of(23, 0), "owner-3");
+        new Restaurant("Pizza Hut", 40, LocalTime.of(11, 0), LocalTime.of(23, 0), "owner-3", null);
 
     List<Restaurant> allRestaurants = Arrays.asList(restaurant1, restaurant2, restaurant3);
 
     doNothing().when(restaurantDomainService).isTimeRangeValid(any());
     when(restaurantRepository.getRestaurantList()).thenReturn(allRestaurants);
 
-    List<RestaurantDto> result = restaurantService.getRestaurantBySearch(searchRequest);
+    List<RestaurantSearchResponseDto> result = restaurantService.getRestaurantBySearch(searchRequest);
 
     assertNotNull(result);
     assertThat(result).isNotEmpty();
@@ -226,16 +223,16 @@ public class RestaurantServiceTest {
     SearchRestaurantsDto searchRequest = new SearchRestaurantsDto(null, openedHours);
 
     Restaurant restaurant1 =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1");
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1", null);
     Restaurant restaurant2 =
-        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), "owner-2");
+        new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), "owner-2", null);
 
     List<Restaurant> allRestaurants = Arrays.asList(restaurant1, restaurant2);
 
     doNothing().when(restaurantDomainService).isTimeRangeValid(any());
     when(restaurantRepository.getRestaurantList()).thenReturn(allRestaurants);
 
-    List<RestaurantDto> result = restaurantService.getRestaurantBySearch(searchRequest);
+    List<RestaurantSearchResponseDto> result = restaurantService.getRestaurantBySearch(searchRequest);
 
     assertNotNull(result);
     assertThat(result).hasSize(2);
@@ -247,14 +244,14 @@ public class RestaurantServiceTest {
     SearchRestaurantsDto searchRequest = new SearchRestaurantsDto("Sushi", openedHours);
 
     Restaurant restaurant1 =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1");
+        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-1", null);
 
     List<Restaurant> allRestaurants = Collections.singletonList(restaurant1);
 
     doNothing().when(restaurantDomainService).isTimeRangeValid(any());
     when(restaurantRepository.getRestaurantList()).thenReturn(allRestaurants);
 
-    List<RestaurantDto> result = restaurantService.getRestaurantBySearch(searchRequest);
+    List<RestaurantSearchResponseDto> result = restaurantService.getRestaurantBySearch(searchRequest);
 
     assertNotNull(result);
     assertThat(result).isEmpty();
