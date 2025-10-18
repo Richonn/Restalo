@@ -30,22 +30,18 @@ public class RestaurantServiceTest {
   private final RestaurantDomainService restaurantDomainService =
       mock(RestaurantDomainService.class);
   private RestaurantDto restaurantDto;
-  private HoursDto hoursDto;
 
   @BeforeEach
   public void setUp() {
     restaurantService = new RestaurantService(restaurantRepository, restaurantDomainService);
 
-    hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
+    HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
   }
 
   @Test
   void givenValidRestaurantDto_whenCreateRestaurant_thenReturnExpectedId() {
     String ownerId = "owner-456";
-    Restaurant mockRestaurant =
-        new Restaurant(
-            "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
 
     doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     doNothing().when(restaurantDomainService).validateRestaurant(any(Restaurant.class));

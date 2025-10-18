@@ -23,11 +23,12 @@ public class NullPointerExceptionMapperTest {
     NullPointerException exception =
         new NullPointerException("Cannot invoke method on null object");
 
-    Response response = mapper.toResponse(exception);
+    try (Response response = mapper.toResponse(exception)) {
 
-    assertEquals(400, response.getStatus());
-    assertNotNull(response.getEntity());
-    assertThat(response.getMediaType().toString()).contains(MediaType.APPLICATION_JSON);
+      assertEquals(400, response.getStatus());
+      assertNotNull(response.getEntity());
+      assertThat(response.getMediaType().toString()).contains(MediaType.APPLICATION_JSON);
+    }
   }
 
   @Test
@@ -35,8 +36,10 @@ public class NullPointerExceptionMapperTest {
     NullPointerException exception =
         new NullPointerException("Cannot invoke method on null object");
 
-    Response response = mapper.toResponse(exception);
-    ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+    ErrorResponse errorResponse;
+    try (Response response = mapper.toResponse(exception)) {
+      errorResponse = (ErrorResponse) response.getEntity();
+    }
 
     assertThat(errorResponse.getError()).isEqualTo(ErrorCodes.ERROR_MISSING_PARAMETER);
   }
@@ -46,8 +49,10 @@ public class NullPointerExceptionMapperTest {
     String expectedMessage = "Cannot invoke method on null object";
     NullPointerException exception = new NullPointerException(expectedMessage);
 
-    Response response = mapper.toResponse(exception);
-    ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+    ErrorResponse errorResponse;
+    try (Response response = mapper.toResponse(exception)) {
+      errorResponse = (ErrorResponse) response.getEntity();
+    }
 
     assertThat(errorResponse.getDescription()).isEqualTo(expectedMessage);
   }
@@ -56,10 +61,11 @@ public class NullPointerExceptionMapperTest {
   void givenNullPointerExceptionWithNullMessage_whenToResponse_thenReturns400() {
     NullPointerException exception = new NullPointerException();
 
-    Response response = mapper.toResponse(exception);
+    try (Response response = mapper.toResponse(exception)) {
 
-    assertEquals(400, response.getStatus());
-    assertNotNull(response.getEntity());
+      assertEquals(400, response.getStatus());
+      assertNotNull(response.getEntity());
+    }
   }
 
   @Test
@@ -67,10 +73,12 @@ public class NullPointerExceptionMapperTest {
       givenNullPointerExceptionWithEmptyMessage_whenToResponse_thenReturns400WithEmptyDescription() {
     NullPointerException exception = new NullPointerException("");
 
-    Response response = mapper.toResponse(exception);
-    ErrorResponse errorResponse = (ErrorResponse) response.getEntity();
+    ErrorResponse errorResponse;
+    try (Response response = mapper.toResponse(exception)) {
+      errorResponse = (ErrorResponse) response.getEntity();
 
-    assertEquals(400, response.getStatus());
+      assertEquals(400, response.getStatus());
+    }
     assertThat(errorResponse.getDescription()).isEqualTo("");
   }
 
@@ -79,13 +87,14 @@ public class NullPointerExceptionMapperTest {
     NullPointerException exception1 = new NullPointerException("First error");
     NullPointerException exception2 = new NullPointerException("Second error");
 
-    Response response1 = mapper.toResponse(exception1);
-    Response response2 = mapper.toResponse(exception2);
+    try (Response response1 = mapper.toResponse(exception1);
+        Response response2 = mapper.toResponse(exception2)) {
 
-    ErrorResponse errorResponse1 = (ErrorResponse) response1.getEntity();
-    ErrorResponse errorResponse2 = (ErrorResponse) response2.getEntity();
+      ErrorResponse errorResponse1 = (ErrorResponse) response1.getEntity();
+      ErrorResponse errorResponse2 = (ErrorResponse) response2.getEntity();
 
-    assertThat(errorResponse1.getDescription()).isEqualTo("First error");
-    assertThat(errorResponse2.getDescription()).isEqualTo("Second error");
+      assertThat(errorResponse1.getDescription()).isEqualTo("First error");
+      assertThat(errorResponse2.getDescription()).isEqualTo("Second error");
+    }
   }
 }
