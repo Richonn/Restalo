@@ -94,4 +94,38 @@ class RestaurantTest {
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("The capacity of the restaurant must be positive");
   }
+
+    @Test
+    void givenRestaurant_whenGetOwnerId_thenReturnsOwnerId() {
+        String expectedOwnerId = "owner-123";
+        Restaurant restaurant = restaurantFixture.withOwnerId(expectedOwnerId).build(hours);
+
+        String ownerId = restaurant.getOwnerId();
+
+        assertThat(ownerId).isEqualTo(expectedOwnerId);
+    }
+
+    @Test
+    void givenRestaurant_whenGetOpeningHour_thenReturnsOpeningHour() {
+        LocalTime expectedOpeningHour = LocalTime.of(10, 0, 0);
+        Restaurant restaurant = restaurantFixture.build(hours);
+
+        Mockito.when(hours.getOpeningHour()).thenReturn(expectedOpeningHour);
+
+        LocalTime openingHour = restaurant.getOpeningHour();
+
+        assertThat(openingHour).isEqualTo(expectedOpeningHour);
+    }
+
+    @Test
+    void givenRestaurant_whenGetClosingHour_thenReturnsClosingHour() {
+        LocalTime expectedClosingHour = LocalTime.of(22, 0, 0);
+        Restaurant restaurant = restaurantFixture.build(hours);
+
+        Mockito.when(hours.getClosingHour()).thenReturn(expectedClosingHour);
+
+        LocalTime closingHour = restaurant.getClosingHour();
+
+        assertThat(closingHour).isEqualTo(expectedClosingHour);
+    }
 }

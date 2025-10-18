@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
@@ -21,10 +22,13 @@ public class ReservationTest {
   private final ReservationTime reservationTime = Mockito.mock(ReservationTime.class);
   private final Customer customer = Mockito.mock(Customer.class);
 
-  @BeforeEach
-  public void setUp() {
-    reservationFixture = new ReservationFixture();
-  }
+    @BeforeEach
+    public void setUp() {
+        reservationFixture = new ReservationFixture();
+
+        when(reservationTime.getStartTime()).thenReturn(LocalTime.of(18, 0));
+        when(reservationTime.getEndTime()).thenReturn(LocalTime.of(20, 0));
+    }
 
   @Test
   void givenValidReservation_whenValidateFields_thenNoExceptions() {

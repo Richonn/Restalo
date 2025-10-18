@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
@@ -21,6 +22,8 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.List;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
@@ -284,4 +287,144 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
       assertEquals(404, response.getStatus());
     }
   }
+
+    @Test
+    public void givenValidSearchRequest_whenSearchRestaurants_thenReturns200WithList() {
+        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+
+        String searchJson =
+                """
+                {
+                  "name": "Pizza",
+                  "opened": {
+                    "from": "11:00:00",
+                    "to": "14:00:00"
+                  }
+                }
+                """;
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(searchJson))) {
+
+            assertEquals(200, response.getStatus());
+            assertNotNull(response.getEntity());
+            verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsDto.class));
+        }
+    }
+
+    @Test
+    public void givenSearchRequestWithNullName_whenSearchRestaurants_thenReturns200() {
+        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+
+        String searchJson =
+                """
+                {
+                  "opened": {
+                    "from": "11:00:00",
+                    "to": "14:00:00"
+                  }
+                }
+                """;
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(searchJson))) {
+
+            assertEquals(200, response.getStatus());
+            assertNotNull(response.getEntity());
+        }
+    }
+
+    @Test
+    public void givenInvalidTimeRange_whenSearchRestaurants_thenReturns400() {
+        when(restaurantService.getRestaurantBySearch(any()))
+                .thenThrow(new InvalidParameterException("Closing hour cannot be before opening hours"));
+
+        String searchJson =
+                """
+                {
+                  "name": "Pizza",
+                  "opened": {
+                    "from": "22:00:00",
+                    "to": "11:00:00"
+                  }
+                }
+                """;
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(searchJson))) {
+
+            assertEquals(400, response.getStatus());
+            String body = response.readEntity(String.class);
+            assertTrue(body.contains("INVALID_PARAMETER"));
+        }
+    }
+
+    @Test
+    public void givenEmptySearchRequest_whenSearchRestaurants_thenReturns200() {
+        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+
+        String searchJson = "{}";
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(searchJson))) {
+
+            assertEquals(200, response.getStatus());
+            assertNotNull(response.getEntity());
+        }
+    }
+
+    @Test
+    public void givenNullBody_whenSearchRestaurants_thenReturns400() {
+        when(restaurantService.getRestaurantBySearch(isNull()))
+                .thenThrow(new MissingParameterException("Missing body"));
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(null))) {
+
+            assertEquals(400, response.getStatus());
+        }
+    }
+
+    @Test
+    public void givenSearchRequestWithMultipleResults_whenSearchRestaurants_thenReturns200WithResults() {
+        RestaurantDto restaurant1 = mock(RestaurantDto.class);
+        RestaurantDto restaurant2 = mock(RestaurantDto.class);
+        List<RestaurantDto> mockRestaurants = List.of(restaurant1, restaurant2);
+
+        when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+
+        String searchJson =
+                """
+                {
+                  "name": "Pizza",
+                  "opened": {
+                    "from": "11:00:00",
+                    "to": "22:00:00"
+                  }
+                }
+                """;
+
+        try (Response response =
+                     target("/search/restaurants")
+                             .request(MediaType.APPLICATION_JSON)
+                             .post(Entity.json(searchJson))) {
+
+            assertEquals(200, response.getStatus());
+            assertNotNull(response.getEntity());
+            verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsDto.class));
+        }
+    }
 }
