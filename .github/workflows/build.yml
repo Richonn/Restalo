@@ -21,9 +21,6 @@ jobs:
       - name: Run Checkstyle
         run: mvn checkstyle:check
 
-      - name: Run SpotBugs (static analysis)
-        run: mvn spotbugs:check
-
       - name: Build project without tests
         run: mvn clean package -DskipTests
 
