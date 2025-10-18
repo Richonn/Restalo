@@ -32,6 +32,13 @@ public class ReservationTest {
 
   @Test
   void givenValidReservation_whenValidateFields_thenNoExceptions() {
+
+    LocalTime startTime = LocalTime.of(12, 0);
+    LocalTime endTime = LocalTime.of(13, 0);
+
+    Mockito.when(reservationTime.getStartTime()).thenReturn(startTime);
+    Mockito.when(reservationTime.getEndTime()).thenReturn(endTime);
+
     Reservation a_reservation = reservationFixture.build(reservationTime, customer);
 
     doNothing().when(reservationTime).validateStartTimeIsDefined();
@@ -113,9 +120,16 @@ public class ReservationTest {
 
   @Test
   void givenAValidReservation_whenDdjustStartTimeTo15minSlice_thenNoExceptions() {
-    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    LocalTime startTime = LocalTime.of(12, 0);
+    LocalTime endTime = LocalTime.of(13, 0);
+
+    Mockito.when(reservationTime.getStartTime()).thenReturn(startTime);
+    Mockito.when(reservationTime.getEndTime()).thenReturn(endTime);
 
     doNothing().when(reservationTime).adjustStartTimeTo15minSlice();
+
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
 
     assertDoesNotThrow(a_reservation::adjustStartTimeTo15minSlice);
   }

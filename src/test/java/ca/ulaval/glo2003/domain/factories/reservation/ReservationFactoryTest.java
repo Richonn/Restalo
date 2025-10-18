@@ -43,7 +43,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         Reservation reservation = reservationFactory.createReservation(
@@ -65,7 +66,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertThrows(
@@ -81,7 +83,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertThrows(
@@ -97,7 +100,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
         LocalDate pastDate = LocalDate.of(2020, 1, 1);
 
@@ -114,7 +118,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertThrows(
@@ -130,7 +135,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertThrows(
@@ -146,7 +152,8 @@ public class ReservationFactoryTest {
                 50,
                 LocalTime.of(9, 0),
                 LocalTime.of(23, 0),
-                "owner-123"
+                "owner-123",
+                null
         );
 
         assertThrows(

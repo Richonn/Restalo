@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.restaurant.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
@@ -290,7 +291,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     @Test
     public void givenValidSearchRequest_whenSearchRestaurants_thenReturns200WithList() {
-        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
         when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
 
         String searchJson =
@@ -317,7 +318,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     @Test
     public void givenSearchRequestWithNullName_whenSearchRestaurants_thenReturns200() {
-        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
         when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
 
         String searchJson =
@@ -369,7 +370,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     @Test
     public void givenEmptySearchRequest_whenSearchRestaurants_thenReturns200() {
-        List<RestaurantDto> mockRestaurants = Collections.emptyList();
+        List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
         when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
 
         String searchJson = "{}";
@@ -400,9 +401,9 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     @Test
     public void givenSearchRequestWithMultipleResults_whenSearchRestaurants_thenReturns200WithResults() {
-        RestaurantDto restaurant1 = mock(RestaurantDto.class);
-        RestaurantDto restaurant2 = mock(RestaurantDto.class);
-        List<RestaurantDto> mockRestaurants = List.of(restaurant1, restaurant2);
+        RestaurantSearchResponseDto restaurant1 = mock(RestaurantSearchResponseDto.class);
+        RestaurantSearchResponseDto restaurant2 = mock(RestaurantSearchResponseDto.class);
+        List<RestaurantSearchResponseDto> mockRestaurants = List.of(restaurant1, restaurant2);
 
         when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
 

@@ -20,6 +20,7 @@ public class ReservationMapper {
             reservation.getCustomer().getName(),
             reservation.getCustomer().getEmail(),
             reservation.getCustomer().getPhoneNumber()),
-        RestaurantMapper.toRestaurantDto(restaurant));
+        RestaurantMapper.toRestaurantDto(restaurant),
+        restaurant.getReservationLength());
   }
 }

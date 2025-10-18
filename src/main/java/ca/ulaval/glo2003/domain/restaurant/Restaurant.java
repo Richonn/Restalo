@@ -14,7 +14,12 @@ public class Restaurant {
   private final String ownerId;
 
   public Restaurant(
-      String name, Integer capacity, LocalTime openingHour, LocalTime closingHour, String ownerId) {
+      String name,
+      Integer capacity,
+      LocalTime openingHour,
+      LocalTime closingHour,
+      String ownerId,
+      Integer reservationDuration) {
 
     this.id = UUID.randomUUID().toString();
     this.name = name;
@@ -58,6 +63,14 @@ public class Restaurant {
 
   public String getOwnerId() {
     return ownerId;
+  }
+
+  public int getReservationLength() {
+    return hours.getReservationDuration();
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {
+    return startTime.plusMinutes(duration);
   }
 
   public void validateFields() {

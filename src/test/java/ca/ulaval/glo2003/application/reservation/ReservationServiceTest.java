@@ -4,6 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,7 +50,13 @@ public class ReservationServiceTest {
     when(customerDto.name()).thenReturn("John Deer");
     when(customerDto.email()).thenReturn("john.deer@gmail.com");
     when(customerDto.phoneNumber()).thenReturn("1234567890");
-    when(restaurantRepository.getRestaurantById(null)).thenReturn(null);
+    // when(restaurantRepository.getRestaurantById(null)).thenReturn(null);
+
+    Restaurant mockRestaurant =
+        new Restaurant("Restaurant Name", 50, LocalTime.NOON, LocalTime.MIDNIGHT, "owner-123", 100);
+    when(restaurantRepository.getRestaurantById("123")).thenReturn(mockRestaurant);
+
+    when(restaurantRepository.getRestaurantById("999")).thenReturn(null);
 
     doNothing().when(reservationRepository).save(reservation);
   }
@@ -58,7 +66,14 @@ public class ReservationServiceTest {
 
     String expectedId = "456";
 
-    when((reservationFactory).createReservation(any(), any(), any(), any(), any(), any(), any()))
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
         .thenReturn(reservation);
     when(reservation.getId()).thenReturn(expectedId);
 
@@ -84,7 +99,14 @@ public class ReservationServiceTest {
 
     String restaurantId = "this restaurant dosent exist";
 
-    when((reservationFactory).createReservation(any(), any(), any(), any(), any(), any(), any()))
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
         .thenReturn(null);
 
     NotFoundException exception =
@@ -108,7 +130,8 @@ public class ReservationServiceTest {
             restaurantId);
 
     Restaurant mockRestaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123");
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 80);
 
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
     when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(mockRestaurant);

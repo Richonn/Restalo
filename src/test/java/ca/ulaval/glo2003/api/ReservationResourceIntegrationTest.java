@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
+import ca.ulaval.glo2003.api.dto.reservation.ReservationConfigDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
 import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.reservation.TimeDto;
@@ -381,6 +382,8 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             "restaurant-123",
             "Pizza Delamama",
             50,
-            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0))));
+            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0)),
+            new ReservationConfigDto(60)),
+        60);
   }
 }

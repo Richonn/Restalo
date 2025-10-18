@@ -29,7 +29,8 @@ public class ReservationMapperTest {
             "restaurant-123");
 
     restaurant =
-        new Restaurant("Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123");
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 120);
   }
 
   @Test
