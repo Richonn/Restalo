@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.api.exceptions;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import ca.ulaval.glo2003.api.dto.response.ErrorResponse;
 import org.junit.jupiter.api.Test;
 
 public class ErrorResponseTest {

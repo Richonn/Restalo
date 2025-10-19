@@ -2,7 +2,7 @@ package ca.ulaval.glo2003.api.exceptions.mappers;
 
 import static ca.ulaval.glo2003.api.exceptions.ErrorCodes.ERROR_INVALID_PARAMETER;
 
-import ca.ulaval.glo2003.api.exceptions.ErrorResponse;
+import ca.ulaval.glo2003.api.dto.response.ErrorResponse;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
