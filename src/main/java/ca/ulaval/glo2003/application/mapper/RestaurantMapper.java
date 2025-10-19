@@ -9,7 +9,7 @@ public class RestaurantMapper {
 
     Integer reservationDuration =
         (restaurantDto.reservations() != null)
-            ? restaurantDto.reservations().reservationDuration()
+            ? restaurantDto.reservations().duration()
             : null;
 
     return new Restaurant(

@@ -69,10 +69,6 @@ public class Restaurant {
     return hours.getReservationDuration();
   }
 
-  public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {
-    return startTime.plusMinutes(duration);
-  }
-
   public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();

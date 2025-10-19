@@ -20,7 +20,7 @@ public class HoursTest {
 
   @Test
   void
-      givenValidHoursAndValidReservationStartTime_whenDefineReservationEndTimeAndDefaultReservationLength_thenReturnReservationEndTime() {
+      givenValidHoursAndValidReservationStartTime_whenDefineReservationEndTimeAndDefaultReservationDuration_thenReturnReservationEndTime() {
     Hours a_hours =
         hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(11, 0, 0)).build();
     LocalTime startTime = LocalTime.of(10, 0, 0);
@@ -31,12 +31,12 @@ public class HoursTest {
 
   @Test
   void
-      givenValidHoursAndValidReservationStartTimeAndReservationLength_whenDefineReservationEndTime_thenReturnReservationEndTime() {
+      givenValidHoursAndValidReservationStartTimeAndReservationDuration_whenDefineReservationEndTime_thenReturnReservationEndTime() {
     Hours a_hours =
         hoursFixture
             .withOpen(LocalTime.of(10, 0, 0))
             .withClose(LocalTime.of(11, 0, 0))
-            .withReservationLength(10)
+            .withReservationDuration(10)
             .build();
     LocalTime startTime = LocalTime.of(10, 0, 0);
     LocalTime expectedEndTime = LocalTime.of(10, 10, 0);
@@ -125,12 +125,12 @@ public class HoursTest {
   }
 
   @Test
-  void givenNegativeReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
+  void givenNegativeReservationDuration_whenValidateFields_thenThrowsInvalidParameterException() {
     Hours a_hours =
         hoursFixture
             .withOpen(LocalTime.of(10, 0, 0))
             .withClose(LocalTime.of(12, 0, 0))
-            .withReservationLength(-10)
+            .withReservationDuration(-10)
             .build();
 
     InvalidParameterException exception =
@@ -142,12 +142,12 @@ public class HoursTest {
   }
 
   @Test
-  void givenZeroReservationLength_whenValidateFields_thenThrowsInvalidParameterException() {
+  void givenZeroReservationDuration_whenValidateFields_thenThrowsInvalidParameterException() {
     Hours a_hours =
         hoursFixture
             .withOpen(LocalTime.of(10, 0, 0))
             .withClose(LocalTime.of(12, 0, 0))
-            .withReservationLength(0)
+            .withReservationDuration(0)
             .build();
 
     InvalidParameterException exception =
@@ -156,6 +156,40 @@ public class HoursTest {
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage())
         .isEqualTo("The restaurant reservation length needs to be bigger than 0 minutes");
+  }
+
+  @Test
+  void givenTooLowReservationDuration_whenValidateFields_thenThrowsInvalidParameterException() {
+    Hours a_hours =
+        hoursFixture
+            .withOpen(LocalTime.of(10, 0, 0))
+            .withClose(LocalTime.of(12, 0, 0))
+            .withReservationDuration(3)
+            .build();
+
+    InvalidParameterException exception =
+        assertThrows(InvalidParameterException.class, a_hours::validateFields);
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("Reservation reservationDuration must be between 5 and 180 minutes.");
+  }
+
+  @Test
+  void givenTooHighReservationDuration_whenValidateFields_thenThrowsInvalidParameterException() {
+    Hours a_hours =
+        hoursFixture
+            .withOpen(LocalTime.of(10, 0, 0))
+            .withClose(LocalTime.of(12, 0, 0))
+            .withReservationDuration(181)
+            .build();
+
+    InvalidParameterException exception =
+        assertThrows(InvalidParameterException.class, a_hours::validateFields);
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("Reservation reservationDuration must be between 5 and 180 minutes.");
   }
 
   @Test

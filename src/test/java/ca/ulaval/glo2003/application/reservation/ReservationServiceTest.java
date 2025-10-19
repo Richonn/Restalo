@@ -94,9 +94,24 @@ public class ReservationServiceTest {
 
   @Test
   void
-      givenValidReservationDTOAndNonExistantRestaurantId_whenCreateReservationReturnNull_thenThrowsNotFoundException() {
+      givenValidReservationDTOAndNonExistentRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
-    String restaurantId = "this restaurant dosent exist";
+    String restaurantId = "this restaurant doesn't exist";
+
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class,
+            () -> reservationService.createReservation(reservationDto, restaurantId));
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void
+      givenInvalidReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
+
+    String restaurantId = "123";
 
     when(reservationFactory.createReservation(
             any(LocalDate.class),
