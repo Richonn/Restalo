@@ -9,13 +9,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationConfigDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
-import ca.ulaval.glo2003.api.dto.reservation.TimeDto;
-import ca.ulaval.glo2003.api.dto.restaurant.HoursDto;
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.common.CustomerDto;
+import ca.ulaval.glo2003.api.dto.common.HoursDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationTimeDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.response.RestaurantReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.api.ressources.reservation.ReservationResource;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
@@ -375,15 +374,13 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
     return new ReservationResponseDto(
         "reservation-123",
         LocalDate.of(2025, 10, 30),
-        new TimeDto(LocalTime.of(18, 0), LocalTime.of(19, 0)),
+        new ReservationTimeDto(LocalTime.of(18, 0), LocalTime.of(19, 0)),
         4,
         new CustomerDto("John Doe", "john@example.com", "1234567890"),
-        new RestaurantDto(
+        new RestaurantReservationResponseDto(
             "restaurant-123",
             "Pizza Delamama",
             50,
-            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0)),
-            new ReservationConfigDto(60)),
-        60);
+            new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0))));
   }
 }

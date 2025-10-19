@@ -1,9 +1,9 @@
 package ca.ulaval.glo2003.application.reservation;
 
-import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
+import ca.ulaval.glo2003.api.assembler.ReservationAssembler;
+import ca.ulaval.glo2003.api.dto.common.ReservationDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
-import ca.ulaval.glo2003.application.mapper.ReservationMapper;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
@@ -34,8 +34,9 @@ public class ReservationService {
     }
 
     Restaurant restaurant = restaurantRepository.getRestaurantById(restaurantId);
+
     if (restaurant == null) {
-      throw new NotFoundException("Restaurant not found.");
+      throw new NotFoundException();
     }
 
     Reservation reservation =
@@ -48,11 +49,13 @@ public class ReservationService {
             reservationDto.customer().phoneNumber(),
             restaurant);
 
-    if (reservation != null) {
-      reservationRepository.save(reservation);
-      return reservation.getId();
+    if (reservation == null) {
+      throw new NotFoundException();
     }
-    throw new NotFoundException();
+
+    reservationRepository.save(reservation);
+
+    return reservation.getId();
   }
 
   public ReservationResponseDto getReservationById(String reservationId) {
@@ -68,6 +71,6 @@ public class ReservationService {
       throw new NotFoundException();
     }
 
-    return ReservationMapper.toReservationResponseDto(reservation, restaurant);
+    return ReservationAssembler.toReservationResponseDto(reservation, restaurant);
   }
 }

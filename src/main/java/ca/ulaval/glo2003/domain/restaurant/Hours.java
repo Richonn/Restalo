@@ -10,13 +10,13 @@ public class Hours {
   private final LocalTime close;
   private final int reservationDuration;
 
-  private static final int DEFAULT_RESERVATION_LENGTH = 60;
+  private static final int DEFAULT_RESERVATION_DURATION = 60;
 
-  public Hours(LocalTime open, LocalTime close, Integer reservationLength) {
+  public Hours(LocalTime open, LocalTime close, Integer reservationDuration) {
     this.open = open;
     this.close = close;
     this.reservationDuration =
-        Objects.requireNonNullElse(reservationLength, DEFAULT_RESERVATION_LENGTH);
+        Objects.requireNonNullElse(reservationDuration, DEFAULT_RESERVATION_DURATION);
   }
 
   public LocalTime getOpeningHour() {
@@ -34,6 +34,30 @@ public class Hours {
   public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
+  }
+
+  public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
+
+    if (from != null && to != null) {
+      return !open.isAfter(from) && !close.isBefore(to);
+    } else if (from != null) {
+      return !open.isAfter(from) && close.isAfter(from);
+    } else if (to != null) {
+      return open.isBefore(to) && !close.isBefore(to);
+    }
+    return true;
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime) {
+    if (startTime.isBefore(open)) {
+      throw new InvalidParameterException(
+          "The restaurant is not open for the selected reservation start time");
+    }
+    if (startTime.plusMinutes(reservationDuration).isAfter(close)) {
+      throw new InvalidParameterException(
+          "The restaurant closes before the end of the reservation");
+    }
+    return startTime.plusMinutes(reservationDuration);
   }
 
   private void validateFieldsAreDefined() {
@@ -62,29 +86,5 @@ public class Hours {
       throw new InvalidParameterException(
           "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
-  }
-
-  public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
-
-    if (from != null && to != null) {
-      return !open.isAfter(from) && !close.isBefore(to);
-    } else if (from != null) {
-      return !open.isAfter(from) && close.isAfter(from);
-    } else if (to != null) {
-      return open.isBefore(to) && !close.isBefore(to);
-    }
-    return true;
-  }
-
-  public LocalTime defineReservationEndTime(LocalTime startTime) {
-    if (startTime.isBefore(open)) {
-      throw new InvalidParameterException(
-          "The restaurant is not open for the selected reservation start time");
-    }
-    if (startTime.plusMinutes(reservationDuration).isAfter(close)) {
-      throw new InvalidParameterException(
-          "The restaurant closes before the end of the reservation");
-    }
-    return startTime.plusMinutes(reservationDuration);
   }
 }

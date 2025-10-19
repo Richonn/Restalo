@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.application.mapper;
 
-import ca.ulaval.glo2003.api.dto.restaurant.OpenedHoursDto;
+import ca.ulaval.glo2003.api.dto.common.OpenedHoursDto;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 
 public class OpenedHoursMapper {

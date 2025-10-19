@@ -10,9 +10,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.common.CustomerDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;

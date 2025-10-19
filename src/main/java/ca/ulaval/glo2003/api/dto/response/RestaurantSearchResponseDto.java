@@ -1,4 +1,6 @@
-package ca.ulaval.glo2003.api.dto.restaurant;
+package ca.ulaval.glo2003.api.dto.response;
+
+import ca.ulaval.glo2003.api.dto.common.HoursDto;
 
 public record RestaurantSearchResponseDto(
     String id, String name, Integer capacity, HoursDto hours) {}

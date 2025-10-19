@@ -10,9 +10,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantSearchResponseDto;
-import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
+import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
@@ -311,7 +311,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
       assertEquals(200, response.getStatus());
       assertNotNull(response.getEntity());
-      verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsDto.class));
+      verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsRequestDto.class));
     }
   }
 
@@ -423,7 +423,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
       assertEquals(200, response.getStatus());
       assertNotNull(response.getEntity());
-      verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsDto.class));
+      verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsRequestDto.class));
     }
   }
 }

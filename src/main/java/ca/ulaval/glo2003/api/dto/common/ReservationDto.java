@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api.dto.reservation;
+package ca.ulaval.glo2003.api.dto.common;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

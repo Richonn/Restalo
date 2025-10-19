@@ -10,7 +10,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.restaurant.*;
+import ca.ulaval.glo2003.api.dto.common.HoursDto;
+import ca.ulaval.glo2003.api.dto.common.OpenedHoursDto;
+import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
+import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -195,7 +199,8 @@ public class RestaurantServiceTest {
   @Test
   void givenValidSearchRequest_whenGetRestaurantBySearch_thenReturnsFilteredList() {
     OpenedHoursDto openedHours = new OpenedHoursDto(LocalTime.of(12, 0), LocalTime.of(14, 0));
-    SearchRestaurantsDto searchRequest = new SearchRestaurantsDto("Pizza", openedHours);
+    SearchRestaurantsRequestDto searchRequest =
+        new SearchRestaurantsRequestDto("Pizza", openedHours);
 
     Restaurant restaurant1 =
         new Restaurant(
@@ -222,7 +227,7 @@ public class RestaurantServiceTest {
   @Test
   void givenSearchWithNullName_whenGetRestaurantBySearch_thenReturnsAllMatchingHours() {
     OpenedHoursDto openedHours = new OpenedHoursDto(LocalTime.of(12, 0), LocalTime.of(14, 0));
-    SearchRestaurantsDto searchRequest = new SearchRestaurantsDto(null, openedHours);
+    SearchRestaurantsRequestDto searchRequest = new SearchRestaurantsRequestDto(null, openedHours);
 
     Restaurant restaurant1 =
         new Restaurant(
@@ -246,7 +251,8 @@ public class RestaurantServiceTest {
   @Test
   void givenNoMatchingRestaurants_whenGetRestaurantBySearch_thenReturnsEmptyList() {
     OpenedHoursDto openedHours = new OpenedHoursDto(LocalTime.of(2, 0), LocalTime.of(3, 0));
-    SearchRestaurantsDto searchRequest = new SearchRestaurantsDto("Sushi", openedHours);
+    SearchRestaurantsRequestDto searchRequest =
+        new SearchRestaurantsRequestDto("Sushi", openedHours);
 
     Restaurant restaurant1 =
         new Restaurant(
