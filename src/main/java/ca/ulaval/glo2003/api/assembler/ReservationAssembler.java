@@ -1,12 +1,12 @@
-package ca.ulaval.glo2003.application.mapper;
+package ca.ulaval.glo2003.api.assembler;
 
-import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
-import ca.ulaval.glo2003.api.dto.reservation.TimeDto;
+import ca.ulaval.glo2003.api.dto.common.CustomerDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationTimeDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 
-public class ReservationMapper {
+public class ReservationAssembler {
 
   public static ReservationResponseDto toReservationResponseDto(
       Reservation reservation, Restaurant restaurant) {
@@ -14,13 +14,12 @@ public class ReservationMapper {
     return new ReservationResponseDto(
         reservation.getId(),
         reservation.getDate(),
-        new TimeDto(reservation.getStartTime(), reservation.getEndTime()),
+        new ReservationTimeDto(reservation.getStartTime(), reservation.getEndTime()),
         reservation.getGroupSize(),
         new CustomerDto(
             reservation.getCustomer().getName(),
             reservation.getCustomer().getEmail(),
             reservation.getCustomer().getPhoneNumber()),
-        RestaurantMapper.toRestaurantDto(restaurant),
-        restaurant.getReservationLength());
+        RestaurantReservationResponseAssembler.toRestaurantReservationResponseDto(restaurant));
   }
 }

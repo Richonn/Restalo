@@ -6,10 +6,10 @@ public class HoursFixture {
 
   private LocalTime OPEN = LocalTime.of(11, 0, 0);
   private LocalTime CLOSE = LocalTime.of(12, 0, 0);
-  private Integer RESERVATIONLENGTH = 60;
+  private Integer RESERVATION_DURATION = 60;
 
   public Hours build() {
-    return new Hours(OPEN, CLOSE, RESERVATIONLENGTH);
+    return new Hours(OPEN, CLOSE, RESERVATION_DURATION);
   }
 
   public HoursFixture withOpen(LocalTime open) {
@@ -22,8 +22,8 @@ public class HoursFixture {
     return this;
   }
 
-  public HoursFixture withReservationLength(int reservationLength) {
-    RESERVATIONLENGTH = reservationLength;
+  public HoursFixture withReservationDuration(int reservationDuration) {
+    RESERVATION_DURATION = reservationDuration;
     return this;
   }
 }

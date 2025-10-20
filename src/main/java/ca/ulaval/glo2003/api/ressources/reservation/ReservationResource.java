@@ -1,7 +1,7 @@
 package ca.ulaval.glo2003.api.ressources.reservation;
 
-import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;

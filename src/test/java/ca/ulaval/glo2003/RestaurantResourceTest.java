@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
+import ca.ulaval.glo2003.api.assembler.RestaurantAssembler;
+import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
-import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -37,7 +37,7 @@ public class RestaurantResourceTest {
 
     Restaurant restaurant =
         new Restaurant(nom, capacity, open, close, ownerId, reservationDuration);
-    RestaurantDto restaurantDto = RestaurantMapper.toRestaurantDto(restaurant);
+    RestaurantDto restaurantDto = RestaurantAssembler.toRestaurantDto(restaurant);
     Response response = resource.createRestaurant(ownerId, restaurantDto);
 
     String[] segmentsList = response.getLocation().getPath().split("/");

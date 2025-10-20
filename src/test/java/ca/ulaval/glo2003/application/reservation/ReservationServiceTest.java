@@ -10,9 +10,9 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.api.dto.reservation.CustomerDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationDto;
-import ca.ulaval.glo2003.api.dto.reservation.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.common.CustomerDto;
+import ca.ulaval.glo2003.api.dto.common.ReservationDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -50,7 +50,6 @@ public class ReservationServiceTest {
     when(customerDto.name()).thenReturn("John Deer");
     when(customerDto.email()).thenReturn("john.deer@gmail.com");
     when(customerDto.phoneNumber()).thenReturn("1234567890");
-    // when(restaurantRepository.getRestaurantById(null)).thenReturn(null);
 
     Restaurant mockRestaurant =
         new Restaurant("Restaurant Name", 50, LocalTime.NOON, LocalTime.MIDNIGHT, "owner-123", 100);
@@ -95,9 +94,24 @@ public class ReservationServiceTest {
 
   @Test
   void
-      givenValidReservationDTOAndNonExistantRestaurantId_whenCreateReservationReturnNull_thenThrowsNotFoundException() {
+      givenValidReservationDTOAndNonExistentRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
-    String restaurantId = "this restaurant dosent exist";
+    String restaurantId = "this restaurant doesn't exist";
+
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class,
+            () -> reservationService.createReservation(reservationDto, restaurantId));
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void
+      givenInvalidReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
+
+    String restaurantId = "123";
 
     when(reservationFactory.createReservation(
             any(LocalDate.class),

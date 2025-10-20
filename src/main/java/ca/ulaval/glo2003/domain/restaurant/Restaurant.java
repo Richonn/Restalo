@@ -24,7 +24,7 @@ public class Restaurant {
     this.id = UUID.randomUUID().toString();
     this.name = name;
     this.capacity = capacity;
-    this.hours = new Hours(openingHour, closingHour, null);
+    this.hours = new Hours(openingHour, closingHour, reservationDuration);
     this.ownerId = ownerId;
   }
 
@@ -69,14 +69,27 @@ public class Restaurant {
     return hours.getReservationDuration();
   }
 
-  public LocalTime defineReservationEndTime(LocalTime startTime, Integer duration) {
-    return startTime.plusMinutes(duration);
-  }
-
   public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
     hours.validateFields();
+  }
+
+  public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
+    return hours.isFullyOpenDuring(from, to);
+  }
+
+  public boolean matchesName(String nameQuery) {
+    if (nameQuery == null || nameQuery.isBlank()) {
+      return true;
+    }
+    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    String normalizedName = name.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    return normalizedName.contains(normalizedQuery);
+  }
+
+  public LocalTime defineReservationEndTime(LocalTime startTime) {
+    return hours.defineReservationEndTime(startTime);
   }
 
   private void validateFieldsAreDefined() {
@@ -95,22 +108,5 @@ public class Restaurant {
     if (capacity <= 0) {
       throw new InvalidParameterException("The capacity of the restaurant must be positive");
     }
-  }
-
-  public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
-    return hours.isFullyOpenDuring(from, to);
-  }
-
-  public boolean matchesName(String nameQuery) {
-    if (nameQuery == null || nameQuery.isBlank()) {
-      return true;
-    }
-    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
-    String normalizedName = name.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
-    return normalizedName.contains(normalizedQuery);
-  }
-
-  public LocalTime defineReservationEndTime(LocalTime startTime) {
-    return hours.defineReservationEndTime(startTime);
   }
 }

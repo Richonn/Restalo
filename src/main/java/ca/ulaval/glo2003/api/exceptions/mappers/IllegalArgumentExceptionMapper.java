@@ -1,5 +1,6 @@
-package ca.ulaval.glo2003.api.exceptions;
+package ca.ulaval.glo2003.api.exceptions.mappers;
 
+import ca.ulaval.glo2003.api.dto.response.ErrorResponse;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

@@ -144,3 +144,11 @@ Plusieurs pistes d’amélioration ont été proposées, souvent complémentaire
 ### Screenshots de 'arbre de commits et branches (≥10 commits)
 
 ![alt text](screen-shots/rendu_2/treecommitbranches.png)
+
+---
+
+## Diagramme d'architecture
+
+![alt text](screen-shots/rendu_2/diagramme-arch.png)
+
+---

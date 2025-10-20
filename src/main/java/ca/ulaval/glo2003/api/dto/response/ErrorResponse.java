@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api.exceptions;
+package ca.ulaval.glo2003.api.dto.response;
 
 public class ErrorResponse {
   private String error;

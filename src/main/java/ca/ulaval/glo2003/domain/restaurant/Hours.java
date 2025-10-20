@@ -10,13 +10,15 @@ public class Hours {
   private final LocalTime close;
   private final int reservationDuration;
 
-  private static final int DEFAULT_RESERVATION_LENGTH = 60;
+  private static final int DEFAULT_RESERVATION_DURATION = 60;
+  private static final int MIN_RESERVATION_DURATION = 5;
+  private static final int MAX_RESERVATION_DURATION = 180;
 
-  public Hours(LocalTime open, LocalTime close, Integer reservationLength) {
+  public Hours(LocalTime open, LocalTime close, Integer reservationDuration) {
     this.open = open;
     this.close = close;
     this.reservationDuration =
-        Objects.requireNonNullElse(reservationLength, DEFAULT_RESERVATION_LENGTH);
+        Objects.requireNonNullElse(reservationDuration, DEFAULT_RESERVATION_DURATION);
   }
 
   public LocalTime getOpeningHour() {
@@ -34,34 +36,6 @@ public class Hours {
   public void validateFields() {
     validateFieldsAreDefined();
     validateFieldsAreValid();
-  }
-
-  private void validateFieldsAreDefined() {
-    if (open == null) {
-      throw new MissingParameterException("The openingHour of the restaurant is required");
-    }
-    if (close == null) {
-      throw new MissingParameterException("The closingHour of the restaurant is required");
-    }
-  }
-
-  private void validateFieldsAreValid() {
-    if (close.isBefore(open)) {
-      throw new InvalidParameterException(
-          "The restaurant closing hour cannot be before the opening hour");
-    }
-    if (open.plusHours(1).compareTo(close) > 0) {
-      throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
-    }
-    if (reservationDuration <= 0) {
-      throw new InvalidParameterException(
-          "The restaurant reservation length needs to be bigger than 0 minutes");
-    }
-
-    if (reservationDuration < 5 || reservationDuration > 180) {
-      throw new InvalidParameterException(
-          "Reservation reservationDuration must be between 5 and 180 minutes.");
-    }
   }
 
   public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
@@ -86,5 +60,34 @@ public class Hours {
           "The restaurant closes before the end of the reservation");
     }
     return startTime.plusMinutes(reservationDuration);
+  }
+
+  private void validateFieldsAreDefined() {
+    if (open == null) {
+      throw new MissingParameterException("The openingHour of the restaurant is required");
+    }
+    if (close == null) {
+      throw new MissingParameterException("The closingHour of the restaurant is required");
+    }
+  }
+
+  private void validateFieldsAreValid() {
+    if (close.isBefore(open)) {
+      throw new InvalidParameterException(
+          "The restaurant closing hour cannot be before the opening hour");
+    }
+    if (open.plusHours(1).compareTo(close) > 0) {
+      throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
+    }
+    if (reservationDuration <= 0) {
+      throw new InvalidParameterException(
+          "The restaurant reservation length needs to be bigger than 0 minutes");
+    }
+
+    if (reservationDuration < MIN_RESERVATION_DURATION
+        || reservationDuration > MAX_RESERVATION_DURATION) {
+      throw new InvalidParameterException(
+          "Reservation reservationDuration must be between 5 and 180 minutes.");
+    }
   }
 }

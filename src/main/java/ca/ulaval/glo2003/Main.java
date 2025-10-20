@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003;
 
-import ca.ulaval.glo2003.api.exceptions.IllegalArgumentExceptionMapper;
+import ca.ulaval.glo2003.api.exceptions.mappers.IllegalArgumentExceptionMapper;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;

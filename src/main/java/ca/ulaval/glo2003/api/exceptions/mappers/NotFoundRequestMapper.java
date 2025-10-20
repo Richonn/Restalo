@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api.exceptions;
+package ca.ulaval.glo2003.api.exceptions.mappers;
 
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MediaType;

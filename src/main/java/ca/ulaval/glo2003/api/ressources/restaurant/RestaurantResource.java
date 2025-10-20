@@ -1,7 +1,7 @@
 package ca.ulaval.glo2003.api.ressources.restaurant;
 
-import ca.ulaval.glo2003.api.dto.restaurant.RestaurantDto;
-import ca.ulaval.glo2003.api.dto.restaurant.SearchRestaurantsDto;
+import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
+import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -65,7 +65,7 @@ public class RestaurantResource {
 
   @POST
   @Path("/search/restaurants")
-  public Response searchRestaurants(SearchRestaurantsDto searchRequest) {
+  public Response searchRestaurants(SearchRestaurantsRequestDto searchRequest) {
     return Response.status(Response.Status.OK)
         .entity(restaurantService.getRestaurantBySearch(searchRequest))
         .build();
