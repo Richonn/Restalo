@@ -8,9 +8,7 @@ public class RestaurantMapper {
   public static Restaurant toRestaurant(RestaurantDto restaurantDto, String ownerId) {
 
     Integer reservationDuration =
-        (restaurantDto.reservations() != null)
-            ? restaurantDto.reservations().duration()
-            : null;
+        (restaurantDto.reservations() != null) ? restaurantDto.reservations().duration() : null;
 
     return new Restaurant(
         restaurantDto.name(),
