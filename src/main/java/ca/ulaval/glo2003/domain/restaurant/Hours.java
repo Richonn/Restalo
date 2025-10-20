@@ -11,6 +11,8 @@ public class Hours {
   private final int reservationDuration;
 
   private static final int DEFAULT_RESERVATION_DURATION = 60;
+  private static final int MIN_RESERVATION_DURATION = 5;
+  private static final int MAX_RESERVATION_DURATION = 180;
 
   public Hours(LocalTime open, LocalTime close, Integer reservationDuration) {
     this.open = open;
@@ -82,7 +84,8 @@ public class Hours {
           "The restaurant reservation length needs to be bigger than 0 minutes");
     }
 
-    if (reservationDuration < 5 || reservationDuration > 180) {
+    if (reservationDuration < MIN_RESERVATION_DURATION
+        || reservationDuration > MAX_RESERVATION_DURATION) {
       throw new InvalidParameterException(
           "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
