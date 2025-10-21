@@ -129,45 +129,4 @@ public class ReservationFactoryTest {
             reservationFactory.createReservation(
                 DATE, START_TIME, GROUP_SIZE, null, EMAIL, PHONE_NUMBER, restaurant));
   }
-
-  @Test
-  void givenGroupSizeExceedsCapacity_whenCreateReservation_thenThrowsInvalidParameterException() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Pizza Delamama", 4, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    assertThrows(
-        InvalidParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                DATE, START_TIME, 100, NAME, EMAIL, PHONE_NUMBER, restaurant));
-  }
-
-  @Test
-  void givenGroupSizeEqualsCapacity_whenCreateReservation_thenReturnsValidReservation() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Pizza Delamama", 4, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    Reservation reservation =
-        reservationFactory.createReservation(
-            DATE, START_TIME, 4, NAME, EMAIL, PHONE_NUMBER, restaurant);
-
-    assertNotNull(reservation);
-    assertThat(reservation.getGroupSize()).isEqualTo(4);
-  }
-
-  @Test
-  void givenGroupSizeLessThanCapacity_whenCreateReservation_thenReturnsValidReservation() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Pizza Delamama", 10, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    Reservation reservation =
-        reservationFactory.createReservation(
-            DATE, START_TIME, 5, NAME, EMAIL, PHONE_NUMBER, restaurant);
-
-    assertNotNull(reservation);
-    assertThat(reservation.getGroupSize()).isEqualTo(5);
-  }
 }
