@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.factories.reservation;
 
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalDate;
@@ -27,6 +28,10 @@ public class ReservationFactory {
 
     reservation.adjustStartTimeTo15minSlice();
     reservation.validateFields();
+
+    if (groupSize > restaurant.getCapacity()) {
+      throw new InvalidParameterException("The group size exceeds the restaurant capacity");
+    }
 
     reservation.setReservationEndTime(
         restaurant.defineReservationEndTime(reservation.getStartTime()));
