@@ -119,7 +119,7 @@ public class ReservationTest {
   }
 
   @Test
-  void givenAValidReservation_whenDdjustStartTimeTo15minSlice_thenNoExceptions() {
+  void givenAValidReservation_whenAdjustStartTimeTo15minSlice_thenNoExceptions() {
 
     LocalTime startTime = LocalTime.of(12, 0);
     LocalTime endTime = LocalTime.of(13, 0);
@@ -132,5 +132,127 @@ public class ReservationTest {
     Reservation a_reservation = reservationFixture.build(reservationTime, customer);
 
     assertDoesNotThrow(a_reservation::adjustStartTimeTo15minSlice);
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithExactName_thenReturnTrue() {
+    String customerName = "customerName";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(customerName)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithCorrectBeginningOfName_thenReturnTrue() {
+    String customerName = "customerName";
+    String customerBeginningName = "customer";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(customerBeginningName)).isTrue();
+  }
+
+  @Test
+  void
+      givenAValidReservation_whenMatchesCustomerNameWithCorrectNameWithCaseAndSpaces_thenReturnTrue() {
+    String customerName = "customerName";
+    String customerNameWithCaseAndSpaces = "cUSt oMernAM e";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(customerNameWithCaseAndSpaces)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithNull_thenReturnTrue() {
+    String customerName = "customerName";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(null)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithBlank_thenReturnTrue() {
+    String customerName = "customerName";
+    String customerNameBlank = "";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(customerNameBlank)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithEndOfName_thenReturnFalse() {
+    String customerName = "customerName";
+    String customerNameEnd = "Name";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(customerNameEnd)).isFalse();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesCustomerNameWithNotCorrectName_thenReturnFalse() {
+    String customerName = "customerName";
+    String invalidCustomerName = "NotTheCorrectName";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    when(customer.getName()).thenReturn(customerName);
+
+    assertThat(a_reservation.matchesCustomerName(invalidCustomerName)).isFalse();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesDateWithNull_thenReturnTrue() {
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    assertThat(a_reservation.matchesDate(null)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesDateWithBlank_thenReturnTrue() {
+    String blankDate = "";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    assertThat(a_reservation.matchesDate(blankDate)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesDateWithCorrectDate_thenReturnTrue() {
+    String dateString = "2026-12-12";
+    LocalDate date = LocalDate.of(2026, 12, 12);
+    Reservation a_reservation = reservationFixture.withDate(date).build(reservationTime, customer);
+
+    assertThat(a_reservation.matchesDate(dateString)).isTrue();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesDateWithNotCorrectDate_thenReturnFalse() {
+    String dateString = "2025-11-11";
+    LocalDate date = LocalDate.of(2026, 12, 12);
+    Reservation a_reservation = reservationFixture.withDate(date).build(reservationTime, customer);
+
+    assertThat(a_reservation.matchesDate(dateString)).isFalse();
+  }
+
+  @Test
+  void givenAValidReservation_whenMatchesDateWithInvalidDate_thenThrowsInvalidParameterException() {
+    String dateString = "invalidDate";
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+
+    InvalidParameterException exception =
+        assertThrows(InvalidParameterException.class, () -> a_reservation.matchesDate(dateString));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The provided date is not a valid LocalDate format.");
   }
 }

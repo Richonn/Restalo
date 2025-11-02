@@ -4,12 +4,7 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -48,5 +43,17 @@ public class ReservationResource {
     ReservationResponseDto reservation = reservationService.getReservationById(reservationNumber);
 
     return Response.status(Response.Status.OK).entity(reservation).build();
+  }
+
+  @GET
+  @Path("restaurants/{id}/reservations")
+  public Response searchReservations(
+      @PathParam("id") String reservationNumber,
+      @QueryParam("date") String dateString,
+      @QueryParam("customerName") String customerName) {
+    return Response.status(Response.Status.OK)
+        .entity(
+            reservationService.getReservationBySearch(reservationNumber, dateString, customerName))
+        .build();
   }
 }

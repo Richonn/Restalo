@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Reservation {
@@ -82,6 +83,26 @@ public class Reservation {
 
   public void adjustStartTimeTo15minSlice() {
     reservationTime.adjustStartTimeTo15minSlice();
+  }
+
+  public boolean matchesDate(String dateString) {
+    if (dateString == null || dateString.isBlank()) {
+      return true;
+    }
+    try {
+      return date.isEqual(LocalDate.parse(dateString));
+    } catch (Exception e) {
+      throw new InvalidParameterException("The provided date is not a valid LocalDate format.");
+    }
+  }
+
+  public boolean matchesCustomerName(String customerName) {
+    if (customerName == null || customerName.isBlank()) {
+      return true;
+    }
+    String normalizedQuery = customerName.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    String normalizedName = customer.getName().replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    return normalizedName.startsWith(normalizedQuery);
   }
 
   public void validateFields() {

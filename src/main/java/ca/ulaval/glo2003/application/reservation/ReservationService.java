@@ -1,8 +1,10 @@
 package ca.ulaval.glo2003.application.reservation;
 
 import ca.ulaval.glo2003.api.assembler.ReservationAssembler;
+import ca.ulaval.glo2003.api.assembler.ReservationSearchResponseAssembler;
 import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
+import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -11,6 +13,7 @@ import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import java.util.List;
 
 public class ReservationService {
   private final ReservationRepository reservationRepository;
@@ -72,5 +75,18 @@ public class ReservationService {
     }
 
     return ReservationAssembler.toReservationResponseDto(reservation, restaurant);
+  }
+
+  public List<ReservationSearchResponseDto> getReservationBySearch(
+      String restaurantNumber, String dateString, String customerName) {
+
+    List<Reservation> listAllReservationOfRestaurant =
+        reservationRepository.getReservationListOfRestaurant(restaurantNumber);
+
+    return listAllReservationOfRestaurant.stream()
+        .filter(reservation -> reservation.matchesDate(dateString))
+        .filter(reservation -> reservation.matchesCustomerName(customerName))
+        .map(ReservationSearchResponseAssembler::toReservationSearchResponseDto)
+        .toList();
   }
 }
