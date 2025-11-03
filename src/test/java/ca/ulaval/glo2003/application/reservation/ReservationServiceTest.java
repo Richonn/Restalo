@@ -16,6 +16,7 @@ import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
+import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
@@ -33,18 +34,28 @@ import org.junit.jupiter.api.Test;
 public class ReservationServiceTest {
 
   private static ReservationService reservationService;
+  private static ReservationServiceFixture reservationServiceFixture;
 
   private final ReservationRepository reservationRepository = mock(ReservationRepository.class);
   private final RestaurantRepository restaurantRepository = mock(RestaurantRepository.class);
   private final ReservationFactory reservationFactory = mock(ReservationFactory.class);
+  private final RestaurantDomainService restaurantDomainService =
+      mock(RestaurantDomainService.class);
   private final Reservation reservation = mock(Reservation.class);
   private final ReservationDto reservationDto = mock(ReservationDto.class);
   private final CustomerDto customerDto = mock(CustomerDto.class);
+  private final Restaurant restaurant = mock(Restaurant.class);
 
   @BeforeEach
   public void setUp() {
+    reservationServiceFixture = new ReservationServiceFixture();
+
     reservationService =
-        new ReservationService(reservationRepository, restaurantRepository, reservationFactory);
+        new ReservationService(
+            reservationRepository,
+            restaurantRepository,
+            reservationFactory,
+            restaurantDomainService);
 
     when(reservationDto.date()).thenReturn(LocalDate.now());
     when(reservationDto.startTime()).thenReturn(LocalTime.NOON);
@@ -198,42 +209,29 @@ public class ReservationServiceTest {
 
   @Test
   void
-      givenValidReservationNumberAndDateStringAndCustomerName_whenGetReservationBySearch_ThenReturnsFilteredList() {
-    LocalDate date = LocalDate.of(2026, 12, 12);
-    LocalTime startTime = LocalTime.of(1, 1, 1);
-    int groupSize = 3;
-    String customerName = "customerName";
-    String email = "email";
-    String phoneNumber = "phoneNumber";
-    String restaurantId = "restaurantId";
+      givenValidReservationIdAndOwnerIdAndDateStringAndCustomerName_whenGetReservationBySearch_ThenReturnsFilteredList() {
 
-    Reservation reservation1 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
-    Reservation reservation2 =
-        new Reservation(
-            date.minusDays(1),
-            startTime,
-            groupSize,
-            customerName,
-            email,
-            phoneNumber,
-            restaurantId);
-    Reservation reservation3 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
-
-    List<Reservation> allReservationsOfRestaurant =
-        Arrays.asList(reservation1, reservation2, reservation3);
-    String searchedRestaurantId = "reservationNumber";
-    String searchedDateString = "2026-12-12";
-    LocalDate searchedDate = LocalDate.parse(searchedDateString);
+    String ownerId = "ownerId";
+    String searchedRestaurantId = "restaurantId";
+    LocalDate searchedDate = LocalDate.now();
+    String searchedDateString = searchedDate.toString();
     String searchedCustomerName = "customerName";
 
+    Reservation reservation1 = reservationServiceFixture.build();
+    Reservation reservation2 =
+        reservationServiceFixture.withDate(searchedDate.minusDays(1)).build();
+    Reservation reservation3 = reservationServiceFixture.build();
+    List<Reservation> allReservationsOfRestaurant =
+        Arrays.asList(reservation1, reservation2, reservation3);
+
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, searchedRestaurantId))
+        .thenReturn(restaurant);
     when(reservationRepository.getReservationListOfRestaurant(searchedRestaurantId))
         .thenReturn(allReservationsOfRestaurant);
 
     List<ReservationSearchResponseDto> reservationSearchResponseDto =
         reservationService.getReservationBySearch(
-            searchedRestaurantId, searchedDateString, searchedCustomerName);
+            ownerId, searchedRestaurantId, searchedDateString, searchedCustomerName);
 
     assertThat(reservationSearchResponseDto).isNotNull();
     assertThat(reservationSearchResponseDto).isNotEmpty();
@@ -242,38 +240,26 @@ public class ReservationServiceTest {
 
   @Test
   void
-      givenValidReservationNumberAndNullDateStringAndNullCustomerName_whenGetReservationBySearch_ThenReturnsAllReservationsOfRestaurant() {
-    LocalDate date = LocalDate.of(2026, 12, 12);
-    LocalTime startTime = LocalTime.of(1, 1, 1);
-    int groupSize = 3;
-    String customerName = "customerName";
-    String email = "email";
-    String phoneNumber = "phoneNumber";
-    String restaurantId = "restaurantId";
+      givenValidReservationIdAndOwnerIdAndNullDateStringAndNullCustomerName_whenGetReservationBySearch_ThenReturnsAllReservationsOfRestaurant() {
 
-    Reservation reservation1 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
+    String ownerId = "ownerId";
+    String searchedRestaurantId = "restaurantId";
+    LocalDate searchedDate = LocalDate.now();
+
+    Reservation reservation1 = reservationServiceFixture.build();
     Reservation reservation2 =
-        new Reservation(
-            date.minusDays(1),
-            startTime,
-            groupSize,
-            customerName,
-            email,
-            phoneNumber,
-            restaurantId);
-    Reservation reservation3 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
-
+        reservationServiceFixture.withDate(searchedDate.minusDays(1)).build();
+    Reservation reservation3 = reservationServiceFixture.build();
     List<Reservation> allReservationsOfRestaurant =
         Arrays.asList(reservation1, reservation2, reservation3);
-    String searchedRestaurantId = "reservationNumber";
 
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, searchedRestaurantId))
+        .thenReturn(restaurant);
     when(reservationRepository.getReservationListOfRestaurant(searchedRestaurantId))
         .thenReturn(allReservationsOfRestaurant);
 
     List<ReservationSearchResponseDto> reservationSearchResponseDto =
-        reservationService.getReservationBySearch(searchedRestaurantId, null, null);
+        reservationService.getReservationBySearch(ownerId, searchedRestaurantId, null, null);
 
     assertThat(reservationSearchResponseDto).isNotNull();
     assertThat(reservationSearchResponseDto).isNotEmpty();
@@ -282,42 +268,51 @@ public class ReservationServiceTest {
 
   @Test
   void givenNoMatch_whenGetReservationBySearch_ThenReturnsEmptyList() {
-    LocalDate date = LocalDate.of(2026, 12, 12);
-    LocalTime startTime = LocalTime.of(1, 1, 1);
-    int groupSize = 3;
-    String customerName = "customerName";
-    String email = "email";
-    String phoneNumber = "phoneNumber";
-    String restaurantId = "restaurantId";
 
-    Reservation reservation1 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
+    String ownerId = "ownerId";
+    String searchedRestaurantId = "restaurantId";
+    LocalDate searchedDate = LocalDate.now().plusDays(100);
+    String searchedDateString = searchedDate.toString();
+    String searchedCustomerName = "notExistentCustomerName";
+
+    Reservation reservation1 = reservationServiceFixture.build();
     Reservation reservation2 =
-        new Reservation(
-            date.minusDays(1),
-            startTime,
-            groupSize,
-            customerName,
-            email,
-            phoneNumber,
-            restaurantId);
-    Reservation reservation3 =
-        new Reservation(date, startTime, groupSize, customerName, email, phoneNumber, restaurantId);
-
+        reservationServiceFixture.withDate(LocalDate.now().minusDays(1)).build();
+    Reservation reservation3 = reservationServiceFixture.build();
     List<Reservation> allReservationsOfRestaurant =
         Arrays.asList(reservation1, reservation2, reservation3);
-    String searchedRestaurantId = "reservationNumber";
-    String searchedDateString = "2100-12-12";
-    String searchedCustomerName = "NotExistentCustomerName";
 
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, searchedRestaurantId))
+        .thenReturn(restaurant);
     when(reservationRepository.getReservationListOfRestaurant(searchedRestaurantId))
         .thenReturn(allReservationsOfRestaurant);
 
     List<ReservationSearchResponseDto> reservationSearchResponseDto =
         reservationService.getReservationBySearch(
-            searchedRestaurantId, searchedDateString, searchedCustomerName);
+            ownerId, searchedRestaurantId, searchedDateString, searchedCustomerName);
 
     assertThat(reservationSearchResponseDto).isNotNull();
     assertThat(reservationSearchResponseDto).isEmpty();
+  }
+
+  @Test
+  void givenOwnerIdDoesntOwnRestaurantId_whenGetReservationBySearch_thenThrows404() {
+    String ownerId = "ownerIdDoesntOwnRestaurantId";
+    String searchedRestaurantId = "restaurantId";
+    LocalDate searchedDate = LocalDate.now();
+    String searchedDateString = searchedDate.toString();
+    String searchedCustomerName = "customerName";
+
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, searchedRestaurantId))
+        .thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class,
+            () ->
+                reservationService.getReservationBySearch(
+                    ownerId, searchedRestaurantId, searchedDateString, searchedCustomerName));
+
+    assertThat(exception).isInstanceOf(NotFoundException.class);
   }
 }

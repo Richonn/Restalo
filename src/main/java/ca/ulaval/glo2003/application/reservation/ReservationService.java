@@ -7,6 +7,7 @@ import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
+import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
@@ -19,15 +20,18 @@ public class ReservationService {
   private final ReservationRepository reservationRepository;
   private final RestaurantRepository restaurantRepository;
   private final ReservationFactory reservationFactory;
+  private final RestaurantDomainService restaurantDomainService;
 
   @Inject
   public ReservationService(
       ReservationRepository reservationRepository,
       RestaurantRepository restaurantRepository,
-      ReservationFactory reservationFactory) {
+      ReservationFactory reservationFactory,
+      RestaurantDomainService restaurantDomainService) {
     this.reservationRepository = reservationRepository;
     this.restaurantRepository = restaurantRepository;
     this.reservationFactory = reservationFactory;
+    this.restaurantDomainService = restaurantDomainService;
   }
 
   public String createReservation(ReservationDto reservationDto, String restaurantId) {
@@ -78,10 +82,16 @@ public class ReservationService {
   }
 
   public List<ReservationSearchResponseDto> getReservationBySearch(
-      String restaurantNumber, String dateString, String customerName) {
+      String ownerId, String restaurantId, String dateString, String customerName) {
+
+    restaurantDomainService.validateHeaders(ownerId);
+
+    if (restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId) == null) {
+      throw new NotFoundException();
+    }
 
     List<Reservation> listAllReservationOfRestaurant =
-        reservationRepository.getReservationListOfRestaurant(restaurantNumber);
+        reservationRepository.getReservationListOfRestaurant(restaurantId);
 
     return listAllReservationOfRestaurant.stream()
         .filter(reservation -> reservation.matchesDate(dateString))
