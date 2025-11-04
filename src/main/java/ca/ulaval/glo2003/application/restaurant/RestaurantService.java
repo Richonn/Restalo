@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantService {
-  RestaurantDomainService restaurantDomainService;
-  RestaurantRepository repository;
+  private final RestaurantDomainService restaurantDomainService;
+  private final RestaurantRepository repository;
 
   @Inject
   public RestaurantService(
