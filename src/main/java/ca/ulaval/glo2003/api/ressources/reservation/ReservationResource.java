@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
@@ -65,5 +66,12 @@ public class ReservationResource {
             reservationService.getReservationBySearch(
                 ownerId, restaurantId, dateString, customerName))
         .build();
+  }
+
+  @DELETE
+  @Path("reservations/{number}")
+  public Response deleteReservation(@PathParam("number") String reservationNumber) {
+    reservationService.deleteReservation(reservationNumber);
+    return Response.noContent().build();
   }
 }

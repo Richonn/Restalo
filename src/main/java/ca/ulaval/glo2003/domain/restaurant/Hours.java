@@ -3,6 +3,8 @@ package ca.ulaval.glo2003.domain.restaurant;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Hours {
@@ -89,5 +91,17 @@ public class Hours {
       throw new InvalidParameterException(
           "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
+  }
+
+  public List<LocalTime> generateAllSlots() {
+    List<LocalTime> slots = new ArrayList<>();
+    LocalTime current = open;
+
+    while (!current.isAfter(close.minusMinutes(reservationDuration))) {
+      slots.add(current);
+      current = current.plusMinutes(reservationDuration);
+    }
+
+    return slots;
   }
 }
