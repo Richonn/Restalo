@@ -1,6 +1,8 @@
 package ca.ulaval.glo2003;
 
 import ca.ulaval.glo2003.api.exceptions.mappers.IllegalArgumentExceptionMapper;
+import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
+import ca.ulaval.glo2003.infra.persistence.mongo.MongoConnection;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -30,6 +32,20 @@ public class Main {
 
   public static void main(String[] args) {
     String baseUri = getBaseUri();
+    System.out.printf(
+        "Starting application with persistence mode: %s%n",
+        PersistenceConfig.getPersistenceMode().getValue());
+
+    if (PersistenceConfig.isMongoMode()) {
+      Runtime.getRuntime()
+          .addShutdownHook(
+              new Thread(
+                  () -> {
+                    System.out.println("Closing MongoDB connection...");
+                    MongoConnection.getInstance().close();
+                  }));
+    }
+
     startServer();
     System.out.printf("Jersey app started with endpoints available at %s%n", baseUri);
   }
