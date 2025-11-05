@@ -7,16 +7,16 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class Main {
-    private static String getBaseUri() {
-        String port = System.getenv("PORT");
-        if (port == null || port.isEmpty()) {
-            port = "8080";
-        }
-        return "http://0.0.0.0:" + port + "/";
+  private static String getBaseUri() {
+    String port = System.getenv("PORT");
+    if (port == null || port.isEmpty()) {
+      port = "8080";
     }
+    return "http://0.0.0.0:" + port + "/";
+  }
 
   public static HttpServer startServer() {
-        String baseUri = getBaseUri();
+    String baseUri = getBaseUri();
 
     final ResourceConfig rc =
         new ResourceConfig()
