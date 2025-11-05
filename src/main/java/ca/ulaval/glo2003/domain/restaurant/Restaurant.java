@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.domain.restaurant;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
@@ -112,11 +113,11 @@ public class Restaurant {
     }
   }
 
-  public List<LocalTime> getAvailableSlots(List<Reservation> reservations, String date) {
+  public List<LocalTime> getAvailableSlots(List<Reservation> reservations, LocalDate date) {
     List<LocalTime> allSlots = hours.generateAllSlots();
     var reservedSlots =
         reservations.stream()
-            .filter(r -> r.getDate().equals(date))
+            .filter(r -> r.getDate().equals(date)) // now LocalDate == LocalDate
             .map(Reservation::getStartTime)
             .toList();
     allSlots.removeAll(reservedSlots);
