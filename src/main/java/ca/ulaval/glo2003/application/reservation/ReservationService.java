@@ -99,4 +99,14 @@ public class ReservationService {
         .map(ReservationSearchResponseAssembler::toReservationSearchResponseDto)
         .toList();
   }
+
+  public void deleteReservation(String reservationId) {
+    Reservation reservation = reservationRepository.getReservationById(reservationId);
+
+    if (reservation == null) {
+      throw new NotFoundException("Reservation not found");
+    }
+
+    reservationRepository.delete(reservationId);
+  }
 }
