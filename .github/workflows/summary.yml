@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: 'unknown'
+      linting-result:
+        required: false
+        type: string
+        default: 'unknown'
 
 jobs:
   summary:
@@ -46,11 +50,24 @@ jobs:
           else
             echo "| Unit Tests | ❓ Unknown |" >> $GITHUB_STEP_SUMMARY
           fi
+          
+          if [ "${{ inputs.linting-result }}" == "success" ]; then
+            echo "| Linting | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.linting-result }}" == "failure" ]; then
+            echo "| Linting | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.linting-result }}" == "cancelled" ]; then
+            echo "| Linting | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ inputs.linting-result }}" == "skipped" ]; then
+            echo "| Linting | ⏭️ Skipped |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Linting | ❓ Unknown |" >> $GITHUB_STEP_SUMMARY
+          fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ inputs.build-result }}" == "success" ] && \
-             [ "${{ inputs.unit-tests-result }}" == "success" ]; then
+             [ "${{ inputs.unit-tests-result }}" == "success" ] && \
+             [ "${{ inputs.linting-results }}" == "success" ]; then
             echo "### 🎉 All checks passed!" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ⚠️ Some checks failed" >> $GITHUB_STEP_SUMMARY
@@ -70,9 +87,11 @@ jobs:
           fi
 
           if [ "${{ inputs.build-result }}" == "failure" ] || \
-             [ "${{ inputs.unit-tests-result }}" == "failure" ]; then
+             [ "${{ inputs.unit-tests-result }}" == "failure" ] || \
+             [ "${{ inputs.linting-results }}" == "failure" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Failed Jobs:" >> $GITHUB_STEP_SUMMARY
             [ "${{ inputs.build-result }}" == "failure" ] && echo "- ❌ Build" >> $GITHUB_STEP_SUMMARY
             [ "${{ inputs.unit-tests-result }}" == "failure" ] && echo "- ❌ Backend Tests" >> $GITHUB_STEP_SUMMARY
+            [ "${{ inputs.linting-results }}" == "failure" ] && echo "- ❌ Linting" >> $GITHUB_STEP_SUMMARY
           fi
