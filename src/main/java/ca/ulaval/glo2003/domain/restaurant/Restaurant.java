@@ -117,7 +117,7 @@ public class Restaurant {
     List<LocalTime> allSlots = hours.generateAllSlots();
     var reservedSlots =
         reservations.stream()
-            .filter(r -> r.getDate().equals(date)) // now LocalDate == LocalDate
+            .filter(r -> r.getDate().equals(date))
             .map(Reservation::getStartTime)
             .toList();
     allSlots.removeAll(reservedSlots);
