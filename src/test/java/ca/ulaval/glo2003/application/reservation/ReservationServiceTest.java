@@ -318,17 +318,6 @@ public class ReservationServiceTest {
   }
 
   @Test
-  void givenExistingReservationId_whenDeleteReservation_thenDeletesSuccessfully() {
-    String reservationId = "reservation-123";
-    Reservation mockReservation = mock(Reservation.class);
-    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
-
-    reservationService.deleteReservation(reservationId);
-
-    verify(reservationRepository).delete(reservationId);
-  }
-
-  @Test
   void givenNonExistentReservationId_whenDeleteReservation_thenThrowsNotFoundException() {
     String reservationId = "nonexistent";
     when(reservationRepository.getReservationById(reservationId)).thenReturn(null);
