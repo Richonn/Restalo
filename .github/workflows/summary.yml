@@ -67,7 +67,7 @@ jobs:
 
           if [ "${{ inputs.build-result }}" == "success" ] && \
              [ "${{ inputs.unit-tests-result }}" == "success" ] && \
-             [ "${{ inputs.linting-results }}" == "success" ] then
+             [ "${{ inputs.linting-results }}" == "success" ]; then
             echo "### 🎉 All checks passed!" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ⚠️ Some checks failed" >> $GITHUB_STEP_SUMMARY
