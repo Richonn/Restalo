@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -319,15 +320,13 @@ public class ReservationServiceTest {
 
   @Test
   void givenExistingReservationId_whenDeleteReservation_thenDeletesSuccessfully() {
-    // Arrange
+
     String reservationId = "reservation-123";
     Reservation mockReservation = mock(Reservation.class);
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
 
-    // Act
     reservationService.deleteReservation(reservationId);
 
-    // Assert
     verify(reservationRepository).delete(reservationId);
   }
 
