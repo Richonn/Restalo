@@ -109,6 +109,11 @@ public class Hours {
 
   public List<LocalTime> generateAllSlots() {
     List<LocalTime> slots = new ArrayList<>();
+
+    if (close.isBefore(open) || close.equals(open)) {
+      return slots;
+    }
+
     LocalTime current = open;
 
     while (!current.isAfter(close.minusMinutes(reservationDuration))) {
