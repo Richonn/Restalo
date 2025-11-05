@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -320,13 +319,15 @@ public class ReservationServiceTest {
 
   @Test
   void givenExistingReservationId_whenDeleteReservation_thenDeletesSuccessfully() {
-
+    // Arrange
     String reservationId = "reservation-123";
     Reservation mockReservation = mock(Reservation.class);
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
 
+    // Act
     reservationService.deleteReservation(reservationId);
 
+    // Assert
     verify(reservationRepository).delete(reservationId);
   }
 
@@ -352,9 +353,8 @@ public class ReservationServiceTest {
     Reservation reservation = new Reservation(date, reservationTime, 4, customer, restaurantId);
 
     when(reservationRepository.getReservationById(reservation.getId())).thenReturn(reservation);
-    when(reservationRepository.getReservationListOfRestaurant(restaurantId))
-        .thenReturn(List.of(reservation))
-        .thenReturn(List.of());
+    doNothing().when(reservationRepository).delete(reservation.getId());
+    when(reservationRepository.getReservationListOfRestaurant(restaurantId)).thenReturn(List.of());
 
     Restaurant restaurant =
         new Restaurant(
@@ -368,8 +368,7 @@ public class ReservationServiceTest {
 
     List<Reservation> remainingReservations =
         reservationRepository.getReservationListOfRestaurant(restaurantId);
-    List<LocalTime> availableSlots =
-        restaurant.getAvailableSlots(remainingReservations, date.toString());
+    List<LocalTime> availableSlots = restaurant.getAvailableSlots(remainingReservations, date);
 
     assertThat(availableSlots).contains(startTime);
   }
