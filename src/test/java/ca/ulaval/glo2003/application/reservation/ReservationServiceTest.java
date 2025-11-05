@@ -10,7 +10,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doAnswer;
 
 import ca.ulaval.glo2003.api.dto.common.CustomerDto;
 import ca.ulaval.glo2003.api.dto.common.ReservationDto;
@@ -353,20 +352,15 @@ public class ReservationServiceTest {
     ReservationTime reservationTime = new ReservationTime(startTime, startTime.plusHours(1));
     Reservation reservation = new Reservation(date, reservationTime, 4, customer, restaurantId);
 
-    List<Reservation> reservations = new java.util.ArrayList<>();
-    reservations.add(reservation);
-
     when(reservationRepository.getReservationById(reservation.getId())).thenReturn(reservation);
     when(reservationRepository.getReservationListOfRestaurant(restaurantId))
-            .thenAnswer(invocation -> new java.util.ArrayList<>(reservations)); // return a copy
-
-    doAnswer(invocation -> {
-      reservations.remove(reservation);
-      return null;
-    }).when(reservationRepository).delete(reservation.getId());
+        .thenReturn(List.of(reservation))
+        .thenReturn(List.of());
 
     Restaurant restaurant =
-            new Restaurant("Test Restaurant", 50, LocalTime.NOON, LocalTime.MIDNIGHT, "owner-123", 60);
+        new Restaurant(
+            "Test Restaurant", 50, LocalTime.of(17, 0), LocalTime.of(22, 0), "owner-123", 60);
+
     when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(restaurant);
 
     reservationService.deleteReservation(reservation.getId());
@@ -374,9 +368,9 @@ public class ReservationServiceTest {
     verify(reservationRepository).delete(reservation.getId());
 
     List<Reservation> remainingReservations =
-            reservationRepository.getReservationListOfRestaurant(restaurantId);
+        reservationRepository.getReservationListOfRestaurant(restaurantId);
     List<LocalTime> availableSlots =
-            restaurant.getAvailableSlots(remainingReservations, date.toString());
+        restaurant.getAvailableSlots(remainingReservations, date.toString());
 
     assertThat(availableSlots).contains(startTime);
   }
