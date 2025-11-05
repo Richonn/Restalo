@@ -319,7 +319,6 @@ public class ReservationServiceTest {
 
   @Test
   void givenExistingReservationId_whenDeleteReservation_thenDeletesSuccessfully() {
-
     String reservationId = "reservation-123";
     Reservation mockReservation = mock(Reservation.class);
     when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
