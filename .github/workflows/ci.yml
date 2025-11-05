@@ -21,10 +21,15 @@ jobs:
     uses: ./.github/workflows/unit-tests.yml
     needs: build-job
 
+  linting-job:
+    uses: ./.github/workflows/linting.yml
+    needs: unit-tests-job
+
   summary-job:
     uses: ./.github/workflows/summary.yml
-    needs: [build-job, unit-tests-job]
+    needs: [build-job, unit-tests-job, linting-job]
     if: always()
     with:
       build-result: ${{ needs.build-job.result }}
       unit-tests-result: ${{ needs.unit-tests-job.result }}
+      linting-result: ${{ needs.linting-job.result }}
