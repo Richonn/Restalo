@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -382,5 +383,17 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             "Pizza Delamama",
             50,
             new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0))));
+  }
+
+  @Test
+  public void givenExistingReservation_whenDelete_thenReturns204() {
+    String reservationNumber = "reservation-123";
+    doNothing().when(reservationService).deleteReservation(reservationNumber);
+
+    try (Response response = target("/reservations/" + reservationNumber).request().delete()) {
+
+      assertEquals(204, response.getStatus());
+      verify(reservationService).deleteReservation(reservationNumber);
+    }
   }
 }

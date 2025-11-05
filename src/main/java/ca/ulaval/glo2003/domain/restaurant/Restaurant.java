@@ -113,15 +113,12 @@ public class Restaurant {
   }
 
   public List<LocalTime> getAvailableSlots(List<Reservation> reservations, String date) {
-
     List<LocalTime> allSlots = hours.generateAllSlots();
-
     var reservedSlots =
         reservations.stream()
             .filter(r -> r.getDate().equals(date))
             .map(Reservation::getStartTime)
             .toList();
-
     allSlots.removeAll(reservedSlots);
     return allSlots;
   }
