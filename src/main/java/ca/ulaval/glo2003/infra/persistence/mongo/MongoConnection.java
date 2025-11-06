@@ -75,7 +75,6 @@ public class MongoConnection {
         mongoClient.close();
         instance = null;
       } catch (Exception e) {
-        // Log silently to avoid breaking shutdown
       }
     }
   }
