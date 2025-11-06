@@ -7,9 +7,16 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 public class Main {
-  public static final String BASE_URI = "http://0.0.0.0:8080/";
+  public static String getBaseUri() {
+    String port = System.getenv("PORT");
+    if (port == null || port.isEmpty()) {
+      port = "8080";
+    }
+    return "http://0.0.0.0:" + port + "/";
+  }
 
   public static HttpServer startServer() {
+    String baseUri = getBaseUri();
 
     final ResourceConfig rc =
         new ResourceConfig()
@@ -18,11 +25,12 @@ public class Main {
 
     rc.register(new ApplicationBinder());
 
-    return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+    return GrizzlyHttpServerFactory.createHttpServer(URI.create(baseUri), rc);
   }
 
   public static void main(String[] args) {
+    String baseUri = getBaseUri();
     startServer();
-    System.out.printf("Jersey app started with endpoints available at %s%n", BASE_URI);
+    System.out.printf("Jersey app started with endpoints available at %s%n", baseUri);
   }
 }
