@@ -54,3 +54,6 @@ buildNumber.properties
 
 # Environment variables
 .env
+
+# Postman
+Restalo.postman*
