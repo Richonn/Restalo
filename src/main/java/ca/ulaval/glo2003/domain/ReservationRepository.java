@@ -9,4 +9,6 @@ public interface ReservationRepository {
   List<Reservation> getReservationListOfRestaurant(String restaurantId);
 
   Reservation getReservationById(String reservationId);
+
+  void delete(String reservationId);
 }

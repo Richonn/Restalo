@@ -28,4 +28,9 @@ public class InMemoryReservationRepository implements ReservationRepository {
   public Reservation getReservationById(String reservationId) {
     return reservations.get(reservationId);
   }
+
+  @Override
+  public void delete(String reservationId) {
+    reservations.remove(reservationId);
+  }
 }

@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.api.dto.common.CustomerDto;
@@ -314,5 +315,59 @@ public class ReservationServiceTest {
                     ownerId, searchedRestaurantId, searchedDateString, searchedCustomerName));
 
     assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void givenExistingReservationId_whenDeleteReservation_thenDeletesSuccessfully() {
+
+    String reservationId = "reservation-123";
+    Reservation mockReservation = mock(Reservation.class);
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
+
+    reservationService.deleteReservation(reservationId);
+
+    verify(reservationRepository).delete(reservationId);
+  }
+
+  @Test
+  void givenNonExistentReservationId_whenDeleteReservation_thenThrowsNotFoundException() {
+    String reservationId = "nonexistent";
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class, () -> reservationService.deleteReservation(reservationId));
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void givenExistingReservation_whenDelete_thenReservationIsDeletedAndSlotIsFree() {
+    String restaurantId = "restaurant-123";
+    LocalDate date = LocalDate.of(2025, 10, 30);
+    LocalTime startTime = LocalTime.of(18, 0);
+
+    Customer customer = new Customer("John Doe", "john@example.com", "1234567890");
+    ReservationTime reservationTime = new ReservationTime(startTime, startTime.plusHours(1));
+    Reservation reservation = new Reservation(date, reservationTime, 4, customer, restaurantId);
+
+    when(reservationRepository.getReservationById(reservation.getId())).thenReturn(reservation);
+    doNothing().when(reservationRepository).delete(reservation.getId());
+    when(reservationRepository.getReservationListOfRestaurant(restaurantId)).thenReturn(List.of());
+
+    Restaurant restaurant =
+        new Restaurant(
+            "Test Restaurant", 50, LocalTime.of(17, 0), LocalTime.of(22, 0), "owner-123", 60);
+
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(restaurant);
+
+    reservationService.deleteReservation(reservation.getId());
+
+    verify(reservationRepository).delete(reservation.getId());
+
+    List<Reservation> remainingReservations =
+        reservationRepository.getReservationListOfRestaurant(restaurantId);
+    List<LocalTime> availableSlots = restaurant.getAvailableSlots(remainingReservations, date);
+
+    assertThat(availableSlots).contains(startTime);
   }
 }
