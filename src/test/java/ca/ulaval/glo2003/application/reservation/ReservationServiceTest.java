@@ -370,7 +370,7 @@ public class ReservationServiceTest {
 
     List<Reservation> reservations = new ArrayList<>();
 
-    when(restaurantDomainService.validateDate(dateString)).thenReturn(LocalDate.parse(dateString));
+    when(restaurantDomainService.convertDateStringToLocalDate(dateString)).thenReturn(LocalDate.parse(dateString));
     when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
         .thenReturn(reservations);

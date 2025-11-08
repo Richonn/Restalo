@@ -65,45 +65,45 @@ public class RestaurantDomainServiceTest {
   }
 
   @Test
-  void givenValidDateString_whenValidateDate_thenNoExceptions() {
+  void givenValidDateString_whenConvertDateStringToLocalDate_thenNoExceptions() {
     String dateString = LocalDate.now().toString();
     LocalDate expectedDate = LocalDate.now();
 
-    assertDoesNotThrow(() -> restaurantDomainService.validateDate(dateString));
-    assertThat(restaurantDomainService.validateDate(dateString)).isEqualTo(expectedDate);
+    assertDoesNotThrow(() -> restaurantDomainService.convertDateStringToLocalDate(dateString));
+    assertThat(restaurantDomainService.convertDateStringToLocalDate(dateString)).isEqualTo(expectedDate);
   }
 
   @Test
-  void givenNullDateString_whenValidateDate_thenThrowsMissingParameterException() {
+  void givenNullDateString_whenConvertDateStringToLocalDate_thenThrowsMissingParameterException() {
     MissingParameterException exception =
         assertThrows(
-            MissingParameterException.class, () -> restaurantDomainService.validateDate(null));
+            MissingParameterException.class, () -> restaurantDomainService.convertDateStringToLocalDate(null));
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
   }
 
   @Test
-  void givenBlankDateString_whenValidateDate_thenThrowsMissingParameterException() {
+  void givenBlankDateString_whenConvertDateStringToLocalDate_thenThrowsMissingParameterException() {
     String dateString = "";
 
     MissingParameterException exception =
         assertThrows(
             MissingParameterException.class,
-            () -> restaurantDomainService.validateDate(dateString));
+            () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
   }
 
   @Test
-  void givenInvalidDateString_whenValidateDate_thenThrowsInvalidParameterException() {
+  void givenInvalidDateString_whenConvertDateStringToLocalDate_thenThrowsInvalidParameterException() {
     String dateString = "not valid";
 
     InvalidParameterException exception =
         assertThrows(
             InvalidParameterException.class,
-            () -> restaurantDomainService.validateDate(dateString));
+            () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Invalid date format");

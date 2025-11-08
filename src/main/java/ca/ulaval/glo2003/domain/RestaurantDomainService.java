@@ -19,7 +19,7 @@ public class RestaurantDomainService {
     }
   }
 
-  public LocalDate validateDate(String dateString) {
+  public LocalDate convertDateStringToLocalDate(String dateString) {
     if (dateString == null || dateString.isBlank()) {
       throw new MissingParameterException("Missing date query parameter");
     }

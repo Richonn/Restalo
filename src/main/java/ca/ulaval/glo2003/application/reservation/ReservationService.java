@@ -120,7 +120,7 @@ public class ReservationService {
   public List<RestaurantSearchAvailabilitiesResponseDto> getRestaurantAvailabilitiesByDate(
       String restaurantId, String dateString) {
 
-    LocalDate date = restaurantDomainService.validateDate(dateString);
+    LocalDate date = restaurantDomainService.convertDateStringToLocalDate(dateString);
     Restaurant restaurant = restaurantRepository.getRestaurantById(restaurantId);
 
     if (restaurant == null) {
