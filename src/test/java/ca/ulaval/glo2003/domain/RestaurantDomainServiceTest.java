@@ -70,14 +70,16 @@ public class RestaurantDomainServiceTest {
     LocalDate expectedDate = LocalDate.now();
 
     assertDoesNotThrow(() -> restaurantDomainService.convertDateStringToLocalDate(dateString));
-    assertThat(restaurantDomainService.convertDateStringToLocalDate(dateString)).isEqualTo(expectedDate);
+    assertThat(restaurantDomainService.convertDateStringToLocalDate(dateString))
+        .isEqualTo(expectedDate);
   }
 
   @Test
   void givenNullDateString_whenConvertDateStringToLocalDate_thenThrowsMissingParameterException() {
     MissingParameterException exception =
         assertThrows(
-            MissingParameterException.class, () -> restaurantDomainService.convertDateStringToLocalDate(null));
+            MissingParameterException.class,
+            () -> restaurantDomainService.convertDateStringToLocalDate(null));
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
@@ -97,7 +99,8 @@ public class RestaurantDomainServiceTest {
   }
 
   @Test
-  void givenInvalidDateString_whenConvertDateStringToLocalDate_thenThrowsInvalidParameterException() {
+  void
+      givenInvalidDateString_whenConvertDateStringToLocalDate_thenThrowsInvalidParameterException() {
     String dateString = "not valid";
 
     InvalidParameterException exception =
