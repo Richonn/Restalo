@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.restaurant;
 
+import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
@@ -64,6 +65,19 @@ public class Hours {
     return startTime.plusMinutes(reservationDuration);
   }
 
+  public List<LocalTime> generateAllSlotIntervalSlices() {
+    List<LocalTime> slots = new ArrayList<>();
+
+    LocalTime current = TimeUtils.adjustTimeToSlotIntervalSliceUp(open);
+
+    while (current.isBefore(TimeUtils.adjustTimeToSlotIntervalSliceDown(close))) {
+      slots.add(current);
+      current = current.plusMinutes(TimeUtils.getSlotInterval());
+    }
+
+    return slots;
+  }
+
   private void validateFieldsAreDefined() {
     if (open == null) {
       throw new MissingParameterException("The openingHour of the restaurant is required");
@@ -91,18 +105,5 @@ public class Hours {
       throw new InvalidParameterException(
           "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
-  }
-
-  public List<LocalTime> generateAllSlots() {
-    List<LocalTime> slots = new ArrayList<>();
-
-    LocalTime current = open;
-
-    while (current.isBefore(close.minusMinutes(reservationDuration))) {
-      slots.add(current);
-      current = current.plusMinutes(reservationDuration);
-    }
-
-    return slots;
   }
 }

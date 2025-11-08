@@ -15,6 +15,7 @@ import ca.ulaval.glo2003.api.dto.common.CustomerDto;
 import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
+import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
@@ -27,8 +28,7 @@ import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -341,33 +341,75 @@ public class ReservationServiceTest {
   }
 
   @Test
-  void givenExistingReservation_whenDelete_thenReservationIsDeletedAndSlotIsFree() {
-    String restaurantId = "restaurant-123";
-    LocalDate date = LocalDate.of(2025, 10, 30);
-    LocalTime startTime = LocalTime.of(18, 0);
+  void givenExistingReservationId_whenDelete_thenReservationIsDeleted() {
+    String reservationId = "ExistingReservationId";
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(reservation);
+    doNothing().when(reservationRepository).delete(reservationId);
 
-    Customer customer = new Customer("John Doe", "john@example.com", "1234567890");
-    ReservationTime reservationTime = new ReservationTime(startTime, startTime.plusHours(1));
-    Reservation reservation = new Reservation(date, reservationTime, 4, customer, restaurantId);
+    reservationService.deleteReservation(reservationId);
 
-    when(reservationRepository.getReservationById(reservation.getId())).thenReturn(reservation);
-    doNothing().when(reservationRepository).delete(reservation.getId());
-    when(reservationRepository.getReservationListOfRestaurant(restaurantId)).thenReturn(List.of());
+    verify(reservationRepository).delete(reservationId);
+  }
 
-    Restaurant restaurant =
-        new Restaurant(
-            "Test Restaurant", 50, LocalTime.of(17, 0), LocalTime.of(22, 0), "owner-123", 60);
+  @Test
+  void
+      givenValidRestaurantIdAndDate_whenGetRestaurantAvailabilitiesByDate_thenReturnExpectedAvailabilityResponseDtoList() {
+    String dateString = LocalDate.now().toString();
+    LocalTime slot1 = LocalTime.of(10, 0);
+    LocalTime slot2 = LocalTime.of(10, 15);
+    LocalTime slot3 = LocalTime.of(10, 30);
+    LocalTime slot4 = LocalTime.of(10, 45);
+    int capacity = 5;
+    int remainingPlaces = 0;
 
-    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(restaurant);
+    Map<LocalTime, Integer> defaultAvailability = new HashMap<>();
+    defaultAvailability.put(slot1, capacity);
+    defaultAvailability.put(slot2, remainingPlaces);
+    defaultAvailability.put(slot3, remainingPlaces);
+    defaultAvailability.put(slot4, capacity);
 
-    reservationService.deleteReservation(reservation.getId());
+    List<Reservation> reservations = new ArrayList<>();
 
-    verify(reservationRepository).delete(reservation.getId());
+    when(restaurantDomainService.validateDate(dateString)).thenReturn(LocalDate.parse(dateString));
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
+        .thenReturn(reservations);
+    when(restaurantDomainService.getRestaurantAvailability(restaurant, reservations))
+        .thenReturn(defaultAvailability);
 
-    List<Reservation> remainingReservations =
-        reservationRepository.getReservationListOfRestaurant(restaurantId);
-    List<LocalTime> availableSlots = restaurant.getAvailableSlots(remainingReservations, date);
+    List<RestaurantSearchAvailabilitiesResponseDto> restaurantSearchAvailabilitiesResponseDtos =
+        reservationService.getRestaurantAvailabilitiesByDate(restaurant.getId(), dateString);
 
-    assertThat(availableSlots).contains(startTime);
+    restaurantSearchAvailabilitiesResponseDtos.sort(
+        Comparator.comparing(RestaurantSearchAvailabilitiesResponseDto::start));
+
+    assertThat(restaurantSearchAvailabilitiesResponseDtos).isNotNull();
+    assertThat(restaurantSearchAvailabilitiesResponseDtos).isNotEmpty();
+    assertThat(restaurantSearchAvailabilitiesResponseDtos).hasSize(4);
+    assertThat(restaurantSearchAvailabilitiesResponseDtos.get(0).remainingPlaces())
+        .isEqualTo(capacity);
+    assertThat(restaurantSearchAvailabilitiesResponseDtos.get(1).remainingPlaces())
+        .isEqualTo(remainingPlaces);
+    assertThat(restaurantSearchAvailabilitiesResponseDtos.get(2).remainingPlaces())
+        .isEqualTo(remainingPlaces);
+    assertThat(restaurantSearchAvailabilitiesResponseDtos.get(3).remainingPlaces())
+        .isEqualTo(capacity);
+  }
+
+  @Test
+  void
+      givenInvalidRestaurantId_whenGetRestaurantAvailabilitiesByDate_thenThrowsNotFoundException() {
+
+    String restaurantId = "doesnt exists";
+
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class,
+            () ->
+                reservationService.getRestaurantAvailabilitiesByDate(
+                    restaurantId, LocalDate.now().toString()));
+    assertThat(exception).isInstanceOf(NotFoundException.class);
   }
 }

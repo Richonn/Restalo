@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -310,5 +312,50 @@ public class HoursTest {
     boolean result = a_hours.isFullyOpenDuring(LocalTime.of(12, 0, 0), LocalTime.of(20, 0, 0));
 
     assertThat(result).isTrue();
+  }
+
+  @Test
+  void
+      givenValidOpenAndCloseAndReservationDuration_whenGenerateAllSlotIntervalSlices_thenReturnExpectedSlots() {
+    LocalTime open = LocalTime.of(10, 0, 0);
+    LocalTime close = LocalTime.of(11, 0, 0);
+    int reservationDuration = 15;
+    Hours a_hours =
+        hoursFixture
+            .withOpen(open)
+            .withClose(close)
+            .withReservationDuration(reservationDuration)
+            .build();
+    List<LocalTime> expectedSlots = new ArrayList<>();
+    expectedSlots.add(LocalTime.of(10, 0, 0));
+    expectedSlots.add(LocalTime.of(10, 15, 0));
+    expectedSlots.add(LocalTime.of(10, 30, 0));
+    expectedSlots.add(LocalTime.of(10, 45, 0));
+
+    List<LocalTime> actualSlots = a_hours.generateAllSlotIntervalSlices();
+
+    assertThat(actualSlots).isEqualTo(expectedSlots);
+  }
+
+  @Test
+  void
+      givenValidOpenAndCloseAndReservationDurationButNotSlotIntervalAdjusted_whenGenerateAllSlotIntervalSlices_thenReturnExpectedSlots() {
+    LocalTime open = LocalTime.of(10, 10, 0);
+    LocalTime close = LocalTime.of(11, 10, 0);
+    int reservationDuration = 15;
+    Hours a_hours =
+        hoursFixture
+            .withOpen(open)
+            .withClose(close)
+            .withReservationDuration(reservationDuration)
+            .build();
+    List<LocalTime> expectedSlots = new ArrayList<>();
+    expectedSlots.add(LocalTime.of(10, 15, 0));
+    expectedSlots.add(LocalTime.of(10, 30, 0));
+    expectedSlots.add(LocalTime.of(10, 45, 0));
+
+    List<LocalTime> actualSlots = a_hours.generateAllSlotIntervalSlices();
+
+    assertThat(actualSlots).isEqualTo(expectedSlots);
   }
 }

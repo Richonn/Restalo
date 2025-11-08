@@ -1,10 +1,13 @@
 package ca.ulaval.glo2003.domain.reservation;
 
+import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -82,7 +85,7 @@ public class Reservation {
   }
 
   public void adjustStartTimeTo15minSlice() {
-    reservationTime.adjustStartTimeTo15minSlice();
+    reservationTime.adjustStartTimeToIntervalSlice();
   }
 
   public boolean matchesDate(String dateString) {
@@ -103,6 +106,16 @@ public class Reservation {
     String normalizedQuery = customerName.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
     String normalizedName = customer.getName().replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
     return normalizedName.startsWith(normalizedQuery);
+  }
+
+  public List<LocalTime> generateAllTimeSlotsInterval() {
+    List<LocalTime> timeSlots = new ArrayList<>();
+    LocalTime startTime = reservationTime.getStartTime();
+    while (startTime.isBefore(reservationTime.getEndTime())) {
+      timeSlots.add(startTime);
+      startTime = startTime.plusMinutes(TimeUtils.getSlotInterval());
+    }
+    return timeSlots;
   }
 
   public void validateFields() {

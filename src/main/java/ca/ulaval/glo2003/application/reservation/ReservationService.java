@@ -2,9 +2,11 @@ package ca.ulaval.glo2003.application.reservation;
 
 import ca.ulaval.glo2003.api.assembler.ReservationAssembler;
 import ca.ulaval.glo2003.api.assembler.ReservationSearchResponseAssembler;
+import ca.ulaval.glo2003.api.assembler.RestaurantSearchAvailabilitiesResponseAssembler;
 import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
+import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
@@ -14,7 +16,12 @@ import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationService {
   private final ReservationRepository reservationRepository;
@@ -108,5 +115,31 @@ public class ReservationService {
     }
 
     reservationRepository.delete(reservationId);
+  }
+
+  public List<RestaurantSearchAvailabilitiesResponseDto> getRestaurantAvailabilitiesByDate(
+      String restaurantId, String dateString) {
+
+    LocalDate date = restaurantDomainService.validateDate(dateString);
+    Restaurant restaurant = restaurantRepository.getRestaurantById(restaurantId);
+
+    if (restaurant == null) {
+      throw new NotFoundException();
+    }
+
+    List<Reservation> reservations =
+        reservationRepository.getReservationListOfRestaurant(restaurantId).stream()
+            .filter(reservation -> reservation.getDate().equals(date))
+            .toList();
+    Map<LocalTime, Integer> restaurantAvailabilities =
+        restaurantDomainService.getRestaurantAvailability(restaurant, reservations);
+    List<RestaurantSearchAvailabilitiesResponseDto> restaurantAvailabilitiesDto = new ArrayList<>();
+
+    for (Map.Entry<LocalTime, Integer> entry : restaurantAvailabilities.entrySet()) {
+      restaurantAvailabilitiesDto.add(
+          RestaurantSearchAvailabilitiesResponseAssembler.toRestaurantSearchAvailabilitiesResponse(
+              LocalDateTime.of(date, entry.getKey()), entry.getValue()));
+    }
+    return restaurantAvailabilitiesDto;
   }
 }

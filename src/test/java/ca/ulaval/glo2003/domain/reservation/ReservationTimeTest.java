@@ -31,7 +31,7 @@ public class ReservationTimeTest {
         reservationTimeFixture.withStart(LocalTime.of(10, 5, 0)).build();
     LocalTime expectedStartTime = LocalTime.of(10, 15, 0);
 
-    a_reservationTime.adjustStartTimeTo15minSlice();
+    a_reservationTime.adjustStartTimeToIntervalSlice();
 
     assertThat(a_reservationTime.getStartTime()).isEqualTo(expectedStartTime);
   }

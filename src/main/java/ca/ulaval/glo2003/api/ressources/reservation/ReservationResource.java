@@ -74,4 +74,13 @@ public class ReservationResource {
     reservationService.deleteReservation(reservationNumber);
     return Response.noContent().build();
   }
+
+  @GET
+  @Path("restaurants/{id}/availabilities")
+  public Response getRestaurantAvailabilitiesByDate(
+      @QueryParam("date") String dateString, @PathParam("id") String restaurantId) {
+    return Response.status(Response.Status.OK)
+        .entity(reservationService.getRestaurantAvailabilitiesByDate(restaurantId, dateString))
+        .build();
+  }
 }
