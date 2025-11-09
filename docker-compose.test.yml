@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  # Pour tester votre API à partir du code local
+  api-local:
+    build: .
+    environment:
+      PORT: 80
+      # Notez que le host est "mongo" comme le nom du service MongoDB
+      MONGO_CLUSTER_URL: mongodb://root:example@mongo:27017
+      MONGO_DATABASE: local
+    ports:
+      - 8081:80
+    command: mvn exec:java -Dpersistence=mongo
+    depends_on:
+      - mongo
+
+  # Pour tester votre API à partir de l'image Docker sur GitHub
+  # Changez "remise3" par votre branche/tag (ex: main, latest, ou un SHA de commit)
+  api-remote:
+    image: ghcr.io/ift-3003-a25-equipe-7/restalo:latest
+    environment:
+      PORT: 80
+      MONGO_CLUSTER_URL: mongodb://root:example@mongo:27017
+      MONGO_DATABASE: local
+    ports:
+      - 8082:80
+    command: mvn exec:java -Dpersistence=mongo
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_test:/data/db
+
+volumes:
+  mongo_test:
