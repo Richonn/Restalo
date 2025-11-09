@@ -1,0 +1,53 @@
+package ca.ulaval.glo2003.infra.persistence.mongo;
+
+import ca.ulaval.glo2003.domain.ReservationRepository;
+import ca.ulaval.glo2003.domain.reservation.Reservation;
+import ca.ulaval.glo2003.infra.persistence.mongo.documents.ReservationDocument;
+import ca.ulaval.glo2003.infra.persistence.mongo.mappers.ReservationDocumentMapper;
+import dev.morphia.Datastore;
+import dev.morphia.query.filters.Filters;
+import jakarta.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Singleton
+public class MongoReservationRepository implements ReservationRepository {
+  private final Datastore datastore;
+
+  public MongoReservationRepository() {
+    this.datastore = MongoConnection.getInstance().getDatastore();
+    datastore.getMapper().map(ReservationDocument.class);
+    datastore.ensureIndexes();
+  }
+
+  @Override
+  public void save(Reservation reservation) {
+    ReservationDocument document = ReservationDocumentMapper.toDocument(reservation);
+    datastore.save(document);
+  }
+
+  @Override
+  public List<Reservation> getReservationListOfRestaurant(String restaurantId) {
+    List<ReservationDocument> documents =
+        datastore
+            .find(ReservationDocument.class)
+            .filter(Filters.eq("restaurantId", restaurantId))
+            .iterator()
+            .toList();
+
+    return documents.stream().map(ReservationDocumentMapper::toDomain).collect(Collectors.toList());
+  }
+
+  @Override
+  public Reservation getReservationById(String reservationId) {
+    ReservationDocument document =
+        datastore.find(ReservationDocument.class).filter(Filters.eq("_id", reservationId)).first();
+
+    return ReservationDocumentMapper.toDomain(document);
+  }
+
+  @Override
+  public void delete(String reservationId) {
+    datastore.find(ReservationDocument.class).filter(Filters.eq("_id", reservationId)).delete();
+  }
+}

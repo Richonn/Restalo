@@ -3,6 +3,7 @@ package ca.ulaval.glo2003;
 import ca.ulaval.glo2003.api.exceptions.mappers.IllegalArgumentExceptionMapper;
 import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
 import ca.ulaval.glo2003.infra.persistence.mongo.MongoConnection;
+import io.github.cdimascio.dotenv.Dotenv;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -32,6 +33,8 @@ public class Main {
 
   public static void main(String[] args) {
     String baseUri = getBaseUri();
+    Dotenv.configure().ignoreIfMissing().systemProperties().load();
+
     System.out.printf(
         "Starting application with persistence mode: %s%n",
         PersistenceConfig.getPersistenceMode().getValue());

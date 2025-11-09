@@ -13,7 +13,10 @@ public class MongoConfig {
   }
 
   private String getRequiredEnvVariable(String name) {
-    String value = System.getenv(name);
+    String value = System.getProperty(name);
+    if (value == null || value.trim().isEmpty()) {
+      value = System.getenv(name);
+    }
     if (value == null || value.trim().isEmpty()) {
       throw new IllegalStateException(
           String.format(
