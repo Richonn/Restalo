@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
-import ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument;
+import ca.ulaval.glo2003.infra.persistence.mongo.MongoReservationDocumentFixture;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.ReservationDocument;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -177,14 +177,8 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidDateFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("invalid-date");
-    document.setStartTime("18:30");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document =
+        new ReservationDocumentFixture().withDate("invalid-date").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -195,14 +189,7 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidStartTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("2025-12-25");
-    document.setStartTime("25:99");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document = new ReservationDocumentFixture().withStartTime("25:99").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -213,14 +200,8 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidEndTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("2025-12-25");
-    document.setStartTime("18:30");
-    document.setEndTime("not-a-time");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document =
+        new ReservationDocumentFixture().withEndTime("not-a-time").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -231,14 +212,7 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithEmptyDateString_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("");
-    document.setStartTime("18:30");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document = new ReservationDocumentFixture().withDate("").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -249,14 +223,7 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedDateFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("12/25/2025");
-    document.setStartTime("18:30");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document = new ReservationDocumentFixture().withDate("12/25/2025").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -267,14 +234,7 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocument();
-    document.setId("reservation123");
-    document.setDate("2025-12-25");
-    document.setStartTime("18-30");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setCustomer(new CustomerDocument("John Doe", "john@example.com", "1234567890"));
-    document.setRestaurantId("restaurant123");
+    ReservationDocument document = new ReservationDocumentFixture().withStartTime("18-30").build();
 
     DateTimeParseException exception =
         assertThrows(

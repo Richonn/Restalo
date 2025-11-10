@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.ulaval.glo2003.domain.restaurant.Hours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.infra.persistence.mongo.MongoRestaurantDocumentFixture;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.RestaurantDocument;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -136,14 +137,8 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidOpeningHourFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocument();
-    document.setId("restaurant123");
-    document.setName("Le Bistro");
-    document.setCapacity(50);
-    document.setOpeningHour("invalid-time");
-    document.setClosingHour("22:00");
-    document.setReservationDuration(60);
-    document.setOwnerId("owner123");
+    RestaurantDocument document =
+        new RestaurantDocumentFixture().withOpeningHour("invalid-time").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -154,14 +149,7 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidClosingHourFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocument();
-    document.setId("restaurant123");
-    document.setName("Le Bistro");
-    document.setCapacity(50);
-    document.setOpeningHour("10:00");
-    document.setClosingHour("25:99");
-    document.setReservationDuration(60);
-    document.setOwnerId("owner123");
+    RestaurantDocument document = new RestaurantDocumentFixture().withClosingHour("25:99").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -172,14 +160,7 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithEmptyTimeStrings_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocument();
-    document.setId("restaurant123");
-    document.setName("Le Bistro");
-    document.setCapacity(50);
-    document.setOpeningHour("");
-    document.setClosingHour("22:00");
-    document.setReservationDuration(60);
-    document.setOwnerId("owner123");
+    RestaurantDocument document = new RestaurantDocumentFixture().withOpeningHour("").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -190,14 +171,7 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocument();
-    document.setId("restaurant123");
-    document.setName("Le Bistro");
-    document.setCapacity(50);
-    document.setOpeningHour("10-30");
-    document.setClosingHour("22:00");
-    document.setReservationDuration(60);
-    document.setOwnerId("owner123");
+    RestaurantDocument document = new RestaurantDocumentFixture().withOpeningHour("10-30").build();
 
     DateTimeParseException exception =
         assertThrows(
