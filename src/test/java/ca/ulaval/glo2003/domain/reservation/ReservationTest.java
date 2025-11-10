@@ -11,6 +11,8 @@ import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -127,7 +129,7 @@ public class ReservationTest {
     Mockito.when(reservationTime.getStartTime()).thenReturn(startTime);
     Mockito.when(reservationTime.getEndTime()).thenReturn(endTime);
 
-    doNothing().when(reservationTime).adjustStartTimeTo15minSlice();
+    doNothing().when(reservationTime).adjustStartTimeToIntervalSlice();
 
     Reservation a_reservation = reservationFixture.build(reservationTime, customer);
 
@@ -254,5 +256,23 @@ public class ReservationTest {
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage())
         .isEqualTo("The provided date is not a valid LocalDate format.");
+  }
+
+  @Test
+  void
+      givenValidReservation_whenGenerateAllTimeSlotsInterval_thenReturnExpectedTimeSlotsInterval() {
+    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
+    LocalTime startTime = LocalTime.of(10, 0);
+    LocalTime endTime = LocalTime.of(11, 0);
+    when(reservationTime.getStartTime()).thenReturn(startTime);
+    when(reservationTime.getEndTime()).thenReturn(endTime);
+
+    List<LocalTime> expectedTimeSlotsInterval = new ArrayList<>();
+    expectedTimeSlotsInterval.add(startTime);
+    expectedTimeSlotsInterval.add(LocalTime.of(10, 15));
+    expectedTimeSlotsInterval.add(LocalTime.of(10, 30));
+    expectedTimeSlotsInterval.add(LocalTime.of(10, 45));
+
+    assertThat(a_reservation.generateAllTimeSlotsInterval()).isEqualTo(expectedTimeSlotsInterval);
   }
 }

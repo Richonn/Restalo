@@ -4,10 +4,19 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.domain.reservation.Reservation;
+import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +62,54 @@ public class RestaurantDomainServiceTest {
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Missing Owner header");
+  }
+
+  @Test
+  void givenValidDateString_whenConvertDateStringToLocalDate_thenNoExceptions() {
+    String dateString = LocalDate.now().toString();
+    LocalDate expectedDate = LocalDate.now();
+
+    assertDoesNotThrow(() -> restaurantDomainService.convertDateStringToLocalDate(dateString));
+    assertThat(restaurantDomainService.convertDateStringToLocalDate(dateString))
+        .isEqualTo(expectedDate);
+  }
+
+  @Test
+  void givenNullDateString_whenConvertDateStringToLocalDate_thenThrowsMissingParameterException() {
+    MissingParameterException exception =
+        assertThrows(
+            MissingParameterException.class,
+            () -> restaurantDomainService.convertDateStringToLocalDate(null));
+
+    assertThat(exception).isInstanceOf(MissingParameterException.class);
+    assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
+  }
+
+  @Test
+  void givenBlankDateString_whenConvertDateStringToLocalDate_thenThrowsMissingParameterException() {
+    String dateString = "";
+
+    MissingParameterException exception =
+        assertThrows(
+            MissingParameterException.class,
+            () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
+
+    assertThat(exception).isInstanceOf(MissingParameterException.class);
+    assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
+  }
+
+  @Test
+  void
+      givenInvalidDateString_whenConvertDateStringToLocalDate_thenThrowsInvalidParameterException() {
+    String dateString = "not valid";
+
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage()).isEqualTo("Invalid date format");
   }
 
   @Test
@@ -124,5 +181,52 @@ public class RestaurantDomainServiceTest {
     OpenedHours openedHours = new OpenedHours(LocalTime.of(12, 0), LocalTime.of(12, 0));
 
     assertDoesNotThrow(() -> restaurantDomainService.isTimeRangeValid(openedHours));
+  }
+
+  @Test
+  void
+      givenValidRestaurantAndReservationList_whenGetRestaurantAvailability_thenReturnExpectedMap() {
+    LocalTime slot1 = LocalTime.of(10, 15, 0);
+    LocalTime slot2 = LocalTime.of(10, 30, 0);
+    LocalTime slot3 = LocalTime.of(10, 45, 0);
+
+    int capacity = 5;
+    int reservationDuration = 15;
+    Restaurant restaurant =
+        new Restaurant(
+            "test",
+            capacity,
+            LocalTime.of(10, 10),
+            LocalTime.of(11, 0),
+            "ownerId",
+            reservationDuration);
+
+    int reservationGroupSize1 = 2;
+    int reservationGroupSize2 = 5;
+    List<Reservation> reservationList = new ArrayList<>();
+    Reservation reservation1 =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(slot1, slot1.plusMinutes(reservationDuration)),
+            reservationGroupSize1,
+            new Customer("test", "test", "test"),
+            "id");
+    Reservation reservation2 =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(slot3, slot3.plusMinutes(reservationDuration)),
+            reservationGroupSize2,
+            new Customer("test", "test", "test"),
+            "id");
+    reservationList.add(reservation1);
+    reservationList.add(reservation2);
+
+    Map<LocalTime, Integer> expectedDefaultAvailability = new HashMap<>();
+    expectedDefaultAvailability.put(slot1, capacity - reservationGroupSize1);
+    expectedDefaultAvailability.put(slot2, capacity);
+    expectedDefaultAvailability.put(slot3, capacity - reservationGroupSize2);
+
+    assertThat(restaurantDomainService.getRestaurantAvailability(restaurant, reservationList))
+        .isEqualTo(expectedDefaultAvailability);
   }
 }

@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.restaurant;
 
+import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
@@ -62,6 +63,19 @@ public class Hours {
           "The restaurant closes before the end of the reservation");
     }
     return startTime.plusMinutes(reservationDuration);
+  }
+
+  public List<LocalTime> generateAllSlotIntervalSlices() {
+    List<LocalTime> slots = new ArrayList<>();
+
+    LocalTime current = TimeUtils.adjustTimeToSlotIntervalSliceUp(open);
+
+    while (current.isBefore(TimeUtils.adjustTimeToSlotIntervalSliceDown(close))) {
+      slots.add(current);
+      current = current.plusMinutes(TimeUtils.getSlotInterval());
+    }
+
+    return slots;
   }
 
   private void validateFieldsAreDefined() {

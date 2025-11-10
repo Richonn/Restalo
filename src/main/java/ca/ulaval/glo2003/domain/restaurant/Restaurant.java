@@ -2,11 +2,11 @@ package ca.ulaval.glo2003.domain.restaurant;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
-import ca.ulaval.glo2003.domain.reservation.Reservation;
-import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 public class Restaurant {
@@ -95,6 +95,17 @@ public class Restaurant {
     return hours.defineReservationEndTime(startTime);
   }
 
+  public Map<LocalTime, Integer> generateDefaultAvailability() {
+    List<LocalTime> allSlotIntervalSlices = hours.generateAllSlotIntervalSlices();
+    Map<LocalTime, Integer> defaultAvailability = new HashMap<>();
+
+    for (LocalTime slotTime : allSlotIntervalSlices) {
+      defaultAvailability.put(slotTime, capacity);
+    }
+
+    return defaultAvailability;
+  }
+
   private void validateFieldsAreDefined() {
     if (name == null) {
       throw new MissingParameterException("The name of the restaurant is required");
@@ -111,16 +122,5 @@ public class Restaurant {
     if (capacity <= 0) {
       throw new InvalidParameterException("The capacity of the restaurant must be positive");
     }
-  }
-
-  public List<LocalTime> getAvailableSlots(List<Reservation> reservations, LocalDate date) {
-    List<LocalTime> allSlots = hours.generateAllSlots();
-    var reservedSlots =
-        reservations.stream()
-            .filter(r -> r.getDate().equals(date))
-            .map(Reservation::getStartTime)
-            .toList();
-    allSlots.removeAll(reservedSlots);
-    return allSlots;
   }
 }

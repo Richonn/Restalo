@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.reservation;
 
+import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
 
@@ -31,12 +32,7 @@ public class ReservationTime {
     }
   }
 
-  public void adjustStartTimeTo15minSlice() {
-    int minutes = startTime.getMinute();
-    int modulo = minutes % 15;
-
-    if (modulo != 0) {
-      startTime = startTime.plusMinutes(15 - modulo);
-    }
+  public void adjustStartTimeToIntervalSlice() {
+    startTime = TimeUtils.adjustTimeToSlotIntervalSliceUp(startTime);
   }
 }
