@@ -125,15 +125,4 @@ public class Restaurant {
       throw new InvalidParameterException("The capacity of the restaurant must be positive");
     }
   }
-
-  public List<LocalTime> getAvailableSlots(List<Reservation> reservations, LocalDate date) {
-    List<LocalTime> allSlots = hours.generateAllSlots();
-    var reservedSlots =
-        reservations.stream()
-            .filter(r -> r.getDate().equals(date))
-            .map(Reservation::getStartTime)
-            .toList();
-    allSlots.removeAll(reservedSlots);
-    return allSlots;
-  }
 }
