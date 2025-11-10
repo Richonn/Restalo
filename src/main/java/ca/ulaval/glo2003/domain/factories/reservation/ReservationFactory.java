@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.factories.reservation;
 
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalDate;
@@ -26,6 +27,13 @@ public class ReservationFactory {
         new Reservation(date, startTime, groupSize, name, email, phoneNumber, restaurant.getId());
 
     reservation.adjustStartTimeTo15minSlice();
+
+    LocalTime adjustedStartTime = reservation.getStartTime();
+    if (adjustedStartTime.isBefore(restaurant.getOpeningHour())) {
+      throw new InvalidParameterException(
+          "The adjusted start time is before the restaurant's opening hour");
+    }
+
     reservation.validateFields();
 
     reservation.setReservationEndTime(

@@ -11,6 +11,7 @@ import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +68,8 @@ public class ReservationService {
     if (reservation == null) {
       throw new NotFoundException();
     }
+
+    validateRestaurantCapacity(restaurant, reservation);
 
     reservationRepository.save(reservation);
 
@@ -141,5 +145,27 @@ public class ReservationService {
               LocalDateTime.of(date, entry.getKey()), entry.getValue()));
     }
     return restaurantAvailabilitiesDto;
+  }
+
+  private void validateRestaurantCapacity(Restaurant restaurant, Reservation newReservation) {
+    List<Reservation> existingReservations =
+        reservationRepository.getReservationListOfRestaurant(restaurant.getId()).stream()
+            .filter(r -> r.getDate().equals(newReservation.getDate()))
+            .sorted(Comparator.comparing(Reservation::getStartTime))
+            .toList();
+
+    Map<LocalTime, Integer> availability =
+        restaurantDomainService.getRestaurantAvailability(restaurant, existingReservations);
+
+    List<LocalTime> reservationSlots = newReservation.generateAllTimeSlotsInterval();
+
+    for (LocalTime slot : reservationSlots) {
+      Integer remainingCapacity = availability.get(slot);
+
+      if (remainingCapacity == null || remainingCapacity - newReservation.getGroupSize() < 0) {
+        throw new InvalidParameterException(
+            "The restaurant does not have enough capacity for this reservation");
+      }
+    }
   }
 }
