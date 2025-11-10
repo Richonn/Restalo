@@ -23,10 +23,10 @@ public final class TimeUtils {
   public static LocalTime adjustTimeToSlotIntervalSliceDown(LocalTime time) {
     int minutes = time.getMinute();
     if (minutes != 0) {
-      int modulo = slotInterval % minutes;
+      int modulo = minutes % slotInterval;
 
       if (modulo != 0) {
-        return time.minusMinutes(slotInterval - modulo);
+        return time.minusMinutes(modulo);
       }
     }
     return time;
