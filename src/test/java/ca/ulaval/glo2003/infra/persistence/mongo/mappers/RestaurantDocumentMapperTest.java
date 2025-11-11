@@ -138,7 +138,7 @@ public class RestaurantDocumentMapperTest {
   @Test
   void givenDocumentWithInvalidOpeningHourFormat_whenToDomain_thenThrowsDateTimeParseException() {
     RestaurantDocument document =
-        new RestaurantDocumentFixture().withOpeningHour("invalid-time").build();
+        new MongoRestaurantDocumentFixture().withOpeningHour("invalid-time").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -149,7 +149,8 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidClosingHourFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocumentFixture().withClosingHour("25:99").build();
+    RestaurantDocument document =
+        new MongoRestaurantDocumentFixture().withClosingHour("25:99").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -160,7 +161,7 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithEmptyTimeStrings_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocumentFixture().withOpeningHour("").build();
+    RestaurantDocument document = new MongoRestaurantDocumentFixture().withOpeningHour("").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -171,7 +172,8 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    RestaurantDocument document = new RestaurantDocumentFixture().withOpeningHour("10-30").build();
+    RestaurantDocument document =
+        new MongoRestaurantDocumentFixture().withOpeningHour("10-30").build();
 
     DateTimeParseException exception =
         assertThrows(

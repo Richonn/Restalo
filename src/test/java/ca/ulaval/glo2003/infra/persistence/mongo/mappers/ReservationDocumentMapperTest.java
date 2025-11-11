@@ -178,7 +178,7 @@ public class ReservationDocumentMapperTest {
   @Test
   void givenDocumentWithInvalidDateFormat_whenToDomain_thenThrowsDateTimeParseException() {
     ReservationDocument document =
-        new ReservationDocumentFixture().withDate("invalid-date").build();
+        new MongoReservationDocumentFixture().withDate("invalid-date").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -189,7 +189,8 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithInvalidStartTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocumentFixture().withStartTime("25:99").build();
+    ReservationDocument document =
+        new MongoReservationDocumentFixture().withStartTime("25:99").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -201,7 +202,7 @@ public class ReservationDocumentMapperTest {
   @Test
   void givenDocumentWithInvalidEndTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
     ReservationDocument document =
-        new ReservationDocumentFixture().withEndTime("not-a-time").build();
+        new MongoReservationDocumentFixture().withEndTime("not-a-time").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -212,7 +213,7 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithEmptyDateString_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocumentFixture().withDate("").build();
+    ReservationDocument document = new MongoReservationDocumentFixture().withDate("").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -223,7 +224,8 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedDateFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocumentFixture().withDate("12/25/2025").build();
+    ReservationDocument document =
+        new MongoReservationDocumentFixture().withDate("12/25/2025").build();
 
     DateTimeParseException exception =
         assertThrows(
@@ -234,7 +236,8 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenDocumentWithMalformedTimeFormat_whenToDomain_thenThrowsDateTimeParseException() {
-    ReservationDocument document = new ReservationDocumentFixture().withStartTime("18-30").build();
+    ReservationDocument document =
+        new MongoReservationDocumentFixture().withStartTime("18-30").build();
 
     DateTimeParseException exception =
         assertThrows(

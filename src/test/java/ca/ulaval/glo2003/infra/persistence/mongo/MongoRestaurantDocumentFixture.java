@@ -2,7 +2,7 @@ package ca.ulaval.glo2003.infra.persistence.mongo;
 
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.RestaurantDocument;
 
-public class RestaurantDocumentFixture {
+public class MongoRestaurantDocumentFixture {
   private String id = "restaurant123";
   private String name = "Le Bistro";
   private Integer capacity = 50;
@@ -23,37 +23,37 @@ public class RestaurantDocumentFixture {
     return document;
   }
 
-  public RestaurantDocumentFixture withId(String id) {
+  public MongoRestaurantDocumentFixture withId(String id) {
     this.id = id;
     return this;
   }
 
-  public RestaurantDocumentFixture withName(String name) {
+  public MongoRestaurantDocumentFixture withName(String name) {
     this.name = name;
     return this;
   }
 
-  public RestaurantDocumentFixture withCapacity(Integer capacity) {
+  public MongoRestaurantDocumentFixture withCapacity(Integer capacity) {
     this.capacity = capacity;
     return this;
   }
 
-  public RestaurantDocumentFixture withOpeningHour(String openingHour) {
+  public MongoRestaurantDocumentFixture withOpeningHour(String openingHour) {
     this.openingHour = openingHour;
     return this;
   }
 
-  public RestaurantDocumentFixture withClosingHour(String closingHour) {
+  public MongoRestaurantDocumentFixture withClosingHour(String closingHour) {
     this.closingHour = closingHour;
     return this;
   }
 
-  public RestaurantDocumentFixture withReservationDuration(Integer reservationDuration) {
+  public MongoRestaurantDocumentFixture withReservationDuration(Integer reservationDuration) {
     this.reservationDuration = reservationDuration;
     return this;
   }
 
-  public RestaurantDocumentFixture withOwnerId(String ownerId) {
+  public MongoRestaurantDocumentFixture withOwnerId(String ownerId) {
     this.ownerId = ownerId;
     return this;
   }
