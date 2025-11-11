@@ -106,17 +106,4 @@ public class Hours {
           "Reservation reservationDuration must be between 5 and 180 minutes.");
     }
   }
-
-  public List<LocalTime> generateAllSlots() {
-    List<LocalTime> slots = new ArrayList<>();
-
-    LocalTime current = open;
-
-    while (current.isBefore(close.minusMinutes(reservationDuration))) {
-      slots.add(current);
-      current = current.plusMinutes(reservationDuration);
-    }
-
-    return slots;
-  }
 }
