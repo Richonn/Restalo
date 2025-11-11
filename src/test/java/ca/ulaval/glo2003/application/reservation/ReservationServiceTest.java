@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -21,6 +22,7 @@ import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
@@ -400,5 +402,242 @@ public class ReservationServiceTest {
                 reservationService.getRestaurantAvailabilitiesByDate(
                     restaurantId, LocalDate.now().toString()));
     assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void givenNoExistingReservations_whenCreateReservation_thenReservationIsCreated() {
+    Restaurant mockRestaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
+
+    Reservation newReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            4,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            mockRestaurant.getId());
+
+    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
+        .thenReturn(newReservation);
+    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(new ArrayList<>());
+    when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
+        .thenReturn(createAvailabilityMap(50));
+    doNothing().when(reservationRepository).save(newReservation);
+
+    String reservationId =
+        reservationService.createReservation(reservationDto, mockRestaurant.getId());
+
+    assertNotNull(reservationId);
+    verify(reservationRepository).save(newReservation);
+  }
+
+  @Test
+  void givenExactCapacityAvailable_whenCreateReservation_thenReservationIsCreated() {
+    Restaurant mockRestaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
+
+    Reservation existingReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            30,
+            new Customer("Jane Smith", "jane@example.com", "0987654321"),
+            mockRestaurant.getId());
+
+    Reservation newReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            20,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            mockRestaurant.getId());
+
+    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
+        .thenReturn(newReservation);
+    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(List.of(existingReservation));
+    when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
+        .thenReturn(createAvailabilityMap(20));
+    doNothing().when(reservationRepository).save(newReservation);
+
+    String reservationId =
+        reservationService.createReservation(reservationDto, mockRestaurant.getId());
+
+    assertNotNull(reservationId);
+    verify(reservationRepository).save(newReservation);
+  }
+
+  @Test
+  void givenCapacityExceededByOne_whenCreateReservation_thenThrowsInvalidParameterException() {
+    Restaurant mockRestaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
+
+    Reservation existingReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            30,
+            new Customer("Jane Smith", "jane@example.com", "0987654321"),
+            mockRestaurant.getId());
+
+    Reservation newReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            21,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            mockRestaurant.getId());
+
+    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
+        .thenReturn(newReservation);
+    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(List.of(existingReservation));
+    when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
+        .thenReturn(createAvailabilityMap(20));
+
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The restaurant does not have enough capacity for this reservation");
+  }
+
+  @Test
+  void
+      givenMultipleOverlappingReservations_whenCreateReservation_thenThrowsInvalidParameterException() {
+    Restaurant mockRestaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
+
+    Reservation existingReservation1 =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            20,
+            new Customer("Jane Smith", "jane@example.com", "0987654321"),
+            mockRestaurant.getId());
+
+    Reservation existingReservation2 =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 30), LocalTime.of(13, 30)),
+            20,
+            new Customer("Bob Johnson", "bob@example.com", "1112223333"),
+            mockRestaurant.getId());
+
+    Reservation newReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 15), LocalTime.of(13, 15)),
+            15,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            mockRestaurant.getId());
+
+    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
+        .thenReturn(newReservation);
+    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(List.of(existingReservation1, existingReservation2));
+    when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
+        .thenReturn(createAvailabilityMap(10));
+
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+  }
+
+  @Test
+  void
+      givenCapacityExceededOnSingleSlot_whenCreateReservation_thenThrowsInvalidParameterException() {
+    Restaurant mockRestaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
+
+    Reservation newReservation =
+        new Reservation(
+            LocalDate.now(),
+            new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
+            25,
+            new Customer("John Doe", "john@example.com", "1234567890"),
+            mockRestaurant.getId());
+
+    Map<LocalTime, Integer> availabilityMap = new HashMap<>();
+    availabilityMap.put(LocalTime.of(12, 0), 30);
+    availabilityMap.put(LocalTime.of(12, 15), 30);
+    availabilityMap.put(LocalTime.of(12, 30), 20);
+    availabilityMap.put(LocalTime.of(12, 45), 30);
+
+    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(reservationFactory.createReservation(
+            any(LocalDate.class),
+            any(LocalTime.class),
+            anyInt(),
+            anyString(),
+            anyString(),
+            anyString(),
+            any(Restaurant.class)))
+        .thenReturn(newReservation);
+    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(new ArrayList<>());
+    when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
+        .thenReturn(availabilityMap);
+
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+  }
+
+  private Map<LocalTime, Integer> createAvailabilityMap(int capacity) {
+    Map<LocalTime, Integer> map = new HashMap<>();
+    for (int hour = 9; hour < 23; hour++) {
+      for (int minute = 0; minute < 60; minute += 15) {
+        map.put(LocalTime.of(hour, minute), capacity);
+      }
+    }
+    return map;
   }
 }

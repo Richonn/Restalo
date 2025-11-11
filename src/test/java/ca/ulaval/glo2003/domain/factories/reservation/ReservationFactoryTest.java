@@ -129,4 +129,64 @@ public class ReservationFactoryTest {
             reservationFactory.createReservation(
                 DATE, START_TIME, GROUP_SIZE, null, EMAIL, PHONE_NUMBER, restaurant));
   }
+
+  @Test
+  void givenStartTimeAtOpeningHour_whenCreateReservation_thenReturnsValidReservation() {
+    Restaurant restaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
+    LocalTime startTime = LocalTime.of(9, 0);
+
+    Reservation reservation =
+        reservationFactory.createReservation(
+            DATE, startTime, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant);
+
+    assertNotNull(reservation);
+    assertThat(reservation.getStartTime()).isEqualTo(LocalTime.of(9, 0));
+  }
+
+  @Test
+  void givenStartTimeAfterOpeningHour_whenCreateReservation_thenReturnsValidReservation() {
+    Restaurant restaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
+    LocalTime startTime = LocalTime.of(9, 10);
+
+    Reservation reservation =
+        reservationFactory.createReservation(
+            DATE, startTime, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant);
+
+    assertNotNull(reservation);
+    assertThat(reservation.getStartTime()).isEqualTo(LocalTime.of(9, 15));
+  }
+
+  @Test
+  void givenStartTimeThatAdjustsToOpeningHour_whenCreateReservation_thenReturnsValidReservation() {
+    Restaurant restaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
+    LocalTime startTime = LocalTime.of(8, 50);
+
+    Reservation reservation =
+        reservationFactory.createReservation(
+            DATE, startTime, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant);
+
+    assertNotNull(reservation);
+    assertThat(reservation.getStartTime()).isEqualTo(LocalTime.of(9, 0));
+  }
+
+  @Test
+  void
+      givenStartTimeBeforeOpeningHourAfterAdjustment_whenCreateReservation_thenThrowsInvalidParameterException() {
+    Restaurant restaurant =
+        new Restaurant(
+            "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
+    LocalTime startTime = LocalTime.of(8, 30);
+
+    assertThrows(
+        InvalidParameterException.class,
+        () ->
+            reservationFactory.createReservation(
+                DATE, startTime, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant));
+  }
 }
