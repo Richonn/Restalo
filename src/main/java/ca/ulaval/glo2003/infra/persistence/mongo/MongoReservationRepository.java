@@ -16,8 +16,6 @@ public class MongoReservationRepository implements ReservationRepository {
 
   public MongoReservationRepository() {
     this.datastore = MongoConnection.getInstance().getDatastore();
-    datastore.getMapper().map(ReservationDocument.class);
-    datastore.ensureIndexes();
   }
 
   @Override
@@ -28,14 +26,12 @@ public class MongoReservationRepository implements ReservationRepository {
 
   @Override
   public List<Reservation> getReservationListOfRestaurant(String restaurantId) {
-    List<ReservationDocument> documents =
-        datastore
-            .find(ReservationDocument.class)
-            .filter(Filters.eq("restaurantId", restaurantId))
-            .iterator()
-            .toList();
-
-    return documents.stream().map(ReservationDocumentMapper::toDomain).collect(Collectors.toList());
+    return datastore
+        .find(ReservationDocument.class)
+        .filter(Filters.eq("restaurantId", restaurantId))
+        .stream()
+        .map(ReservationDocumentMapper::toDomain)
+        .collect(Collectors.toList());
   }
 
   @Override

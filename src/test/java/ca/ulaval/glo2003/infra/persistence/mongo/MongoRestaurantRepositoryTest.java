@@ -8,10 +8,8 @@ import static org.mockito.Mockito.*;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.RestaurantDocument;
 import dev.morphia.Datastore;
-import dev.morphia.mapping.Mapper;
 import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.internal.MorphiaCursor;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,16 +21,11 @@ public class MongoRestaurantRepositoryTest {
   private static MongoRestaurantRepositoryFixture mongoRestaurantRepositoryFixture;
   private Datastore mockDatastore;
   private Query<RestaurantDocument> mockQuery;
-  private MorphiaCursor<RestaurantDocument> mockCursor;
 
   @BeforeEach
   void setUp() {
     mockDatastore = Mockito.mock(Datastore.class);
     mockQuery = Mockito.mock(Query.class);
-    mockCursor = Mockito.mock(MorphiaCursor.class);
-    Mapper mockMapper = Mockito.mock(Mapper.class);
-    when(mockDatastore.getMapper()).thenReturn(mockMapper);
-    when(mockMapper.map(any(Class.class))).thenReturn(null);
     mongoRestaurantRepositoryFixture = new MongoRestaurantRepositoryFixture();
   }
 
@@ -56,14 +49,13 @@ public class MongoRestaurantRepositoryTest {
 
     when(mockDatastore.find(RestaurantDocument.class)).thenReturn(mockQuery);
     when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(documents);
+    when(mockQuery.stream()).thenReturn(documents.stream());
 
     List<RestaurantDocument> result =
         mockDatastore
             .find(RestaurantDocument.class)
             .filter(dev.morphia.query.filters.Filters.eq("ownerId", ownerId))
-            .iterator()
+            .stream()
             .toList();
 
     assertThat(result).hasSize(3);
@@ -76,14 +68,13 @@ public class MongoRestaurantRepositoryTest {
 
     when(mockDatastore.find(RestaurantDocument.class)).thenReturn(mockQuery);
     when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(new ArrayList<>());
+    when(mockQuery.stream()).thenReturn(new ArrayList<RestaurantDocument>().stream());
 
     List<RestaurantDocument> result =
         mockDatastore
             .find(RestaurantDocument.class)
             .filter(dev.morphia.query.filters.Filters.eq("ownerId", requestedOwnerId))
-            .iterator()
+            .stream()
             .toList();
 
     assertThat(result).isEmpty();
@@ -147,11 +138,10 @@ public class MongoRestaurantRepositoryTest {
     }
 
     when(mockDatastore.find(RestaurantDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(documents);
+    when(mockQuery.stream()).thenReturn(documents.stream());
 
     List<RestaurantDocument> result =
-        mockDatastore.find(RestaurantDocument.class).iterator().toList();
+        mockDatastore.find(RestaurantDocument.class).stream().toList();
 
     assertThat(result).hasSize(3);
   }
@@ -159,11 +149,10 @@ public class MongoRestaurantRepositoryTest {
   @Test
   void givenNoExistingRestaurant_whenGetRestaurantList_thenReturnEmptyList() {
     when(mockDatastore.find(RestaurantDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(new ArrayList<>());
+    when(mockQuery.stream()).thenReturn(new ArrayList<RestaurantDocument>().stream());
 
     List<RestaurantDocument> result =
-        mockDatastore.find(RestaurantDocument.class).iterator().toList();
+        mockDatastore.find(RestaurantDocument.class).stream().toList();
 
     assertThat(result).isEmpty();
   }

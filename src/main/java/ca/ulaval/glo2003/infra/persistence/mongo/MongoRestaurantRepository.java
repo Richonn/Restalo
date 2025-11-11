@@ -16,8 +16,6 @@ public class MongoRestaurantRepository implements RestaurantRepository {
 
   public MongoRestaurantRepository() {
     this.datastore = MongoConnection.getInstance().getDatastore();
-    datastore.getMapper().map(RestaurantDocument.class);
-    datastore.ensureIndexes();
   }
 
   @Override
@@ -28,14 +26,9 @@ public class MongoRestaurantRepository implements RestaurantRepository {
 
   @Override
   public List<Restaurant> getRestaurantListOfOwner(String ownerId) {
-    List<RestaurantDocument> documents =
-        datastore
-            .find(RestaurantDocument.class)
-            .filter(Filters.eq("ownerId", ownerId))
-            .iterator()
-            .toList();
-
-    return documents.stream().map(RestaurantDocumentMapper::toDomain).collect(Collectors.toList());
+    return datastore.find(RestaurantDocument.class).filter(Filters.eq("ownerId", ownerId)).stream()
+        .map(RestaurantDocumentMapper::toDomain)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -51,10 +44,9 @@ public class MongoRestaurantRepository implements RestaurantRepository {
 
   @Override
   public List<Restaurant> getRestaurantList() {
-    List<RestaurantDocument> documents =
-        datastore.find(RestaurantDocument.class).iterator().toList();
-
-    return documents.stream().map(RestaurantDocumentMapper::toDomain).collect(Collectors.toList());
+    return datastore.find(RestaurantDocument.class).stream()
+        .map(RestaurantDocumentMapper::toDomain)
+        .collect(Collectors.toList());
   }
 
   @Override

@@ -9,10 +9,8 @@ import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.ReservationDocument;
 import dev.morphia.Datastore;
-import dev.morphia.mapping.Mapper;
 import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filter;
-import dev.morphia.query.internal.MorphiaCursor;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,16 +22,11 @@ public class MongoReservationRepositoryTest {
   private static MongoReservationRepositoryFixture mongoReservationRepositoryFixture;
   private Datastore mockDatastore;
   private Query<ReservationDocument> mockQuery;
-  private MorphiaCursor<ReservationDocument> mockCursor;
 
   @BeforeEach
   void setUp() {
     mockDatastore = Mockito.mock(Datastore.class);
     mockQuery = Mockito.mock(Query.class);
-    mockCursor = Mockito.mock(MorphiaCursor.class);
-    Mapper mockMapper = Mockito.mock(Mapper.class);
-    when(mockDatastore.getMapper()).thenReturn(mockMapper);
-    when(mockMapper.map(any(Class.class))).thenReturn(null);
     mongoReservationRepositoryFixture = new MongoReservationRepositoryFixture();
   }
 
@@ -58,14 +51,13 @@ public class MongoReservationRepositoryTest {
 
     when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
     when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(documents);
+    when(mockQuery.stream()).thenReturn(documents.stream());
 
     List<ReservationDocument> result =
         mockDatastore
             .find(ReservationDocument.class)
             .filter(dev.morphia.query.filters.Filters.eq("restaurantId", restaurantId))
-            .iterator()
+            .stream()
             .toList();
 
     assertThat(result).hasSize(3);
@@ -78,14 +70,13 @@ public class MongoReservationRepositoryTest {
 
     when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
     when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.iterator()).thenReturn(mockCursor);
-    when(mockCursor.toList()).thenReturn(new ArrayList<>());
+    when(mockQuery.stream()).thenReturn(new ArrayList<ReservationDocument>().stream());
 
     List<ReservationDocument> result =
         mockDatastore
             .find(ReservationDocument.class)
             .filter(dev.morphia.query.filters.Filters.eq("restaurantId", requestedRestaurantId))
-            .iterator()
+            .stream()
             .toList();
 
     assertThat(result).isEmpty();

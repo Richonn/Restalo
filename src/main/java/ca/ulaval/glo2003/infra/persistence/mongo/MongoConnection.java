@@ -71,6 +71,8 @@ public class MongoConnection {
         mongoClient.close();
         instance = null;
       } catch (Exception e) {
+        System.err.println("Error closing MongoDB connection: " + e.getMessage());
+        e.printStackTrace();
       }
     }
   }
