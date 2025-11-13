@@ -52,6 +52,22 @@ public class Reservation {
     this.restaurantId = restaurantId;
   }
 
+  public Reservation(
+      String id,
+      LocalDate date,
+      ReservationTime reservationTime,
+      Integer groupSize,
+      Customer customer,
+      String restaurantId) {
+
+    this.id = id;
+    this.date = date;
+    this.reservationTime = reservationTime;
+    this.groupSize = groupSize;
+    this.customer = customer;
+    this.restaurantId = restaurantId;
+  }
+
   public String getId() {
     return id;
   }

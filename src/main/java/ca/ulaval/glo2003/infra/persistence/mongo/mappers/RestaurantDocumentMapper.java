@@ -34,6 +34,7 @@ public class RestaurantDocumentMapper {
 
     Hours hours = new Hours(openingHour, closingHour, document.getReservationDuration());
 
-    return new Restaurant(document.getName(), document.getCapacity(), hours, document.getOwnerId());
+    return new Restaurant(
+        document.getId(), document.getName(), document.getCapacity(), hours, document.getOwnerId());
   }
 }

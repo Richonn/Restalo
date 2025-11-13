@@ -1,156 +1,67 @@
 package ca.ulaval.glo2003.infra.persistence.mongo;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import ca.ulaval.glo2003.domain.reservation.Reservation;
-import ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument;
-import ca.ulaval.glo2003.infra.persistence.mongo.documents.ReservationDocument;
-import dev.morphia.Datastore;
-import dev.morphia.query.Query;
-import dev.morphia.query.filters.Filter;
-import java.util.ArrayList;
-import java.util.List;
+import ca.ulaval.glo2003.domain.ReservationRepository;
+import ca.ulaval.glo2003.infra.persistence.AbstractReservationRepositoryTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
-public class MongoReservationRepositoryTest {
+@Testcontainers
+public class MongoReservationRepositoryTest extends AbstractReservationRepositoryTest {
 
-  private static MongoReservationRepositoryFixture mongoReservationRepositoryFixture;
-  private Datastore mockDatastore;
-  private Query<ReservationDocument> mockQuery;
+  private static final String MONGO_DOCKER_IMAGE = "mongo:7.0";
+  private static final String MONGO_CLUSTER_URL_PROPERTY = "MONGO_CLUSTER_URL";
+  private static final String MONGO_DATABASE_PROPERTY = "MONGO_DATABASE";
+  private static final String TEST_DATABASE_NAME = "test_reservation_db";
 
-  @BeforeEach
-  void setUp() {
-    mockDatastore = Mockito.mock(Datastore.class);
-    mockQuery = Mockito.mock(Query.class);
-    mongoReservationRepositoryFixture = new MongoReservationRepositoryFixture();
-  }
+  @Container
+  private static final MongoDBContainer mongoDBContainer =
+      new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
-  @Test
-  void givenValidReservation_whenSave_thenNoException() {
-    Reservation reservation = mongoReservationRepositoryFixture.build();
+  private static ReservationRepository reservationRepository;
 
-    assertDoesNotThrow(() -> mockDatastore.save(any(ReservationDocument.class)));
-  }
+  @BeforeAll
+  static void initializeMongoConnection() {
+    mongoDBContainer.start();
 
-  @Test
-  void
-      givenExistingRestaurantId_whenGetReservationListOfRestaurant_thenReturnExpectedReservations() {
-    String restaurantId = "restaurantId";
-    String[] reservationIdList = {"1", "2", "3"};
-    List<ReservationDocument> documents = new ArrayList<>();
+    System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
+    System.setProperty(MONGO_DATABASE_PROPERTY, TEST_DATABASE_NAME);
 
-    for (String reservationId : reservationIdList) {
-      ReservationDocument document = createTestReservationDocument(reservationId, restaurantId);
-      documents.add(document);
+    try {
+      MongoConnection.getInstance().close();
+    } catch (Exception e) {
     }
 
-    when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.stream()).thenReturn(documents.stream());
-
-    List<ReservationDocument> result =
-        mockDatastore
-            .find(ReservationDocument.class)
-            .filter(dev.morphia.query.filters.Filters.eq("restaurantId", restaurantId))
-            .stream()
-            .toList();
-
-    assertThat(result).hasSize(3);
-    verify(mockDatastore, times(1)).find(ReservationDocument.class);
+    reservationRepository = new MongoReservationRepository();
   }
 
-  @Test
-  void givenNonExistentRestaurantId_whenGetReservationListOfRestaurant_thenReturnNoReservations() {
-    String requestedRestaurantId = "NonExistentRestaurantId";
-
-    when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.stream()).thenReturn(new ArrayList<ReservationDocument>().stream());
-
-    List<ReservationDocument> result =
-        mockDatastore
-            .find(ReservationDocument.class)
-            .filter(dev.morphia.query.filters.Filters.eq("restaurantId", requestedRestaurantId))
-            .stream()
-            .toList();
-
-    assertThat(result).isEmpty();
+  @AfterAll
+  static void closeMongoConnection() {
+    MongoConnection.getInstance().close();
+    mongoDBContainer.stop();
   }
 
-  @Test
-  void givenExistingReservationId_whenGetReservationById_thenReturnReservation() {
-    String reservationId = "reservationId";
-    ReservationDocument document = createTestReservationDocument(reservationId, "restaurantId");
-
-    when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.first()).thenReturn(document);
-
-    ReservationDocument result =
-        mockDatastore
-            .find(ReservationDocument.class)
-            .filter(dev.morphia.query.filters.Filters.eq("_id", reservationId))
-            .first();
-
-    assertThat(result).isNotNull();
-    assertThat(result.getId()).isEqualTo(reservationId);
+  @BeforeEach
+  void clearDatabase() {
+    clearRepository();
   }
 
-  @Test
-  void givenNonExistentReservationId_whenGetReservationById_thenReturnNoReservation() {
-    String requestedReservationId = "nonExistentReservationId";
-
-    when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.first()).thenReturn(null);
-
-    ReservationDocument result =
-        mockDatastore
-            .find(ReservationDocument.class)
-            .filter(dev.morphia.query.filters.Filters.eq("_id", requestedReservationId))
-            .first();
-
-    assertThat(result).isNull();
+  @Override
+  protected ReservationRepository getRepository() {
+    return reservationRepository;
   }
 
-  @Test
-  void givenExistingReservationId_whenDelete_thenDeleteOperationExecuted() {
-    String reservationId = "reservationId";
-
-    when(mockDatastore.find(ReservationDocument.class)).thenReturn(mockQuery);
-    when(mockQuery.filter(any(Filter.class))).thenReturn(mockQuery);
-    when(mockQuery.delete()).thenReturn(null);
-
-    assertDoesNotThrow(
-        () ->
-            mockDatastore
-                .find(ReservationDocument.class)
-                .filter(dev.morphia.query.filters.Filters.eq("_id", reservationId))
-                .delete());
-
-    verify(mockDatastore, times(1)).find(ReservationDocument.class);
-  }
-
-  private ReservationDocument createTestReservationDocument(String id, String restaurantId) {
-    ReservationDocument document = new ReservationDocument();
-    document.setId(id);
-    document.setDate("2025-12-25");
-    document.setStartTime("18:30");
-    document.setEndTime("20:30");
-    document.setGroupSize(4);
-    document.setRestaurantId(restaurantId);
-
-    CustomerDocument customerDoc = new CustomerDocument();
-    customerDoc.setName("John Doe");
-    customerDoc.setEmail("john.doe@example.com");
-    customerDoc.setPhoneNumber("1234567890");
-    document.setCustomer(customerDoc);
-
-    return document;
+  @Override
+  protected void clearRepository() {
+    try {
+      MongoConnection.getInstance().getDatastore().getDatabase().drop();
+      MongoConnection.getInstance().close();
+      reservationRepository = new MongoReservationRepository();
+    } catch (Exception e) {
+    }
   }
 }
