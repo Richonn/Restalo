@@ -18,6 +18,7 @@ import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalTime;
@@ -33,11 +34,12 @@ public class RestaurantServiceTest {
   private final RestaurantRepository restaurantRepository = mock(RestaurantRepository.class);
   private final RestaurantDomainService restaurantDomainService =
       mock(RestaurantDomainService.class);
+  private final ReservationRepository reservationRepository = mock(ReservationRepository.class);
   private RestaurantDto restaurantDto;
 
   @BeforeEach
   public void setUp() {
-    restaurantService = new RestaurantService(restaurantRepository, restaurantDomainService);
+    restaurantService = new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
 
     HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);

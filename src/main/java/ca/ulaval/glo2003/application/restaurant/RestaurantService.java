@@ -9,7 +9,9 @@ import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
 import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
+import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
@@ -20,11 +22,15 @@ import java.util.List;
 public class RestaurantService {
   private final RestaurantDomainService restaurantDomainService;
   private final RestaurantRepository repository;
+  private final ReservationRepository reservationRepository;
 
   @Inject
   public RestaurantService(
-      RestaurantRepository restaurantRepository, RestaurantDomainService restaurantDomainService) {
+      RestaurantRepository restaurantRepository,
+      ReservationRepository reservationRepository,
+      RestaurantDomainService restaurantDomainService) {
     this.repository = restaurantRepository;
+    this.reservationRepository = reservationRepository;
     this.restaurantDomainService = restaurantDomainService;
   }
 
@@ -87,7 +93,20 @@ public class RestaurantService {
         .toList();
   }
 
+
   public void deleteRestaurant(String ownerId, String restaurantId) {
+
     restaurantDomainService.deleteRestaurant(ownerId, restaurantId);
+
+    Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
+
+
+    List<Reservation> reservations =
+            reservationRepository.getReservationListOfRestaurant(restaurant.getId());
+    for (Reservation r : reservations) {
+      reservationRepository.delete(r.getId());
+    }
+
+    repository.delete(restaurant.getId());
   }
 }

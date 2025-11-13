@@ -26,7 +26,7 @@ public class RestaurantResourceTest {
   private final RestaurantDomainService restaurantDomainService =
       new RestaurantDomainService(restaurantRepository, reservationRepository);
   private final RestaurantService restaurantService =
-      new RestaurantService(restaurantRepository, restaurantDomainService);
+      new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
   private String restaurantId;
 

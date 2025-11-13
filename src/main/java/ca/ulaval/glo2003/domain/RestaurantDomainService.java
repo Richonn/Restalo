@@ -15,14 +15,12 @@ import java.util.Map;
 
 public class RestaurantDomainService {
 
-  private final ReservationRepository reservationRepository;
   private final RestaurantRepository restaurantRepository;
 
   @Inject
   public RestaurantDomainService(
       RestaurantRepository restaurantRepository, ReservationRepository reservationRepository) {
     this.restaurantRepository = restaurantRepository;
-    this.reservationRepository = reservationRepository;
   }
 
   public void validateHeaders(String ownerId) {
@@ -81,13 +79,5 @@ public class RestaurantDomainService {
         throw new NotFoundException("Restaurant does not belong to this owner");
       }
     }
-
-    List<Reservation> reservations =
-        reservationRepository.getReservationListOfRestaurant(restaurant.getId());
-    for (Reservation r : reservations) {
-      reservationRepository.delete(r.getId());
-    }
-
-    restaurantRepository.delete(restaurant.getId());
   }
 }
