@@ -8,6 +8,7 @@ import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public abstract class AbstractRestaurantRepositoryTest {
@@ -23,6 +24,11 @@ public abstract class AbstractRestaurantRepositoryTest {
   protected abstract RestaurantRepository getRepository();
 
   protected abstract void clearRepository();
+
+  @BeforeEach
+  void setUp() {
+    clearRepository();
+  }
 
   protected Restaurant createRestaurant(String id, String ownerId) {
     return new Restaurant(
@@ -43,8 +49,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenExistingOwnerId_whenGetRestaurantListOfOwner_thenReturnExpectedRestaurants() {
-    clearRepository();
-
     String ownerId = "ownerId";
     String[] restaurantIdList = {"1", "2", "3"};
     List<Restaurant> expectedRestaurantList = new ArrayList<>();
@@ -64,8 +68,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenNonExistentOwnerId_whenGetRestaurantListOfOwner_thenReturnNoRestaurants() {
-    clearRepository();
-
     String actualOwnerId = "ownerId";
     String requestedOwnerId = "NonExistentOwnerId";
     String[] restaurantIdList = {"1", "2", "3"};
@@ -80,8 +82,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenExistingRestaurantId_whenGetRestaurantByIdOfOwner_thenReturnRestaurant() {
-    clearRepository();
-
     String ownerId = "ownerId";
     Restaurant restaurant = createRestaurant("1", ownerId);
     getRepository().save(restaurant);
@@ -95,8 +95,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenNonExistentRestaurantId_whenGetRestaurantByIdOfOwner_thenReturnNoRestaurant() {
-    clearRepository();
-
     String ownerId = "ownerId";
     String actualRestaurantId = "restaurantId";
     String requestedRestaurantId = "nonExistentRestaurantId";
@@ -109,8 +107,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenExistingRestaurant_whenGetRestaurantList_thenReturnExpectedRestaurantsList() {
-    clearRepository();
-
     String[] restaurantIdList = {"1", "2", "3"};
     String[] ownerIdList = {"1", "2", "3"};
     List<Restaurant> expectedRestaurantList = new ArrayList<>();
@@ -130,15 +126,11 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenNoExistingRestaurant_whenGetRestaurantList_thenReturnEmptyList() {
-    clearRepository();
-
     assertThat(getRepository().getRestaurantList()).isEmpty();
   }
 
   @Test
   void givenExistingRestaurantId_whenGetRestaurantById_thenReturnRestaurant() {
-    clearRepository();
-
     Restaurant restaurant = createRestaurant("1", "owner1");
     getRepository().save(restaurant);
     String restaurantId = restaurant.getId();
@@ -151,8 +143,6 @@ public abstract class AbstractRestaurantRepositoryTest {
 
   @Test
   void givenNonExistentRestaurantId_whenGetRestaurantById_thenReturnNoRestaurant() {
-    clearRepository();
-
     String actualRestaurantId = "restaurantId";
     String requestedRestaurantId = "nonExistentRestaurantId";
 

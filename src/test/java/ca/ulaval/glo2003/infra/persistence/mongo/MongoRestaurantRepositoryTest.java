@@ -4,7 +4,6 @@ import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.infra.persistence.AbstractRestaurantRepositoryTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -43,11 +42,6 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
   static void closeMongoConnection() {
     MongoConnection.getInstance().close();
     mongoDBContainer.stop();
-  }
-
-  @BeforeEach
-  void clearDatabase() {
-    clearRepository();
   }
 
   @Override

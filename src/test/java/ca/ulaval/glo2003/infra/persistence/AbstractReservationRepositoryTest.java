@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public abstract class AbstractReservationRepositoryTest {
@@ -29,6 +30,11 @@ public abstract class AbstractReservationRepositoryTest {
   protected abstract ReservationRepository getRepository();
 
   protected abstract void clearRepository();
+
+  @BeforeEach
+  void setUp() {
+    clearRepository();
+  }
 
   protected Reservation createReservation(String id, String restaurantId) {
     return new Reservation(
@@ -50,8 +56,6 @@ public abstract class AbstractReservationRepositoryTest {
   @Test
   void
       givenExistingRestaurantId_whenGetReservationListOfRestaurant_thenReturnExpectedReservations() {
-    clearRepository();
-
     String restaurantId = "restaurantId";
     String[] reservationIdList = {"1", "2", "3"};
     List<Reservation> expectedReservationsList = new ArrayList<>();
@@ -72,8 +76,6 @@ public abstract class AbstractReservationRepositoryTest {
 
   @Test
   void givenNonExistentRestaurantId_whenGetReservationListOfRestaurant_thenReturnNoReservations() {
-    clearRepository();
-
     String actualRestaurantId = "restaurantId";
     String requestedRestaurantId = "nonExistentRestaurantId";
     String[] reservationIdList = {"1", "2", "3"};
@@ -88,8 +90,6 @@ public abstract class AbstractReservationRepositoryTest {
 
   @Test
   void givenExistingReservationId_whenGetReservationById_thenReturnReservation() {
-    clearRepository();
-
     Reservation reservation = createReservation("1", "restaurant1");
     getRepository().save(reservation);
     String reservationId = reservation.getId();
@@ -102,8 +102,6 @@ public abstract class AbstractReservationRepositoryTest {
 
   @Test
   void givenNonExistentReservationId_whenGetReservationById_thenReturnNoReservation() {
-    clearRepository();
-
     String actualReservationId = "reservationId";
     String requestedReservationId = "nonExistentReservationId";
 
@@ -115,8 +113,6 @@ public abstract class AbstractReservationRepositoryTest {
 
   @Test
   void givenExistingReservation_whenDeleteReservation_thenReservationIsDeleted() {
-    clearRepository();
-
     String reservationId = "reservationId";
     Reservation reservation = createReservation(reservationId, "restaurant1");
     getRepository().save(reservation);
