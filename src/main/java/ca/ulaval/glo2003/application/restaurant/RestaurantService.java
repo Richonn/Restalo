@@ -86,4 +86,8 @@ public class RestaurantService {
         .map(RestaurantSearchResponseAssembler::toRestaurantSearchResponseDto)
         .toList();
   }
+
+  public void deleteRestaurant(String ownerId, String restaurantId) {
+    restaurantDomainService.deleteRestaurant(ownerId, restaurantId);
+  }
 }

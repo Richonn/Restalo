@@ -56,4 +56,9 @@ public class MongoRestaurantRepository implements RestaurantRepository {
 
     return RestaurantDocumentMapper.toDomain(document);
   }
+
+  @Override
+  public void delete(String restaurantId) {
+    datastore.find(RestaurantDocument.class).filter(Filters.eq("_id", restaurantId)).delete();
+  }
 }

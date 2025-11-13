@@ -11,6 +11,8 @@ import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
+import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -27,8 +29,12 @@ public class RestaurantDomainServiceTest {
 
   @BeforeEach
   public void setUp() {
+
+    RestaurantRepository restaurantRepository = new InMemoryRestaurantRepository();
+    ReservationRepository reservationRepository = new InMemoryReservationRepository();
+    restaurantDomainService =
+        new RestaurantDomainService(restaurantRepository, reservationRepository);
     restaurantDomainServiceFixture = new RestaurantDomainServiceFixture();
-    restaurantDomainService = new RestaurantDomainService();
   }
 
   @Test

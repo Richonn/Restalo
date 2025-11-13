@@ -2,9 +2,11 @@ package ca.ulaval.glo2003.domain;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.domain.exceptions.NotFoundException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -12,6 +14,16 @@ import java.util.List;
 import java.util.Map;
 
 public class RestaurantDomainService {
+
+  private final ReservationRepository reservationRepository;
+  private final RestaurantRepository restaurantRepository;
+
+  @Inject
+  public RestaurantDomainService(
+      RestaurantRepository restaurantRepository, ReservationRepository reservationRepository) {
+    this.restaurantRepository = restaurantRepository;
+    this.reservationRepository = reservationRepository;
+  }
 
   public void validateHeaders(String ownerId) {
     if (ownerId == null || ownerId.isBlank()) {
@@ -51,5 +63,31 @@ public class RestaurantDomainService {
     }
 
     return availability;
+  }
+
+  public void deleteRestaurant(String ownerId, String restaurantId) {
+    validateHeaders(ownerId);
+
+    if (restaurantId == null || restaurantId.isBlank()) {
+      throw new MissingParameterException("Missing restaurantId parameter");
+    }
+
+    Restaurant restaurant = restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId);
+
+    if (restaurant == null) {
+      if (restaurantRepository.getRestaurantById(restaurantId) == null) {
+        throw new NotFoundException("Restaurant does not exist");
+      } else {
+        throw new NotFoundException("Restaurant does not belong to this owner");
+      }
+    }
+
+    List<Reservation> reservations =
+        reservationRepository.getReservationListOfRestaurant(restaurant.getId());
+    for (Reservation r : reservations) {
+      reservationRepository.delete(r.getId());
+    }
+
+    restaurantRepository.delete(restaurant.getId());
   }
 }
