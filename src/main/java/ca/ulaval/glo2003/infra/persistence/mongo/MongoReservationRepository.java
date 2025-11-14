@@ -6,6 +6,7 @@ import ca.ulaval.glo2003.infra.persistence.mongo.documents.ReservationDocument;
 import ca.ulaval.glo2003.infra.persistence.mongo.mappers.ReservationDocumentMapper;
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filters;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +15,11 @@ import java.util.stream.Collectors;
 public class MongoReservationRepository implements ReservationRepository {
   private final Datastore datastore;
 
-  public MongoReservationRepository() {
-    this.datastore = MongoConnection.getInstance().getDatastore();
+  @Inject
+  public MongoReservationRepository(MongoConnection mongoConnection) {
+    this.datastore = mongoConnection.getDatastore();
+    datastore.getMapper().map(ReservationDocument.class);
+    datastore.ensureIndexes();
   }
 
   @Override
@@ -44,6 +48,13 @@ public class MongoReservationRepository implements ReservationRepository {
 
   @Override
   public void delete(String reservationId) {
-    datastore.find(ReservationDocument.class).filter(Filters.eq("_id", reservationId)).delete();
+    datastore.withTransaction(
+        txnDatastore -> {
+          txnDatastore
+              .find(ReservationDocument.class)
+              .filter(Filters.eq("_id", reservationId))
+              .delete();
+          return null;
+        });
   }
 }

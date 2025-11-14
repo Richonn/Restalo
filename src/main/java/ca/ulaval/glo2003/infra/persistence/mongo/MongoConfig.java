@@ -1,5 +1,8 @@
 package ca.ulaval.glo2003.infra.persistence.mongo;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class MongoConfig {
   private static final String MONGO_CLUSTER_URL_ENV = "MONGO_CLUSTER_URL";
   private static final String MONGO_DATABASE_ENV = "MONGO_DATABASE";
