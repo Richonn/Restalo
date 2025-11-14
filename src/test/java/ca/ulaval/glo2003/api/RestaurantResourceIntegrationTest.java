@@ -255,8 +255,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidOwnerAndId_whenGet_thenReturns200WithRestaurant() {
-    RestaurantDto mockDto = mock(RestaurantDto.class);
-    when(restaurantService.getRestaurantByIdOfOwner(any(), any())).thenReturn(mockDto);
+    RestaurantDto restaurantDto = mock(RestaurantDto.class);
+    when(restaurantService.getRestaurantByIdOfOwner(any(), any())).thenReturn(restaurantDto);
 
     try (Response response =
         target("/restaurants/restaurant-123")
@@ -302,8 +302,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidSearchRequest_whenSearchRestaurants_thenReturns200WithList() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson =
         """
@@ -329,8 +329,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenSearchRequestWithNullName_whenSearchRestaurants_thenReturns200() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson =
         """
@@ -381,8 +381,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenEmptySearchRequest_whenSearchRestaurants_thenReturns200() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson = "{}";
 
@@ -413,9 +413,9 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
       givenSearchRequestWithMultipleResults_whenSearchRestaurants_thenReturns200WithResults() {
     RestaurantSearchResponseDto restaurant1 = mock(RestaurantSearchResponseDto.class);
     RestaurantSearchResponseDto restaurant2 = mock(RestaurantSearchResponseDto.class);
-    List<RestaurantSearchResponseDto> mockRestaurants = List.of(restaurant1, restaurant2);
+    List<RestaurantSearchResponseDto> restaurants = List.of(restaurant1, restaurant2);
 
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(restaurants);
 
     String searchJson =
         """

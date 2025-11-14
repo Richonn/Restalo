@@ -350,8 +350,9 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidNumber_whenGet_thenReturns200WithFullBody() {
-    ReservationResponseDto mockDto = createMockReservationResponseDto();
-    when(reservationService.getReservationById(TEST_RESERVATION_ID)).thenReturn(mockDto);
+    ReservationResponseDto reservationResponse = createValidReservationResponseDto();
+    when(reservationService.getReservationById(TEST_RESERVATION_ID))
+        .thenReturn(reservationResponse);
 
     try (Response response =
         target("/reservations/reservation-123").request(MediaType.APPLICATION_JSON).get()) {
@@ -431,7 +432,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
         date, startTime, groupSize);
   }
 
-  private ReservationResponseDto createMockReservationResponseDto() {
+  private ReservationResponseDto createValidReservationResponseDto() {
     return new ReservationResponseDto(
         TEST_RESERVATION_ID,
         LocalDate.of(2025, 10, 30),
