@@ -19,7 +19,7 @@ public class RestaurantDomainService {
     if (ownerId == null || ownerId.isBlank()) {
       throw new MissingParameterException("Missing Owner header");
     }
-  }g
+  }
 
   public LocalDate convertDateStringToLocalDate(String dateString) {
     if (dateString == null || dateString.isBlank()) {
