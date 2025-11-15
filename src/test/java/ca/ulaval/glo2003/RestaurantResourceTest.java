@@ -23,8 +23,7 @@ public class RestaurantResourceTest {
 
   private final RestaurantRepository restaurantRepository = new InMemoryRestaurantRepository();
   private final ReservationRepository reservationRepository = new InMemoryReservationRepository();
-  private final RestaurantDomainService restaurantDomainService =
-      new RestaurantDomainService(restaurantRepository, reservationRepository);
+  private final RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
   private final RestaurantService restaurantService =
       new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
