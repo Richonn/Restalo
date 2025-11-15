@@ -48,13 +48,6 @@ public class MongoReservationRepository implements ReservationRepository {
 
   @Override
   public void delete(String reservationId) {
-    datastore.withTransaction(
-        txnDatastore -> {
-          txnDatastore
-              .find(ReservationDocument.class)
-              .filter(Filters.eq("_id", reservationId))
-              .delete();
-          return null;
-        });
+    datastore.find(ReservationDocument.class).filter(Filters.eq("_id", reservationId)).delete();
   }
 }

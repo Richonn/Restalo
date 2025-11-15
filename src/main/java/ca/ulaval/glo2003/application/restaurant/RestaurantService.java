@@ -23,18 +23,15 @@ public class RestaurantService {
   private final RestaurantDomainService restaurantDomainService;
   private final RestaurantRepository repository;
   private final ReservationRepository reservationRepository;
-  private final TransactionManager transactionManager;
 
   @Inject
   public RestaurantService(
       RestaurantRepository restaurantRepository,
       ReservationRepository reservationRepository,
-      RestaurantDomainService restaurantDomainService,
-      TransactionManager transactionManager) {
+      RestaurantDomainService restaurantDomainService) {
     this.repository = restaurantRepository;
     this.reservationRepository = reservationRepository;
     this.restaurantDomainService = restaurantDomainService;
-    this.transactionManager = transactionManager;
   }
 
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
@@ -97,19 +94,16 @@ public class RestaurantService {
   }
 
   public void deleteRestaurant(String ownerId, String restaurantId) {
-
     restaurantDomainService.deleteRestaurant(ownerId, restaurantId);
 
-    transactionManager.executeInTransaction(
-        txnDatastore -> {
-          Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
+    Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
 
-          List<Reservation> reservations =
-              reservationRepository.getReservationListOfRestaurant(restaurant.getId());
-          for (Reservation r : reservations) {
-            reservationRepository.delete(r.getId());
-          }
-          repository.delete(restaurant.getId());
-        });
+    List<Reservation> reservations =
+        reservationRepository.getReservationListOfRestaurant(restaurant.getId());
+
+    for (Reservation r : reservations) {
+      reservationRepository.delete(r.getId());
+    }
+    repository.delete(restaurant.getId());
   }
 }

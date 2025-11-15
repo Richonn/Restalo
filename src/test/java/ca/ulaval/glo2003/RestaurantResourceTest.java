@@ -3,20 +3,17 @@ package ca.ulaval.glo2003;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
-import static org.mockito.Mockito.*;
 
 import ca.ulaval.glo2003.api.assembler.RestaurantAssembler;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
-import ca.ulaval.glo2003.application.restaurant.TransactionManager;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
-import ca.ulaval.glo2003.infra.persistence.InMemoryTransactionManager;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalTime;
@@ -28,10 +25,8 @@ public class RestaurantResourceTest {
   private final ReservationRepository reservationRepository = new InMemoryReservationRepository();
   private final RestaurantDomainService restaurantDomainService =
       new RestaurantDomainService(restaurantRepository, reservationRepository);
-  private final TransactionManager transactionManager = new InMemoryTransactionManager();
   private final RestaurantService restaurantService =
-      new RestaurantService(
-          restaurantRepository, reservationRepository, restaurantDomainService, transactionManager);
+      new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
   private String restaurantId;
 

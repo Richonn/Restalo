@@ -6,20 +6,28 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.util.concurrent.TimeUnit;
 
-@Singleton
 public class MongoConnection {
   private static volatile MongoConnection instance;
   private final MongoClient mongoClient;
   private final Datastore datastore;
 
-  @Inject
   private MongoConnection(MongoConfig config) {
     this.mongoClient = createMongoClient(config.getClusterUrl());
     this.datastore = createDatastore(config.getDatabase());
+  }
+
+  public static MongoConnection getInstance() {
+    if (instance == null) {
+      synchronized (MongoConnection.class) {
+        if (instance == null) {
+          MongoConfig config = new MongoConfig();
+          instance = new MongoConnection(config);
+        }
+      }
+    }
+    return instance;
   }
 
   private MongoClient createMongoClient(String clusterUrl) {

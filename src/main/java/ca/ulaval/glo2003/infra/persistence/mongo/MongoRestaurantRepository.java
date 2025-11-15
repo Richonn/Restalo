@@ -63,13 +63,6 @@ public class MongoRestaurantRepository implements RestaurantRepository {
 
   @Override
   public void delete(String restaurantId) {
-    datastore.withTransaction(
-        txnDatastore -> {
-          txnDatastore
-              .find(RestaurantDocument.class)
-              .filter(Filters.eq("_id", restaurantId))
-              .delete();
-          return null;
-        });
+    datastore.find(RestaurantDocument.class).filter(Filters.eq("_id", restaurantId)).delete();
   }
 }

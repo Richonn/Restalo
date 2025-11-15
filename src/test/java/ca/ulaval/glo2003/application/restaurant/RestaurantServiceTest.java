@@ -20,7 +20,6 @@ import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
-import ca.ulaval.glo2003.infra.persistence.InMemoryTransactionManager;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -37,16 +36,11 @@ public class RestaurantServiceTest {
       mock(RestaurantDomainService.class);
   private final ReservationRepository reservationRepository = mock(ReservationRepository.class);
   private RestaurantDto restaurantDto;
-  private final TransactionManager transactionManager = new InMemoryTransactionManager();
 
   @BeforeEach
   public void setUp() {
     restaurantService =
-        new RestaurantService(
-            restaurantRepository,
-            reservationRepository,
-            restaurantDomainService,
-            transactionManager);
+        new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
 
     HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
