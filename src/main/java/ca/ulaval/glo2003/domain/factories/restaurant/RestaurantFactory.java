@@ -36,15 +36,17 @@ public class RestaurantFactory {
     if (open.plusHours(1).isAfter(close)) {
       throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
     }
-    if (reservationDuration <= 0) {
-      throw new InvalidParameterException(
-          "The restaurant reservation length needs to be bigger than 0 minutes");
-    }
+    if (reservationDuration != null) {
+      if (reservationDuration <= 0) {
+        throw new InvalidParameterException(
+            "The restaurant reservation length needs to be bigger than 0 minutes");
+      }
 
-    if (reservationDuration < MIN_RESERVATION_DURATION
-        || reservationDuration > MAX_RESERVATION_DURATION) {
-      throw new InvalidParameterException(
-          "Reservation reservationDuration must be between 5 and 180 minutes.");
+      if (reservationDuration < MIN_RESERVATION_DURATION
+          || reservationDuration > MAX_RESERVATION_DURATION) {
+        throw new InvalidParameterException(
+            "Reservation reservationDuration must be between 5 and 180 minutes.");
+      }
     }
   }
 }

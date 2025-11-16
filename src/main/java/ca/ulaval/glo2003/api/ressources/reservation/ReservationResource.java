@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
@@ -37,7 +38,7 @@ public class ReservationResource {
   @Path("restaurants/{id}/reservations")
   @POST
   public Response createReservation(
-      @NotNull(message = "Missing body") ReservationDto reservationDto,
+      @Valid @NotNull(message = "Missing body") ReservationDto reservationDto,
       @PathParam("id") String restaurantId) {
 
     String reservationGeneratedId =

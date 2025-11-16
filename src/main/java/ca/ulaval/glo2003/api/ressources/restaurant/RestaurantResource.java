@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
@@ -40,7 +41,7 @@ public class RestaurantResource {
           @NotBlank(message = "Missing Owner header")
           @HeaderParam(OWNER_HEADER)
           String ownerId,
-      @NotNull(message = "Missing body") RestaurantDto restaurantDto) {
+      @Valid @NotNull(message = "Missing body") RestaurantDto restaurantDto) {
 
     String restaurantGeneratedId = restaurantService.createRestaurant(ownerId, restaurantDto);
 
