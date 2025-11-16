@@ -16,8 +16,8 @@ class RestaurantFactoryTest {
   private final String OWNERID = "ownerId";
   private final String NAME = "name";
   private final Integer CAPACITY = 100;
-  private final LocalTime OPEN = LocalTime.now();
-  private final LocalTime CLOSE = LocalTime.now().plusHours(4);
+  private final LocalTime OPEN = LocalTime.of(10, 0);
+  private final LocalTime CLOSE = LocalTime.of(14, 0);
   private final Integer RESERVATIONDURATION = 120;
 
   @Test
@@ -91,8 +91,8 @@ class RestaurantFactoryTest {
                     OWNERID,
                     NAME,
                     CAPACITY,
-                    LocalTime.now(),
-                    LocalTime.now().plusMinutes(30),
+                    LocalTime.of(10, 0),
+                    LocalTime.of(10, 30),
                     RESERVATIONDURATION));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
