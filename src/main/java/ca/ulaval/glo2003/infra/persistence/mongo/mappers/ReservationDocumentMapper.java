@@ -49,6 +49,11 @@ public class ReservationDocumentMapper {
         new Customer(customerDoc.getName(), customerDoc.getEmail(), customerDoc.getPhoneNumber());
 
     return new Reservation(
-        date, reservationTime, document.getGroupSize(), customer, document.getRestaurantId());
+        document.getId(),
+        date,
+        reservationTime,
+        document.getGroupSize(),
+        customer,
+        document.getRestaurantId());
   }
 }

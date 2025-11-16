@@ -32,6 +32,24 @@ import org.junit.jupiter.api.Test;
 
 public class RestaurantResourceIntegrationTest extends JerseyTest {
 
+  private static final String TEST_RESTAURANT_ID = "restaurant-123";
+  private static final String NONEXISTENT_ID = "nonexistent";
+  private static final String TEST_OWNER_ID = "yvick";
+  private static final String TEST_RESTAURANT_NAME = "Pizza Delamama";
+  private static final String TEST_SEARCH_NAME = "Pizza";
+  private static final int TEST_CAPACITY = 50;
+  private static final int ZERO_CAPACITY = 0;
+  private static final String OPENING_TIME = "11:00:00";
+  private static final String CLOSING_TIME = "22:00:00";
+  private static final String LUNCH_START = "11:00:00";
+  private static final String LUNCH_END = "14:00:00";
+  private static final String LATE_OPENING = "22:00:00";
+  private static final String EARLY_CLOSING = "11:00:00";
+  private static final int HTTP_OK = 200;
+  private static final int HTTP_CREATED = 201;
+  private static final int HTTP_BAD_REQUEST = 400;
+  private static final int HTTP_NOT_FOUND = 404;
+
   private RestaurantService restaurantService;
 
   @Override
@@ -58,32 +76,23 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidRestaurant_whenPost_thenReturns201WithLocation() {
-    when(restaurantService.createRestaurant(any(), any())).thenReturn("restaurant-123");
+    when(restaurantService.createRestaurant(any(), any())).thenReturn(TEST_RESTAURANT_ID);
 
     String restaurantJson =
-        """
-        {
-          "name": "Pizza Delamama",
-          "capacity": 50,
-          "hours": {
-            "open": "11:00:00",
-            "close": "22:00:00"
-          }
-        }
-        """;
+        createRestaurantJson(TEST_RESTAURANT_NAME, TEST_CAPACITY, OPENING_TIME, CLOSING_TIME);
 
     try (Response response =
         target("/restaurants")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .post(Entity.json(restaurantJson))) {
 
-      assertEquals(201, response.getStatus());
+      assertEquals(HTTP_CREATED, response.getStatus());
       String location = response.getHeaderString("Location");
       assertNotNull(location);
       assertTrue(location.contains("/restaurants/restaurant-123"));
 
-      verify(restaurantService).createRestaurant(eq("yvick"), any(RestaurantDto.class));
+      verify(restaurantService).createRestaurant(eq(TEST_OWNER_ID), any(RestaurantDto.class));
     }
   }
 
@@ -109,7 +118,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(restaurantJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
     }
@@ -123,10 +132,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .post(Entity.json(null))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
     }
   }
 
@@ -146,10 +155,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .post(Entity.json(restaurantJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
     }
@@ -175,10 +184,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .post(Entity.json(restaurantJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("name"));
     }
@@ -205,10 +214,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .post(Entity.json(restaurantJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("capacity"));
     }
@@ -219,12 +228,15 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     when(restaurantService.getRestaurantListOfOwner(any())).thenReturn(Collections.emptyList());
 
     try (Response response =
-        target("/restaurants").request(MediaType.APPLICATION_JSON).header("Owner", "yvick").get()) {
+        target("/restaurants")
+            .request(MediaType.APPLICATION_JSON)
+            .header("Owner", TEST_OWNER_ID)
+            .get()) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
 
-      verify(restaurantService).getRestaurantListOfOwner(eq("yvick"));
+      verify(restaurantService).getRestaurantListOfOwner(eq(TEST_OWNER_ID));
     }
   }
 
@@ -235,7 +247,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     try (Response response = target("/restaurants").request(MediaType.APPLICATION_JSON).get()) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
     }
@@ -243,19 +255,19 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidOwnerAndId_whenGet_thenReturns200WithRestaurant() {
-    RestaurantDto mockDto = mock(RestaurantDto.class);
-    when(restaurantService.getRestaurantByIdOfOwner(any(), any())).thenReturn(mockDto);
+    RestaurantDto restaurantDto = mock(RestaurantDto.class);
+    when(restaurantService.getRestaurantByIdOfOwner(any(), any())).thenReturn(restaurantDto);
 
     try (Response response =
         target("/restaurants/restaurant-123")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .get()) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
 
-      verify(restaurantService).getRestaurantByIdOfOwner(eq("yvick"), eq("restaurant-123"));
+      verify(restaurantService).getRestaurantByIdOfOwner(eq(TEST_OWNER_ID), eq(TEST_RESTAURANT_ID));
     }
   }
 
@@ -267,7 +279,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants/restaurant-123").request(MediaType.APPLICATION_JSON).get()) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
     }
@@ -281,17 +293,17 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/restaurants/nonexistent")
             .request(MediaType.APPLICATION_JSON)
-            .header("Owner", "yvick")
+            .header("Owner", TEST_OWNER_ID)
             .get()) {
 
-      assertEquals(404, response.getStatus());
+      assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
   }
 
   @Test
   public void givenValidSearchRequest_whenSearchRestaurants_thenReturns200WithList() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson =
         """
@@ -309,7 +321,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(searchJson))) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
       verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsRequestDto.class));
     }
@@ -317,8 +329,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenSearchRequestWithNullName_whenSearchRestaurants_thenReturns200() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson =
         """
@@ -335,7 +347,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(searchJson))) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
     }
   }
@@ -361,7 +373,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(searchJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER"));
     }
@@ -369,8 +381,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenEmptySearchRequest_whenSearchRestaurants_thenReturns200() {
-    List<RestaurantSearchResponseDto> mockRestaurants = Collections.emptyList();
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
     String searchJson = "{}";
 
@@ -379,7 +391,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(searchJson))) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
     }
   }
@@ -392,7 +404,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     try (Response response =
         target("/search/restaurants").request(MediaType.APPLICATION_JSON).post(Entity.json(null))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
     }
   }
 
@@ -401,9 +413,9 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
       givenSearchRequestWithMultipleResults_whenSearchRestaurants_thenReturns200WithResults() {
     RestaurantSearchResponseDto restaurant1 = mock(RestaurantSearchResponseDto.class);
     RestaurantSearchResponseDto restaurant2 = mock(RestaurantSearchResponseDto.class);
-    List<RestaurantSearchResponseDto> mockRestaurants = List.of(restaurant1, restaurant2);
+    List<RestaurantSearchResponseDto> restaurants = List.of(restaurant1, restaurant2);
 
-    when(restaurantService.getRestaurantBySearch(any())).thenReturn(mockRestaurants);
+    when(restaurantService.getRestaurantBySearch(any())).thenReturn(restaurants);
 
     String searchJson =
         """
@@ -421,9 +433,62 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(searchJson))) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
       verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsRequestDto.class));
     }
+  }
+
+  private String createRestaurantJson(String name, int capacity, String open, String close) {
+    return String.format(
+        """
+        {
+          "name": "%s",
+          "capacity": %d,
+          "hours": {
+            "open": "%s",
+            "close": "%s"
+          }
+        }
+        """,
+        name, capacity, open, close);
+  }
+
+  private String createRestaurantJsonWithoutHours(String name, int capacity) {
+    return String.format(
+        """
+        {
+          "name": "%s",
+          "capacity": %d
+        }
+        """,
+        name, capacity);
+  }
+
+  private String createSearchJson(String name, String from, String to) {
+    return String.format(
+        """
+        {
+          "name": "%s",
+          "opened": {
+            "from": "%s",
+            "to": "%s"
+          }
+        }
+        """,
+        name, from, to);
+  }
+
+  private String createSearchJsonWithoutName(String from, String to) {
+    return String.format(
+        """
+        {
+          "opened": {
+            "from": "%s",
+            "to": "%s"
+          }
+        }
+        """,
+        from, to);
   }
 }

@@ -40,6 +40,15 @@ public class Restaurant {
     this.ownerId = ownerId;
   }
 
+  public Restaurant(String id, String name, Integer capacity, Hours hours, String ownerId) {
+
+    this.id = id;
+    this.name = name;
+    this.capacity = capacity;
+    this.hours = hours;
+    this.ownerId = ownerId;
+  }
+
   public String getId() {
     return id;
   }

@@ -34,6 +34,27 @@ import org.junit.jupiter.api.Test;
 
 public class ReservationResourceIntegrationTest extends JerseyTest {
 
+  private static final String TEST_RESTAURANT_ID = "restaurant-123";
+  private static final String TEST_RESERVATION_ID = "reservation-123";
+  private static final String NONEXISTENT_ID = "nonexistent";
+  private static final String TEST_DATE = "2025-10-30";
+  private static final String TEST_START_TIME = "18:00:00";
+  private static final String LATE_START_TIME = "18:30:00";
+  private static final String TEST_CUSTOMER_NAME = "John Doe";
+  private static final String TEST_EMAIL = "john@example.com";
+  private static final String TEST_PHONE = "1234567890";
+  private static final String INVALID_EMAIL = "invalid-email";
+  private static final String INVALID_PHONE = "123";
+  private static final String SHORT_PHONE = "5555555555";
+  private static final int TEST_GROUP_SIZE = 4;
+  private static final int ZERO_GROUP_SIZE = 0;
+  private static final int SMALL_GROUP_SIZE = 2;
+  private static final int HTTP_CREATED = 201;
+  private static final int HTTP_BAD_REQUEST = 400;
+  private static final int HTTP_NOT_FOUND = 404;
+  private static final int HTTP_NO_CONTENT = 204;
+  private static final int HTTP_OK = 200;
+
   private ReservationService reservationService;
 
   @Override
@@ -54,34 +75,30 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidReservation_whenPost_thenReturns201WithLocation() {
-    when(reservationService.createReservation(any(ReservationDto.class), eq("restaurant-123")))
-        .thenReturn("reservation-123");
+    when(reservationService.createReservation(any(ReservationDto.class), eq(TEST_RESTAURANT_ID)))
+        .thenReturn(TEST_RESERVATION_ID);
 
     String reservationJson =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "18:00:00",
-          "groupSize": 4,
-          "customer": {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phoneNumber": "1234567890"
-          }
-        }
-        """;
+        createReservationJson(
+            TEST_DATE,
+            TEST_START_TIME,
+            TEST_GROUP_SIZE,
+            TEST_CUSTOMER_NAME,
+            TEST_EMAIL,
+            TEST_PHONE);
 
     try (Response response =
-        target("/restaurants/restaurant-123/reservations")
+        target("/restaurants/" + TEST_RESTAURANT_ID + "/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(201, response.getStatus());
+      assertEquals(HTTP_CREATED, response.getStatus());
       String location = response.getHeaderString("Location");
       assertNotNull(location);
-      assertTrue(location.contains("/reservations/reservation-123"));
+      assertTrue(location.contains("/reservations/" + TEST_RESERVATION_ID));
 
-      verify(reservationService).createReservation(any(ReservationDto.class), eq("restaurant-123"));
+      verify(reservationService)
+          .createReservation(any(ReservationDto.class), eq(TEST_RESTAURANT_ID));
     }
   }
 
@@ -93,25 +110,20 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
                 "The restaurant closes before the end of the reservation"));
 
     String reservationJson =
-        """
-        {
-          "date": "2025-10-30",
-          "startTime": "18:30:00",
-          "groupSize": 2,
-          "customer": {
-            "name": "John Doe",
-            "email": "john@example.com",
-            "phoneNumber": "5555555555"
-          }
-        }
-        """;
+        createReservationJson(
+            TEST_DATE,
+            LATE_START_TIME,
+            SMALL_GROUP_SIZE,
+            TEST_CUSTOMER_NAME,
+            TEST_EMAIL,
+            SHORT_PHONE);
 
     try (Response response =
-        target("/restaurants/restaurant-123/reservations")
+        target("/restaurants/" + TEST_RESTAURANT_ID + "/reservations")
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("closes before"));
     }
@@ -141,7 +153,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(
           body.contains("INVALID_PARAMETER")
@@ -174,7 +186,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("name"));
     }
@@ -204,7 +216,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("email"));
     }
@@ -234,7 +246,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("phone"));
     }
@@ -263,7 +275,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER") || body.contains("date"));
     }
@@ -288,7 +300,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER") || body.contains("customer"));
     }
@@ -296,7 +308,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenNonExistentRestaurant_whenPost_thenReturns404() {
-    when(reservationService.createReservation(any(ReservationDto.class), eq("nonexistent")))
+    when(reservationService.createReservation(any(ReservationDto.class), eq(NONEXISTENT_ID)))
         .thenThrow(new NotFoundException());
 
     String reservationJson =
@@ -318,7 +330,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(reservationJson))) {
 
-      assertEquals(404, response.getStatus());
+      assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
   }
 
@@ -332,19 +344,20 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             .request(MediaType.APPLICATION_JSON)
             .post(Entity.json(null))) {
 
-      assertEquals(400, response.getStatus());
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
     }
   }
 
   @Test
   public void givenValidNumber_whenGet_thenReturns200WithFullBody() {
-    ReservationResponseDto mockDto = createMockReservationResponseDto();
-    when(reservationService.getReservationById("reservation-123")).thenReturn(mockDto);
+    ReservationResponseDto reservationResponse = createValidReservationResponseDto();
+    when(reservationService.getReservationById(TEST_RESERVATION_ID))
+        .thenReturn(reservationResponse);
 
     try (Response response =
         target("/reservations/reservation-123").request(MediaType.APPLICATION_JSON).get()) {
 
-      assertEquals(200, response.getStatus());
+      assertEquals(HTTP_OK, response.getStatus());
 
       String body = response.readEntity(String.class);
       assertTrue(body.contains("number"));
@@ -356,30 +369,78 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
       assertTrue(body.contains("customer"));
       assertTrue(body.contains("restaurant"));
 
-      verify(reservationService).getReservationById("reservation-123");
+      verify(reservationService).getReservationById(TEST_RESERVATION_ID);
     }
   }
 
   @Test
   public void givenNonExistentNumber_whenGet_thenReturns404() {
-    when(reservationService.getReservationById("nonexistent")).thenThrow(new NotFoundException());
+    when(reservationService.getReservationById(NONEXISTENT_ID)).thenThrow(new NotFoundException());
 
     try (Response response =
         target("/reservations/nonexistent").request(MediaType.APPLICATION_JSON).get()) {
 
-      assertEquals(404, response.getStatus());
+      assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
   }
 
-  private ReservationResponseDto createMockReservationResponseDto() {
+  private String createReservationJson(
+      String date, String startTime, int groupSize, String name, String email, String phone) {
+    return String.format(
+        """
+        {
+          "date": "%s",
+          "startTime": "%s",
+          "groupSize": %d,
+          "customer": {
+            "name": "%s",
+            "email": "%s",
+            "phoneNumber": "%s"
+          }
+        }
+        """,
+        date, startTime, groupSize, name, email, phone);
+  }
+
+  private String createReservationJsonWithoutDate(
+      String startTime, int groupSize, String name, String email, String phone) {
+    return String.format(
+        """
+        {
+          "startTime": "%s",
+          "groupSize": %d,
+          "customer": {
+            "name": "%s",
+            "email": "%s",
+            "phoneNumber": "%s"
+          }
+        }
+        """,
+        startTime, groupSize, name, email, phone);
+  }
+
+  private String createReservationJsonWithoutCustomer(
+      String date, String startTime, int groupSize) {
+    return String.format(
+        """
+        {
+          "date": "%s",
+          "startTime": "%s",
+          "groupSize": %d
+        }
+        """,
+        date, startTime, groupSize);
+  }
+
+  private ReservationResponseDto createValidReservationResponseDto() {
     return new ReservationResponseDto(
-        "reservation-123",
+        TEST_RESERVATION_ID,
         LocalDate.of(2025, 10, 30),
         new ReservationTimeDto(LocalTime.of(18, 0), LocalTime.of(19, 0)),
-        4,
-        new CustomerDto("John Doe", "john@example.com", "1234567890"),
+        TEST_GROUP_SIZE,
+        new CustomerDto(TEST_CUSTOMER_NAME, TEST_EMAIL, TEST_PHONE),
         new RestaurantReservationResponseDto(
-            "restaurant-123",
+            TEST_RESTAURANT_ID,
             "Pizza Delamama",
             50,
             new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0))));
@@ -387,12 +448,12 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenExistingReservation_whenDelete_thenReturns204() {
-    String reservationNumber = "reservation-123";
+    String reservationNumber = TEST_RESERVATION_ID;
     doNothing().when(reservationService).deleteReservation(reservationNumber);
 
     try (Response response = target("/reservations/" + reservationNumber).request().delete()) {
 
-      assertEquals(204, response.getStatus());
+      assertEquals(HTTP_NO_CONTENT, response.getStatus());
       verify(reservationService).deleteReservation(reservationNumber);
     }
   }
