@@ -47,7 +47,6 @@ public class RestaurantServiceTest {
             reservationRepository,
             restaurantDomainService,
             restaurantFactory);
-
     HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
   }
