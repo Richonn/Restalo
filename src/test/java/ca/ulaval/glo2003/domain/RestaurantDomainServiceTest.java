@@ -22,14 +22,11 @@ import org.junit.jupiter.api.Test;
 
 public class RestaurantDomainServiceTest {
 
-  private static RestaurantDomainServiceFixture restaurantDomainServiceFixture;
   private static RestaurantDomainService restaurantDomainService;
 
   @BeforeEach
   public void setUp() {
-
     restaurantDomainService = new RestaurantDomainService();
-    restaurantDomainServiceFixture = new RestaurantDomainServiceFixture();
   }
 
   @Test

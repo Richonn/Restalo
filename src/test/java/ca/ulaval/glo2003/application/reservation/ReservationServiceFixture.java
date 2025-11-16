@@ -7,7 +7,8 @@ import java.time.LocalTime;
 public class ReservationServiceFixture {
 
   private LocalDate DATE = LocalDate.now();
-  private LocalTime START_TIME = LocalTime.of(11, 0, 0);
+  private LocalTime START_TIME = LocalTime.of(11, 0);
+  private LocalTime END_TIME = LocalTime.of(12, 0);
   private int GROUP_SIZE = 3;
   private String CUSTOMER_NAME = "customerName";
   private String EMAIL = "email";
@@ -16,7 +17,7 @@ public class ReservationServiceFixture {
 
   public Reservation build() {
     return new Reservation(
-        DATE, START_TIME, GROUP_SIZE, CUSTOMER_NAME, EMAIL, PHONE_NUMBER, RESTAURANT_ID);
+        DATE, START_TIME, END_TIME, GROUP_SIZE, CUSTOMER_NAME, EMAIL, PHONE_NUMBER, RESTAURANT_ID);
   }
 
   public ReservationServiceFixture withDate(LocalDate date) {
@@ -26,6 +27,11 @@ public class ReservationServiceFixture {
 
   public ReservationServiceFixture withStartTime(LocalTime startTime) {
     this.START_TIME = startTime;
+    return this;
+  }
+
+  public ReservationServiceFixture withEndTime(LocalTime endTime) {
+    this.END_TIME = endTime;
     return this;
   }
 

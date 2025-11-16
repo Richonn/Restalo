@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.factories.reservation;
 
+import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
@@ -19,21 +20,19 @@ public class ReservationFactory {
       String phoneNumber,
       Restaurant restaurant) {
 
-    if (restaurant == null) {
-      return null;
-    }
-
     fieldsAreValid(date, groupSize);
 
-    Reservation reservation =
-        new Reservation(date, startTime, groupSize, name, email, phoneNumber, restaurant.getId());
+    startTime = TimeUtils.adjustTimeToSlotIntervalSliceUp(startTime);
 
-    reservation.adjustStartTimeTo15minSlice();
-
-    reservation.setReservationEndTime(
-        restaurant.defineReservationEndTime(reservation.getStartTime()));
-
-    return reservation;
+    return new Reservation(
+        date,
+        startTime,
+        restaurant.defineReservationEndTime(startTime),
+        groupSize,
+        name,
+        email,
+        phoneNumber,
+        restaurant.getId());
   }
 
   private void fieldsAreValid(LocalDate date, Integer groupSize) {

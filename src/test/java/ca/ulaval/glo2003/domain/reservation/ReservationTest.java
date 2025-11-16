@@ -1,9 +1,7 @@
 package ca.ulaval.glo2003.domain.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.domain.customer.Customer;
@@ -29,32 +27,6 @@ public class ReservationTest {
 
     when(reservationTime.getStartTime()).thenReturn(LocalTime.of(18, 0));
     when(reservationTime.getEndTime()).thenReturn(LocalTime.of(20, 0));
-  }
-
-  @Test
-  void givenAValidReservation_whenSetReservationEndTime_thenNoExceptions() {
-    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
-    LocalTime endTime = LocalTime.of(23, 59, 59);
-
-    doNothing().when(reservationTime).setEndTime(endTime);
-
-    assertDoesNotThrow(() -> a_reservation.setReservationEndTime(endTime));
-  }
-
-  @Test
-  void givenAValidReservation_whenAdjustStartTimeTo15minSlice_thenNoExceptions() {
-
-    LocalTime startTime = LocalTime.of(12, 0);
-    LocalTime endTime = LocalTime.of(13, 0);
-
-    Mockito.when(reservationTime.getStartTime()).thenReturn(startTime);
-    Mockito.when(reservationTime.getEndTime()).thenReturn(endTime);
-
-    doNothing().when(reservationTime).adjustStartTimeToIntervalSlice();
-
-    Reservation a_reservation = reservationFixture.build(reservationTime, customer);
-
-    assertDoesNotThrow(a_reservation::adjustStartTimeTo15minSlice);
   }
 
   @Test

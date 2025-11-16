@@ -60,10 +60,6 @@ public class ReservationService {
             reservationDto.customer().phoneNumber(),
             restaurant);
 
-    if (reservation == null) {
-      throw new NotFoundException();
-    }
-
     validateRestaurantCapacity(restaurant, reservation);
 
     reservationRepository.save(reservation);
