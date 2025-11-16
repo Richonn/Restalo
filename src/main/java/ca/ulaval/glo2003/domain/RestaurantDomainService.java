@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class RestaurantDomainService {
 
+  public RestaurantDomainService() {}
+
   public void validateHeaders(String ownerId) {
     if (ownerId == null || ownerId.isBlank()) {
       throw new MissingParameterException("Missing Owner header");

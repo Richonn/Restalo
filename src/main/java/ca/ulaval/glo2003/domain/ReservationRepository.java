@@ -11,4 +11,6 @@ public interface ReservationRepository {
   Reservation getReservationById(String reservationId);
 
   void delete(String reservationId);
+
+  void deleteAllReservationOfRestaurant(String restaurantId);
 }

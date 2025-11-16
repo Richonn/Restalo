@@ -6,6 +6,7 @@ import ca.ulaval.glo2003.infra.persistence.mongo.documents.RestaurantDocument;
 import ca.ulaval.glo2003.infra.persistence.mongo.mappers.RestaurantDocumentMapper;
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filters;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,8 +15,11 @@ import java.util.stream.Collectors;
 public class MongoRestaurantRepository implements RestaurantRepository {
   private final Datastore datastore;
 
-  public MongoRestaurantRepository() {
-    this.datastore = MongoConnection.getInstance().getDatastore();
+  @Inject
+  public MongoRestaurantRepository(MongoConnection mongoConnection) {
+    this.datastore = mongoConnection.getDatastore();
+    datastore.getMapper().map(RestaurantDocument.class);
+    datastore.ensureIndexes();
   }
 
   @Override
@@ -55,5 +59,10 @@ public class MongoRestaurantRepository implements RestaurantRepository {
         datastore.find(RestaurantDocument.class).filter(Filters.eq("_id", restaurantId)).first();
 
     return RestaurantDocumentMapper.toDomain(document);
+  }
+
+  @Override
+  public void delete(String restaurantId) {
+    datastore.find(RestaurantDocument.class).filter(Filters.eq("_id", restaurantId)).delete();
   }
 }

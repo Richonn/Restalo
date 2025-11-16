@@ -8,9 +8,11 @@ import ca.ulaval.glo2003.api.assembler.RestaurantAssembler;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
+import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
@@ -19,10 +21,11 @@ import org.junit.Test;
 
 public class RestaurantResourceTest {
 
-  private final RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
   private final RestaurantRepository restaurantRepository = new InMemoryRestaurantRepository();
+  private final ReservationRepository reservationRepository = new InMemoryReservationRepository();
+  private final RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
   private final RestaurantService restaurantService =
-      new RestaurantService(restaurantRepository, restaurantDomainService);
+      new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
   private String restaurantId;
 

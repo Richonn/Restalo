@@ -46,4 +46,9 @@ public class InMemoryRestaurantRepository implements RestaurantRepository {
   public Restaurant getRestaurantById(String restaurantId) {
     return restaurants.get(restaurantId);
   }
+
+  @Override
+  public void delete(String restaurantId) {
+    restaurants.remove(restaurantId);
+  }
 }

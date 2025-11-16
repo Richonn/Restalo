@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
@@ -69,5 +70,14 @@ public class RestaurantResource {
     return Response.status(Response.Status.OK)
         .entity(restaurantService.getRestaurantBySearch(searchRequest))
         .build();
+  }
+
+  @DELETE
+  @Path("restaurants/{id}")
+  public Response deleteRestaurant(
+      @HeaderParam(OWNER_HEADER) String ownerId, @PathParam("id") String restaurantId) {
+
+    restaurantService.deleteRestaurant(ownerId, restaurantId);
+    return Response.noContent().build();
   }
 }

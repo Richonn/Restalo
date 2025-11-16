@@ -13,4 +13,6 @@ public interface RestaurantRepository {
   List<Restaurant> getRestaurantList();
 
   Restaurant getRestaurantById(String restaurantId);
+
+  void delete(String restaurantId);
 }

@@ -35,7 +35,7 @@ public class MongoReservationRepositoryTest extends AbstractReservationRepositor
     } catch (Exception e) {
     }
 
-    reservationRepository = new MongoReservationRepository();
+    reservationRepository = new MongoReservationRepository(MongoConnection.getInstance());
   }
 
   @AfterAll
@@ -54,7 +54,7 @@ public class MongoReservationRepositoryTest extends AbstractReservationRepositor
     try {
       MongoConnection.getInstance().getDatastore().getDatabase().drop();
       MongoConnection.getInstance().close();
-      reservationRepository = new MongoReservationRepository();
+      reservationRepository = new MongoReservationRepository(MongoConnection.getInstance());
     } catch (Exception e) {
     }
   }

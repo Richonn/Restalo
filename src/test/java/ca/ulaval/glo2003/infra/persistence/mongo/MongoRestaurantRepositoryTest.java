@@ -35,7 +35,7 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
     } catch (Exception e) {
     }
 
-    restaurantRepository = new MongoRestaurantRepository();
+    restaurantRepository = new MongoRestaurantRepository(MongoConnection.getInstance());
   }
 
   @AfterAll
@@ -54,7 +54,7 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
     try {
       MongoConnection.getInstance().getDatastore().getDatabase().drop();
       MongoConnection.getInstance().close();
-      restaurantRepository = new MongoRestaurantRepository();
+      restaurantRepository = new MongoRestaurantRepository(MongoConnection.getInstance());
     } catch (Exception e) {
     }
   }

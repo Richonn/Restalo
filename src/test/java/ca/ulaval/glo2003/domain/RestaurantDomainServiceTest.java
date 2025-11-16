@@ -27,8 +27,9 @@ public class RestaurantDomainServiceTest {
 
   @BeforeEach
   public void setUp() {
-    restaurantDomainServiceFixture = new RestaurantDomainServiceFixture();
+
     restaurantDomainService = new RestaurantDomainService();
+    restaurantDomainServiceFixture = new RestaurantDomainServiceFixture();
   }
 
   @Test

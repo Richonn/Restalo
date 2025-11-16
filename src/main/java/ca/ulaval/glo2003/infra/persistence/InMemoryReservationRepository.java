@@ -33,4 +33,11 @@ public class InMemoryReservationRepository implements ReservationRepository {
   public void delete(String reservationId) {
     reservations.remove(reservationId);
   }
+
+  @Override
+  public void deleteAllReservationOfRestaurant(String restaurantId) {
+    reservations
+        .values()
+        .removeIf(reservation -> reservation.getRestaurantId().equals(restaurantId));
+  }
 }
