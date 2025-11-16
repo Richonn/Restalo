@@ -18,6 +18,12 @@ jobs:
           java-version: 21
           cache: 'maven'
 
+      - name: Set up Docker for Testcontainers
+        run: |
+          docker info
+          echo "TESTCONTAINERS_RYUK_DISABLED=false" >> $GITHUB_ENV
+          echo "TESTCONTAINERS_CHECKS_DISABLE=false" >> $GITHUB_ENV
+
       - name: Run unit tests with Maven
         run: mvn clean test
 
