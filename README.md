@@ -75,6 +75,82 @@ Cela exécutera Checkstyle et SpotBugs.
 
 ---
 
+## Pipeline CI/CD
+
+Le projet utilise GitHub Actions pour l'intégration continue (CI) et le déploiement continu (CD).
+
+### Intégration Continue (CI)
+
+Le pipeline CI s'exécute automatiquement sur :
+- Tous les **pull requests** (toutes les branches)
+- Tous les **push** vers la branche `main`
+
+#### Étapes du pipeline CI
+
+1. **Build** (`.github/workflows/build.yml`)
+   - Vérification Checkstyle
+   - Compilation du projet (`mvn clean package -DskipTests`)
+   - Publication du JAR comme artifact (`restalo-jar`)
+
+2. **Tests unitaires** (`.github/workflows/unit-tests.yml`)
+   - Exécution des tests avec Maven (`mvn clean test`)
+   - Publication des rapports de tests comme artifact (`test-reports`)
+
+3. **Linting** (`.github/workflows/linting.yml`)
+   - Vérification Checkstyle (`mvn checkstyle:check`)
+
+4. **Résumé** (`.github/workflows/summary.yml`)
+   - Génération d'un résumé visuel des résultats du pipeline
+   - Affichage du statut de chaque étape (Build, Tests, Linting)
+
+#### Accéder aux artifacts
+
+Les artifacts sont disponibles dans l'onglet **Actions** de GitHub :
+1. Sélectionner le workflow concerné
+2. Descendre à la section **Artifacts**
+3. Télécharger :
+   - `restalo-jar` : fichier JAR compilé
+   - `test-reports` : rapports de tests unitaires
+
+### Déploiement Continu (CD)
+
+Le pipeline CD s'exécute automatiquement sur :
+- Push vers la branche `main`
+- Création de tags
+- Déclenchement manuel (`workflow_dispatch`)
+
+#### Étapes du pipeline CD
+
+1. **Build et publication Docker** (`.github/workflows/cd.yml`)
+   - Construction de l'image Docker
+   - Publication vers GitHub Container Registry (ghcr.io)
+   - Tags générés :
+     - `latest` : dernière version de la branche main
+     - `<commit-sha>` : version spécifique basée sur le commit
+     - `<tag-name>` : version basée sur les tags Git
+
+#### Utiliser l'image Docker
+
+```bash
+# Récupérer la dernière version
+docker pull ghcr.io/ift-3003-a25-equipe-7/restalo:latest
+
+# Récupérer une version spécifique
+docker pull ghcr.io/ift-3003-a25-equipe-7/restalo:<commit-sha>
+docker pull ghcr.io/ift-3003-a25-equipe-7/restalo:<tag-name>
+
+# Exécuter le conteneur
+docker run -p 8080:8080 ghcr.io/ift-3003-a25-equipe-7/restalo:latest
+```
+
+### Visualiser les résultats
+
+- **GitHub Actions** : Onglet `Actions` du repository
+- **Résumé du pipeline** : Disponible dans chaque exécution du workflow CI
+- **Artifacts** : Section `Artifacts` dans les détails de chaque workflow
+
+---
+
 ## Avant chaque commit
 
 - `mvn spotless:apply`
