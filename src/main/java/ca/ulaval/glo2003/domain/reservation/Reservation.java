@@ -22,6 +22,7 @@ public class Reservation {
   public Reservation(
       LocalDate date,
       LocalTime startTime,
+      LocalTime endTime,
       Integer groupSize,
       String name,
       String email,
@@ -30,7 +31,7 @@ public class Reservation {
 
     this.id = UUID.randomUUID().toString();
     this.date = date;
-    this.reservationTime = new ReservationTime(startTime, null);
+    this.reservationTime = new ReservationTime(startTime, endTime);
     this.groupSize = groupSize;
     this.customer = new Customer(name, email, phoneNumber);
     this.restaurantId = restaurantId;
@@ -77,14 +78,6 @@ public class Reservation {
 
   public Customer getCustomer() {
     return customer;
-  }
-
-  public void setReservationEndTime(LocalTime endTime) {
-    reservationTime.setEndTime(endTime);
-  }
-
-  public void adjustStartTimeTo15minSlice() {
-    reservationTime.adjustStartTimeToIntervalSlice();
   }
 
   public boolean matchesDate(String dateString) {

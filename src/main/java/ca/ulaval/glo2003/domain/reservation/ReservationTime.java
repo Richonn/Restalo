@@ -1,6 +1,5 @@
 package ca.ulaval.glo2003.domain.reservation;
 
-import ca.ulaval.glo2003.domain.TimeUtils;
 import java.time.LocalTime;
 
 public class ReservationTime {
@@ -19,13 +18,5 @@ public class ReservationTime {
 
   public LocalTime getEndTime() {
     return endTime;
-  }
-
-  public void setEndTime(LocalTime endTime) {
-    this.endTime = endTime;
-  }
-
-  public void adjustStartTimeToIntervalSlice() {
-    startTime = TimeUtils.adjustTimeToSlotIntervalSliceUp(startTime);
   }
 }

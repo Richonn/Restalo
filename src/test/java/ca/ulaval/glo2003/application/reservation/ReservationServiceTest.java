@@ -114,17 +114,7 @@ public class ReservationServiceTest {
   void
       givenInvalidReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
-    String restaurantId = "123";
-
-    when(reservationFactory.createReservation(
-            any(LocalDate.class),
-            any(LocalTime.class),
-            anyInt(),
-            anyString(),
-            anyString(),
-            anyString(),
-            any(Restaurant.class)))
-        .thenReturn(null);
+    String restaurantId = "999";
 
     NotFoundException exception =
         assertThrows(
