@@ -32,39 +32,6 @@ public class RestaurantDomainServiceTest {
   }
 
   @Test
-  void givenValidOwnerId_whenValidateHeaders_thenNoExceptions() {
-    String ownerId = restaurantDomainServiceFixture.build();
-
-    assertDoesNotThrow(() -> restaurantDomainService.validateHeaders(ownerId));
-  }
-
-  @Test
-  void givenNullOwnerId_whenValidateHeaders_thenThrowsMissingParameterException() {
-    String ownerId = restaurantDomainServiceFixture.withOwnerID(null).build();
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantDomainService.validateHeaders(ownerId));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing Owner header");
-  }
-
-  @Test
-  void givenBlankOwnerId_whenValidateHeaders_thenThrowsMissingParameterException() {
-    String ownerId = restaurantDomainServiceFixture.withOwnerID("").build();
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantDomainService.validateHeaders(ownerId));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing Owner header");
-  }
-
-  @Test
   void givenValidDateString_whenConvertDateStringToLocalDate_thenNoExceptions() {
     String dateString = LocalDate.now().toString();
     LocalDate expectedDate = LocalDate.now();
@@ -110,56 +77,6 @@ public class RestaurantDomainServiceTest {
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage()).isEqualTo("Invalid date format");
-  }
-
-  @Test
-  void givenValidRestaurant_whenValidateRestaurant_thenNoExceptions() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Chez Luigi", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", null);
-
-    assertDoesNotThrow(() -> restaurantDomainService.validateRestaurant(restaurant));
-  }
-
-  @Test
-  void givenRestaurantWithNullName_whenValidateRestaurant_thenThrowsMissingParameterException() {
-    Restaurant restaurant =
-        new Restaurant(null, 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", null);
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantDomainService.validateRestaurant(restaurant));
-
-    assertThat(exception.getMessage()).isEqualTo("The name of the restaurant is required");
-  }
-
-  @Test
-  void givenRestaurantWithBlankName_whenValidateRestaurant_thenThrowsMissingParameterException() {
-    Restaurant restaurant =
-        new Restaurant("   ", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", null);
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantDomainService.validateRestaurant(restaurant));
-
-    assertThat(exception.getMessage()).isEqualTo("The name of the restaurant cannot be blank");
-  }
-
-  @Test
-  void
-      givenRestaurantWithNullCapacity_whenValidateRestaurant_thenThrowsMissingParameterException() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Chez Luigi", null, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", null);
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantDomainService.validateRestaurant(restaurant));
-
-    assertThat(exception.getMessage()).isEqualTo("The capacity of the restaurant is required");
   }
 
   @Test

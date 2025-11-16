@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalDate;
@@ -52,43 +51,22 @@ public class ReservationFactoryTest {
   }
 
   @Test
-  void givenNullDate_whenCreateReservation_thenThrowsMissingParameterException() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    assertThrows(
-        MissingParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                null, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant));
-  }
-
-  @Test
-  void givenNullGroupSize_whenCreateReservation_thenThrowsMissingParameterException() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    assertThrows(
-        MissingParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                DATE, START_TIME, null, NAME, EMAIL, PHONE_NUMBER, restaurant));
-  }
-
-  @Test
   void givenPastDate_whenCreateReservation_thenThrowsInvalidParameterException() {
     Restaurant restaurant =
         new Restaurant(
             "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
     LocalDate pastDate = LocalDate.of(2020, 1, 1);
 
-    assertThrows(
-        InvalidParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                pastDate, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant));
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () ->
+                reservationFactory.createReservation(
+                    pastDate, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The date of the reservation cannot be in the past");
   }
 
   @Test
@@ -97,11 +75,16 @@ public class ReservationFactoryTest {
         new Restaurant(
             "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
 
-    assertThrows(
-        InvalidParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                DATE, START_TIME, 0, NAME, EMAIL, PHONE_NUMBER, restaurant));
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () ->
+                reservationFactory.createReservation(
+                    DATE, START_TIME, 0, NAME, EMAIL, PHONE_NUMBER, restaurant));
+
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The group size of the reservation must be positive");
   }
 
   @Test
@@ -110,24 +93,16 @@ public class ReservationFactoryTest {
         new Restaurant(
             "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
 
-    assertThrows(
-        InvalidParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                DATE, START_TIME, -5, NAME, EMAIL, PHONE_NUMBER, restaurant));
-  }
+    InvalidParameterException exception =
+        assertThrows(
+            InvalidParameterException.class,
+            () ->
+                reservationFactory.createReservation(
+                    DATE, START_TIME, -5, NAME, EMAIL, PHONE_NUMBER, restaurant));
 
-  @Test
-  void givenInvalidCustomerData_whenCreateReservation_thenThrowsException() {
-    Restaurant restaurant =
-        new Restaurant(
-            "Chez Luigi", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", null);
-
-    assertThrows(
-        MissingParameterException.class,
-        () ->
-            reservationFactory.createReservation(
-                DATE, START_TIME, GROUP_SIZE, null, EMAIL, PHONE_NUMBER, restaurant));
+    assertThat(exception).isInstanceOf(InvalidParameterException.class);
+    assertThat(exception.getMessage())
+        .isEqualTo("The group size of the reservation must be positive");
   }
 
   @Test

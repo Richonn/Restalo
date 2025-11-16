@@ -1,7 +1,5 @@
 package ca.ulaval.glo2003.domain.restaurant;
 
-import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -72,12 +70,6 @@ public class Restaurant {
     return hours.getReservationDuration();
   }
 
-  public void validateFields() {
-    validateFieldsAreDefined();
-    validateFieldsAreValid();
-    hours.validateFields();
-  }
-
   public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
     return hours.isFullyOpenDuring(from, to);
   }
@@ -104,23 +96,5 @@ public class Restaurant {
     }
 
     return defaultAvailability;
-  }
-
-  private void validateFieldsAreDefined() {
-    if (name == null) {
-      throw new MissingParameterException("The name of the restaurant is required");
-    }
-    if (capacity == null) {
-      throw new MissingParameterException("The capacity of the restaurant is required");
-    }
-  }
-
-  private void validateFieldsAreValid() {
-    if (name.isBlank()) {
-      throw new MissingParameterException("The name of the restaurant cannot be blank");
-    }
-    if (capacity <= 0) {
-      throw new InvalidParameterException("The capacity of the restaurant must be positive");
-    }
   }
 }

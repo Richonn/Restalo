@@ -10,6 +10,7 @@ import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import jakarta.ws.rs.NotFoundException;
@@ -21,8 +22,9 @@ public class RestaurantResourceTest {
 
   private final RestaurantDomainService restaurantDomainService = new RestaurantDomainService();
   private final RestaurantRepository restaurantRepository = new InMemoryRestaurantRepository();
+  private final RestaurantFactory restaurantFactory = new RestaurantFactory();
   private final RestaurantService restaurantService =
-      new RestaurantService(restaurantRepository, restaurantDomainService);
+      new RestaurantService(restaurantRepository, restaurantDomainService, restaurantFactory);
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
   private String restaurantId;
 

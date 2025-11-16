@@ -17,7 +17,6 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
-import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -94,19 +93,6 @@ public class ReservationServiceTest {
     when(reservation.getId()).thenReturn(expectedId);
 
     assertThat(reservationService.createReservation(reservationDto, "123")).isEqualTo(expectedId);
-  }
-
-  @Test
-  void
-      givenNullReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsMissingParameterException() {
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> reservationService.createReservation(null, "123"));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing body");
   }
 
   @Test

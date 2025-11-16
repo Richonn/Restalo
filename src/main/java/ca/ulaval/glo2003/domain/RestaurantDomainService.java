@@ -13,12 +13,6 @@ import java.util.Map;
 
 public class RestaurantDomainService {
 
-  public void validateHeaders(String ownerId) {
-    if (ownerId == null || ownerId.isBlank()) {
-      throw new MissingParameterException("Missing Owner header");
-    }
-  }
-
   public LocalDate convertDateStringToLocalDate(String dateString) {
     if (dateString == null || dateString.isBlank()) {
       throw new MissingParameterException("Missing date query parameter");
@@ -28,10 +22,6 @@ public class RestaurantDomainService {
     } catch (DateTimeParseException e) {
       throw new InvalidParameterException("Invalid date format");
     }
-  }
-
-  public void validateRestaurant(Restaurant restaurant) {
-    restaurant.validateFields();
   }
 
   public void isTimeRangeValid(OpenedHours openedHours) {

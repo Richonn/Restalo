@@ -5,11 +5,10 @@ import ca.ulaval.glo2003.api.assembler.RestaurantSearchResponseAssembler;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
-import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.application.mapper.OpenedHoursMapper;
-import ca.ulaval.glo2003.application.mapper.RestaurantMapper;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.inject.Inject;
@@ -20,33 +19,37 @@ import java.util.List;
 public class RestaurantService {
   private final RestaurantDomainService restaurantDomainService;
   private final RestaurantRepository repository;
+  private final RestaurantFactory restaurantFactory;
 
   @Inject
   public RestaurantService(
-      RestaurantRepository restaurantRepository, RestaurantDomainService restaurantDomainService) {
+      RestaurantRepository restaurantRepository,
+      RestaurantDomainService restaurantDomainService,
+      RestaurantFactory restaurantFactory) {
     this.repository = restaurantRepository;
     this.restaurantDomainService = restaurantDomainService;
+    this.restaurantFactory = restaurantFactory;
   }
 
   public String createRestaurant(String ownerId, RestaurantDto restaurantDto) {
-    restaurantDomainService.validateHeaders(ownerId);
 
-    if (restaurantDto == null) {
-      throw new MissingParameterException("Missing body");
-    }
-    if (restaurantDto.hours() == null) {
-      throw new MissingParameterException("Missing hours body");
-    }
+    Integer reservationDuration =
+        (restaurantDto.reservations() != null) ? restaurantDto.reservations().duration() : null;
+    Restaurant restaurant =
+        restaurantFactory.createRestaurant(
+            ownerId,
+            restaurantDto.name(),
+            restaurantDto.capacity(),
+            restaurantDto.hours().open(),
+            restaurantDto.hours().close(),
+            reservationDuration);
 
-    Restaurant restaurant = RestaurantMapper.toRestaurant(restaurantDto, ownerId);
-    restaurantDomainService.validateRestaurant(restaurant);
     repository.save(restaurant);
 
     return restaurant.getId();
   }
 
   public List<RestaurantDto> getRestaurantListOfOwner(String ownerId) {
-    restaurantDomainService.validateHeaders(ownerId);
 
     List<Restaurant> listRestaurant = repository.getRestaurantListOfOwner(ownerId);
     List<RestaurantDto> listRestaurantDto = new ArrayList<>();
@@ -59,7 +62,6 @@ public class RestaurantService {
   }
 
   public RestaurantDto getRestaurantByIdOfOwner(String ownerId, String restaurantId) {
-    restaurantDomainService.validateHeaders(ownerId);
 
     Restaurant restaurant = repository.getRestaurantByIdOfOwner(ownerId, restaurantId);
 

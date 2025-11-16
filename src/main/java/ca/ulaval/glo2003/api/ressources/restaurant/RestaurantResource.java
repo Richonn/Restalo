@@ -4,6 +4,8 @@ import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
@@ -33,7 +35,8 @@ public class RestaurantResource {
   @POST
   @Path("restaurants")
   public Response createRestaurant(
-      @HeaderParam(OWNER_HEADER) String ownerId, RestaurantDto restaurantDto) {
+      @HeaderParam(OWNER_HEADER) String ownerId,
+      @NotNull(message = "Missing body") RestaurantDto restaurantDto) {
 
     String restaurantGeneratedId = restaurantService.createRestaurant(ownerId, restaurantDto);
 
@@ -44,7 +47,11 @@ public class RestaurantResource {
 
   @GET
   @Path("restaurants")
-  public Response getRestaurantListOfOwner(@HeaderParam(OWNER_HEADER) String ownerId) {
+  public Response getRestaurantListOfOwner(
+      @NotNull(message = "Missing Owner header")
+          @NotBlank(message = "Missing Owner header")
+          @HeaderParam(OWNER_HEADER)
+          String ownerId) {
 
     return Response.status(Response.Status.OK)
         .header("Location", RESTAURANTS_BASE + "/")
@@ -55,7 +62,11 @@ public class RestaurantResource {
   @GET
   @Path("restaurants/{id}")
   public Response getRestaurantByIdOfOwner(
-      @HeaderParam(OWNER_HEADER) String ownerId, @PathParam("id") String restaurantId) {
+      @NotNull(message = "Missing Owner header")
+          @NotBlank(message = "Missing Owner header")
+          @HeaderParam(OWNER_HEADER)
+          String ownerId,
+      @PathParam("id") String restaurantId) {
 
     return Response.status(Response.Status.OK)
         .header("Location", String.format(RESTAURANT_BY_ID, restaurantId))
