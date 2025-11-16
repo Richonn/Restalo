@@ -7,7 +7,6 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
-import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -44,10 +43,6 @@ public class ReservationService {
   }
 
   public String createReservation(ReservationDto reservationDto, String restaurantId) {
-
-    if (reservationDto == null) {
-      throw new MissingParameterException("Missing body");
-    }
 
     Restaurant restaurant = restaurantRepository.getRestaurantById(restaurantId);
 
@@ -94,8 +89,6 @@ public class ReservationService {
 
   public List<ReservationSearchResponseDto> getReservationBySearch(
       String ownerId, String restaurantId, String dateString, String customerName) {
-
-    restaurantDomainService.validateHeaders(ownerId);
 
     if (restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId) == null) {
       throw new NotFoundException();

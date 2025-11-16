@@ -3,9 +3,9 @@ package ca.ulaval.glo2003.application.restaurant;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,10 +15,10 @@ import ca.ulaval.glo2003.api.dto.common.OpenedHoursDto;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
-import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalTime;
@@ -35,12 +35,18 @@ public class RestaurantServiceTest {
   private final RestaurantDomainService restaurantDomainService =
       mock(RestaurantDomainService.class);
   private final ReservationRepository reservationRepository = mock(ReservationRepository.class);
+  private final RestaurantFactory restaurantFactory = mock(RestaurantFactory.class);
   private RestaurantDto restaurantDto;
+  private final Restaurant restaurant = mock(Restaurant.class);
 
   @BeforeEach
   public void setUp() {
     restaurantService =
-        new RestaurantService(restaurantRepository, reservationRepository, restaurantDomainService);
+        new RestaurantService(
+            restaurantRepository,
+            reservationRepository,
+            restaurantDomainService,
+            restaurantFactory);
 
     HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
@@ -49,58 +55,16 @@ public class RestaurantServiceTest {
   @Test
   void givenValidRestaurantDto_whenCreateRestaurant_thenReturnExpectedId() {
     String ownerId = "owner-456";
+    String expectedId = "123";
 
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
-    doNothing().when(restaurantDomainService).validateRestaurant(any(Restaurant.class));
+    when(restaurantFactory.createRestaurant(
+            anyString(), anyString(), anyInt(), any(LocalTime.class), any(LocalTime.class), any()))
+        .thenReturn(restaurant);
+    when(restaurant.getId()).thenReturn(expectedId);
     doNothing().when(restaurantRepository).save(any(Restaurant.class));
 
-    String result = restaurantService.createRestaurant(ownerId, restaurantDto);
-
-    assertNotNull(result);
-    verify(restaurantDomainService).validateHeaders(ownerId);
-    verify(restaurantDomainService).validateRestaurant(any(Restaurant.class));
+    assertThat(restaurantService.createRestaurant(ownerId, restaurantDto)).isEqualTo(expectedId);
     verify(restaurantRepository).save(any(Restaurant.class));
-  }
-
-  @Test
-  void givenNullRestaurantDto_whenCreateRestaurant_thenThrowsMissingParameterException() {
-    String ownerId = "owner-123";
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantService.createRestaurant(ownerId, null));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing body");
-  }
-
-  @Test
-  void givenRestaurantDtoWithNullHours_whenCreateRestaurant_thenThrowsMissingParameterException() {
-    String ownerId = "owner-123";
-    RestaurantDto dtoWithoutHours = new RestaurantDto("id-123", "Pizza Delamama", 50, null, null);
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> restaurantService.createRestaurant(ownerId, dtoWithoutHours));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing hours body");
-  }
-
-  @Test
-  void givenInvalidOwnerId_whenCreateRestaurant_thenThrowsException() {
-    String invalidOwnerId = "invalid";
-    doThrow(new MissingParameterException("Invalid owner"))
-        .when(restaurantDomainService)
-        .validateHeaders(invalidOwnerId);
-
-    assertThrows(
-        MissingParameterException.class,
-        () -> restaurantService.createRestaurant(invalidOwnerId, restaurantDto));
   }
 
   @Test
@@ -113,7 +77,6 @@ public class RestaurantServiceTest {
         new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), ownerId, null);
     List<Restaurant> mockRestaurants = Arrays.asList(restaurant1, restaurant2);
 
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     when(restaurantRepository.getRestaurantListOfOwner(ownerId)).thenReturn(mockRestaurants);
 
     List<RestaurantDto> result = restaurantService.getRestaurantListOfOwner(ownerId);
@@ -122,13 +85,11 @@ public class RestaurantServiceTest {
     assertThat(result).hasSize(2);
     assertThat(result.get(0).name()).isEqualTo("Pizza Delamama");
     assertThat(result.get(1).name()).isEqualTo("Burger King");
-    verify(restaurantDomainService).validateHeaders(ownerId);
   }
 
   @Test
   void givenOwnerWithNoRestaurants_whenGetRestaurantListOfOwner_thenReturnsEmptyList() {
     String ownerId = "owner-123";
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     when(restaurantRepository.getRestaurantListOfOwner(ownerId))
         .thenReturn(Collections.emptyList());
 
@@ -139,18 +100,6 @@ public class RestaurantServiceTest {
   }
 
   @Test
-  void givenInvalidOwnerId_whenGetRestaurantListOfOwner_thenThrowsException() {
-    String invalidOwnerId = "invalid";
-    doThrow(new MissingParameterException("Invalid owner"))
-        .when(restaurantDomainService)
-        .validateHeaders(invalidOwnerId);
-
-    assertThrows(
-        MissingParameterException.class,
-        () -> restaurantService.getRestaurantListOfOwner(invalidOwnerId));
-  }
-
-  @Test
   void givenValidOwnerAndRestaurantId_whenGetRestaurantByIdOfOwner_thenReturnsRestaurantDto() {
     String ownerId = "owner-123";
     String restaurantId = "restaurant-456";
@@ -158,7 +107,6 @@ public class RestaurantServiceTest {
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
 
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId))
         .thenReturn(mockRestaurant);
 
@@ -167,7 +115,6 @@ public class RestaurantServiceTest {
     assertNotNull(result);
     assertThat(result.name()).isEqualTo("Pizza Delamama");
     assertThat(result.capacity()).isEqualTo(50);
-    verify(restaurantDomainService).validateHeaders(ownerId);
   }
 
   @Test
@@ -175,7 +122,6 @@ public class RestaurantServiceTest {
     String ownerId = "owner-123";
     String restaurantId = "nonexistent";
 
-    doNothing().when(restaurantDomainService).validateHeaders(ownerId);
     when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId)).thenReturn(null);
 
     NotFoundException exception =
@@ -184,19 +130,6 @@ public class RestaurantServiceTest {
             () -> restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId));
 
     assertThat(exception).isInstanceOf(NotFoundException.class);
-  }
-
-  @Test
-  void givenInvalidOwnerId_whenGetRestaurantByIdOfOwner_thenThrowsException() {
-    String invalidOwnerId = "invalid";
-    String restaurantId = "restaurant-123";
-    doThrow(new MissingParameterException("Invalid owner"))
-        .when(restaurantDomainService)
-        .validateHeaders(invalidOwnerId);
-
-    assertThrows(
-        MissingParameterException.class,
-        () -> restaurantService.getRestaurantByIdOfOwner(invalidOwnerId, restaurantId));
   }
 
   @Test

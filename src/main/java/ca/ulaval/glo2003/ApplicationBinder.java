@@ -6,6 +6,7 @@ import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
 import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
+import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
@@ -21,6 +22,7 @@ public class ApplicationBinder extends AbstractBinder {
     bindAsContract(RestaurantService.class).in(Singleton.class);
     bindRestaurantRepository();
     bindAsContract(RestaurantDomainService.class).in(Singleton.class);
+    bindAsContract(RestaurantFactory.class).in(Singleton.class);
 
     bindAsContract(ReservationService.class).in(Singleton.class);
     bindReservationRepository();

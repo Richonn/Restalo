@@ -3,7 +3,6 @@ package ca.ulaval.glo2003.domain.reservation;
 import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -132,30 +131,5 @@ public class Reservation {
       startTime = startTime.plusMinutes(TimeUtils.getSlotInterval());
     }
     return timeSlots;
-  }
-
-  public void validateFields() {
-    fieldsAreDefined();
-    fieldsAreValid();
-    reservationTime.validateStartTimeIsDefined();
-    customer.validateFields();
-  }
-
-  private void fieldsAreDefined() {
-    if (date == null) {
-      throw new MissingParameterException("The date of the reservation is required");
-    }
-    if (groupSize == null) {
-      throw new MissingParameterException("The group size of the reservation is required");
-    }
-  }
-
-  private void fieldsAreValid() {
-    if (date.isBefore(LocalDate.now())) {
-      throw new InvalidParameterException("The date of the reservation cannot be in the past");
-    }
-    if (groupSize <= 0) {
-      throw new InvalidParameterException("The group size of the reservation must be positive");
-    }
   }
 }
