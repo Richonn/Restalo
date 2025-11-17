@@ -2,7 +2,6 @@ package ca.ulaval.glo2003.domain.restaurant;
 
 import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,6 @@ public class Hours {
   private final int reservationDuration;
 
   private static final int DEFAULT_RESERVATION_DURATION = 60;
-  private static final int MIN_RESERVATION_DURATION = 5;
-  private static final int MAX_RESERVATION_DURATION = 180;
 
   public Hours(LocalTime open, LocalTime close, Integer reservationDuration) {
     this.open = open;
@@ -34,11 +31,6 @@ public class Hours {
 
   public int getReservationDuration() {
     return reservationDuration;
-  }
-
-  public void validateFields() {
-    validateFieldsAreDefined();
-    validateFieldsAreValid();
   }
 
   public boolean isFullyOpenDuring(LocalTime from, LocalTime to) {
@@ -76,34 +68,5 @@ public class Hours {
     }
 
     return slots;
-  }
-
-  private void validateFieldsAreDefined() {
-    if (open == null) {
-      throw new MissingParameterException("The openingHour of the restaurant is required");
-    }
-    if (close == null) {
-      throw new MissingParameterException("The closingHour of the restaurant is required");
-    }
-  }
-
-  private void validateFieldsAreValid() {
-    if (close.isBefore(open)) {
-      throw new InvalidParameterException(
-          "The restaurant closing hour cannot be before the opening hour");
-    }
-    if (open.plusHours(1).compareTo(close) > 0) {
-      throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
-    }
-    if (reservationDuration <= 0) {
-      throw new InvalidParameterException(
-          "The restaurant reservation length needs to be bigger than 0 minutes");
-    }
-
-    if (reservationDuration < MIN_RESERVATION_DURATION
-        || reservationDuration > MAX_RESERVATION_DURATION) {
-      throw new InvalidParameterException(
-          "Reservation reservationDuration must be between 5 and 180 minutes.");
-    }
   }
 }

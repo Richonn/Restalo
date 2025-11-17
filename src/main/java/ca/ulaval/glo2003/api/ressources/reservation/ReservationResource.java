@@ -4,6 +4,9 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -35,7 +38,8 @@ public class ReservationResource {
   @Path("restaurants/{id}/reservations")
   @POST
   public Response createReservation(
-      ReservationDto reservationDto, @PathParam("id") String restaurantId) {
+      @Valid @NotNull(message = "Missing body") ReservationDto reservationDto,
+      @PathParam("id") String restaurantId) {
 
     String reservationGeneratedId =
         reservationService.createReservation(reservationDto, restaurantId);
@@ -57,7 +61,10 @@ public class ReservationResource {
   @GET
   @Path("restaurants/{id}/reservations")
   public Response searchReservations(
-      @HeaderParam(OWNER_HEADER) String ownerId,
+      @NotNull(message = "Missing Owner header")
+          @NotBlank(message = "Missing Owner header")
+          @HeaderParam(OWNER_HEADER)
+          String ownerId,
       @PathParam("id") String restaurantId,
       @QueryParam("date") String dateString,
       @QueryParam("customerName") String customerName) {
@@ -78,7 +85,11 @@ public class ReservationResource {
   @GET
   @Path("restaurants/{id}/availabilities")
   public Response getRestaurantAvailabilitiesByDate(
-      @QueryParam("date") String dateString, @PathParam("id") String restaurantId) {
+      @NotNull(message = "Missing date query parameter")
+          @NotBlank(message = "Missing date query parameter")
+          @QueryParam("date")
+          String dateString,
+      @PathParam("id") String restaurantId) {
     return Response.status(Response.Status.OK)
         .entity(reservationService.getRestaurantAvailabilitiesByDate(restaurantId, dateString))
         .build();

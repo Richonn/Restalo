@@ -17,7 +17,6 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
-import ca.ulaval.glo2003.api.exceptions.MissingParameterException;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
@@ -98,19 +97,6 @@ public class ReservationServiceTest {
 
   @Test
   void
-      givenNullReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsMissingParameterException() {
-
-    MissingParameterException exception =
-        assertThrows(
-            MissingParameterException.class,
-            () -> reservationService.createReservation(null, "123"));
-
-    assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing body");
-  }
-
-  @Test
-  void
       givenValidReservationDTOAndNonExistentRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
     String restaurantId = "this restaurant doesn't exist";
@@ -128,17 +114,7 @@ public class ReservationServiceTest {
   void
       givenInvalidReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
-    String restaurantId = "123";
-
-    when(reservationFactory.createReservation(
-            any(LocalDate.class),
-            any(LocalTime.class),
-            anyInt(),
-            anyString(),
-            anyString(),
-            anyString(),
-            any(Restaurant.class)))
-        .thenReturn(null);
+    String restaurantId = "999";
 
     NotFoundException exception =
         assertThrows(
