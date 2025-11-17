@@ -6,6 +6,7 @@ import java.time.LocalTime;
 
 public class RestaurantFactory {
 
+  private static final int MIN_OPENING_HOURS = 1;
   private static final int MIN_RESERVATION_DURATION = 5;
   private static final int MAX_RESERVATION_DURATION = 180;
 
@@ -33,7 +34,7 @@ public class RestaurantFactory {
       throw new InvalidParameterException(
           "The restaurant closing hour cannot be before the opening hour");
     }
-    if (open.plusHours(1).isAfter(close)) {
+    if (open.plusHours(MIN_OPENING_HOURS).isAfter(close)) {
       throw new InvalidParameterException("The restaurant needs to be open for at least one hour");
     }
     if (reservationDuration != null) {
@@ -45,7 +46,9 @@ public class RestaurantFactory {
       if (reservationDuration < MIN_RESERVATION_DURATION
           || reservationDuration > MAX_RESERVATION_DURATION) {
         throw new InvalidParameterException(
-            "Reservation reservationDuration must be between 5 and 180 minutes.");
+            String.format(
+                "Reservation reservationDuration must be between %d and %d minutes.",
+                MIN_RESERVATION_DURATION, MAX_RESERVATION_DURATION));
       }
     }
   }

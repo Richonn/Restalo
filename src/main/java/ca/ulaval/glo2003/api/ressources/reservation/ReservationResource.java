@@ -1,5 +1,7 @@
 package ca.ulaval.glo2003.api.ressources.reservation;
 
+import ca.ulaval.glo2003.api.constants.ApiValidationMessages;
+import ca.ulaval.glo2003.api.constants.HttpHeaders;
 import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
@@ -25,7 +27,6 @@ import jakarta.ws.rs.core.Response;
 public class ReservationResource {
   private final ReservationService reservationService;
 
-  private static final String OWNER_HEADER = "Owner";
   private static final String BASE_URL = "http://0.0.0.0:8080";
   private static final String RESERVATION_BASE = BASE_URL + "/reservations";
   private static final String RESERVATION_BY_ID = RESERVATION_BASE + "/%s";
@@ -38,7 +39,7 @@ public class ReservationResource {
   @Path("restaurants/{id}/reservations")
   @POST
   public Response createReservation(
-      @Valid @NotNull(message = "Missing body") ReservationDto reservationDto,
+      @Valid @NotNull(message = ApiValidationMessages.MISSING_BODY) ReservationDto reservationDto,
       @PathParam("id") String restaurantId) {
 
     String reservationGeneratedId =
@@ -61,9 +62,9 @@ public class ReservationResource {
   @GET
   @Path("restaurants/{id}/reservations")
   public Response searchReservations(
-      @NotNull(message = "Missing Owner header")
-          @NotBlank(message = "Missing Owner header")
-          @HeaderParam(OWNER_HEADER)
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(HttpHeaders.OWNER_HEADER)
           String ownerId,
       @PathParam("id") String restaurantId,
       @QueryParam("date") String dateString,
@@ -85,8 +86,8 @@ public class ReservationResource {
   @GET
   @Path("restaurants/{id}/availabilities")
   public Response getRestaurantAvailabilitiesByDate(
-      @NotNull(message = "Missing date query parameter")
-          @NotBlank(message = "Missing date query parameter")
+      @NotNull(message = ApiValidationMessages.MISSING_DATE_PARAMETER)
+          @NotBlank(message = ApiValidationMessages.MISSING_DATE_PARAMETER)
           @QueryParam("date")
           String dateString,
       @PathParam("id") String restaurantId) {

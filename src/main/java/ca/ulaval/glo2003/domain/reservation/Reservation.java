@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.domain.reservation;
 import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
+import ca.ulaval.glo2003.domain.utils.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -111,8 +112,10 @@ public class Reservation {
     if (customerName == null || customerName.isBlank()) {
       return true;
     }
-    String normalizedQuery = customerName.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
-    String normalizedName = customer.getName().replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    String normalizedQuery =
+        customerName.replaceAll(StringUtils.WHITESPACE_PATTERN, "").toLowerCase(Locale.ROOT);
+    String normalizedName =
+        customer.getName().replaceAll(StringUtils.WHITESPACE_PATTERN, "").toLowerCase(Locale.ROOT);
     return normalizedName.startsWith(normalizedQuery);
   }
 

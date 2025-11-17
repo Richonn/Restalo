@@ -7,6 +7,11 @@ public class MongoConfig {
   private static final String MONGO_CLUSTER_URL_ENV = "MONGO_CLUSTER_URL";
   private static final String MONGO_DATABASE_ENV = "MONGO_DATABASE";
 
+  public static final int SERVER_SELECTION_TIMEOUT_SECONDS = 5;
+  public static final int MAX_CONNECTION_IDLE_TIME_SECONDS = 10;
+  public static final int CONNECTION_POOL_MIN_SIZE = 1;
+  public static final int CONNECTION_POOL_MAX_SIZE = 10;
+
   private final String clusterUrl;
   private final String database;
 
