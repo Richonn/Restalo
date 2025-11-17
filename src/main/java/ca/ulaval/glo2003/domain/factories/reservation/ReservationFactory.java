@@ -36,9 +36,6 @@ public class ReservationFactory {
   }
 
   private void fieldsAreValid(LocalDate date, Integer groupSize) {
-    if (date.isBefore(LocalDate.now())) {
-      throw new InvalidParameterException("The date of the reservation cannot be in the past");
-    }
     if (groupSize <= 0) {
       throw new InvalidParameterException("The group size of the reservation must be positive");
     }
