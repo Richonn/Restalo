@@ -198,6 +198,26 @@ public class HoursTest {
   }
 
   @Test
+  void givenFromBeforeOpenAndToBeforeClose_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(9, 0, 0), LocalTime.of(18, 0, 0));
+
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  void givenFromEqualsOpenAndToAfterClose_whenIsFullyOpenDuring_thenReturnFalse() {
+    Hours a_hours =
+        hoursFixture.withOpen(LocalTime.of(10, 0, 0)).withClose(LocalTime.of(20, 0, 0)).build();
+
+    boolean result = a_hours.isFullyOpenDuring(LocalTime.of(10, 0, 0), LocalTime.of(21, 0, 0));
+
+    assertThat(result).isFalse();
+  }
+
+  @Test
   void
       givenValidOpenAndCloseAndReservationDuration_whenGenerateAllSlotIntervalSlices_thenReturnExpectedSlots() {
     LocalTime open = LocalTime.of(10, 0, 0);
