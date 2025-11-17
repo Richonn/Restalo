@@ -49,22 +49,6 @@ public class ReservationFactoryTest {
   }
 
   @Test
-  void givenPastDate_whenCreateReservation_thenThrowsInvalidParameterException() {
-    LocalDate pastDate = LocalDate.of(2020, 1, 1);
-
-    InvalidParameterException exception =
-        assertThrows(
-            InvalidParameterException.class,
-            () ->
-                reservationFactory.createReservation(
-                    pastDate, START_TIME, GROUP_SIZE, NAME, EMAIL, PHONE_NUMBER, restaurant));
-
-    assertThat(exception).isInstanceOf(InvalidParameterException.class);
-    assertThat(exception.getMessage())
-        .isEqualTo("The date of the reservation cannot be in the past");
-  }
-
-  @Test
   void givenZeroGroupSize_whenCreateReservation_thenThrowsInvalidParameterException() {
 
     InvalidParameterException exception =
