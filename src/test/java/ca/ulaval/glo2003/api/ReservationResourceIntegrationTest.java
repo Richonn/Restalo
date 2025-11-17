@@ -16,7 +16,6 @@ import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -79,8 +78,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
       assertNotNull(location);
       assertTrue(location.contains("/reservations/" + RESERVATION_ID));
 
-      verify(reservationService)
-          .createReservation(any(ReservationDto.class), eq(RESTAURANT_ID));
+      verify(reservationService).createReservation(any(ReservationDto.class), eq(RESTAURANT_ID));
     }
   }
 
@@ -223,8 +221,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
   @Test
   void givenValidNumber_whenGet_thenReturns200WithFullBody() {
     ReservationResponseDto reservationResponse = mock(ReservationResponseDto.class);
-    when(reservationService.getReservationById(RESERVATION_ID))
-        .thenReturn(reservationResponse);
+    when(reservationService.getReservationById(RESERVATION_ID)).thenReturn(reservationResponse);
 
     try (Response response =
         reservationResourceIntegrationTestFixture
@@ -239,7 +236,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
 
   @Test
   void givenNonExistentNumber_whenGet_thenReturns404() {
-      String reservationId = "invalid";
+    String reservationId = "invalid";
 
     when(reservationService.getReservationById(reservationId)).thenThrow(new NotFoundException());
 
@@ -262,8 +259,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             mock(ReservationSearchResponseDto.class),
             mock(ReservationSearchResponseDto.class));
 
-    when(reservationService.getReservationBySearch(
-            OWNER_ID, RESTAURANT_ID, date, customerName))
+    when(reservationService.getReservationBySearch(OWNER_ID, RESTAURANT_ID, date, customerName))
         .thenReturn(expectedReservationList);
 
     try (Response response =
@@ -289,8 +285,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             mock(ReservationSearchResponseDto.class),
             mock(ReservationSearchResponseDto.class));
 
-    when(reservationService.getReservationBySearch(
-            OWNER_ID, RESTAURANT_ID, date, customerName))
+    when(reservationService.getReservationBySearch(OWNER_ID, RESTAURANT_ID, date, customerName))
         .thenReturn(expectedReservationList);
 
     try (Response response =
@@ -315,8 +310,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             mock(ReservationSearchResponseDto.class),
             mock(ReservationSearchResponseDto.class));
 
-    when(reservationService.getReservationBySearch(
-            OWNER_ID, RESTAURANT_ID, date, customerName))
+    when(reservationService.getReservationBySearch(OWNER_ID, RESTAURANT_ID, date, customerName))
         .thenReturn(expectedReservationList);
 
     try (Response response =
@@ -341,8 +335,7 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
             mock(ReservationSearchResponseDto.class),
             mock(ReservationSearchResponseDto.class));
 
-    when(reservationService.getReservationBySearch(
-            OWNER_ID, RESTAURANT_ID, date, customerName))
+    when(reservationService.getReservationBySearch(OWNER_ID, RESTAURANT_ID, date, customerName))
         .thenReturn(expectedReservationList);
 
     try (Response response =

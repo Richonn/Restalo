@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 
 public class RestaurantResourceIntegrationTest extends JerseyTest {
 
-  private static final String TEST_RESTAURANT_ID = "restaurant-123";
-  private static final String TEST_OWNER_ID = "yvick";
+  private static final String RESTAURANT_ID = "restaurant-123";
+  private static final String OWNER_ID = "yvick";
 
   private static final int HTTP_OK = 200;
   private static final int HTTP_CREATED = 201;
@@ -58,13 +58,13 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @Override
   public void setUp() throws Exception {
     restaurantRessourceIntegrationTestFixture =
-        new RestaurantRessourceIntegrationTestFixture(TEST_OWNER_ID);
+        new RestaurantRessourceIntegrationTestFixture(OWNER_ID);
     super.setUp();
   }
 
   @Test
   public void givenValidRestaurant_whenPost_thenReturns201WithLocation() {
-    when(restaurantService.createRestaurant(any(), any())).thenReturn(TEST_RESTAURANT_ID);
+    when(restaurantService.createRestaurant(any(), any())).thenReturn(RESTAURANT_ID);
 
     try (Response response =
         restaurantRessourceIntegrationTestFixture
@@ -73,8 +73,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
       assertEquals(HTTP_CREATED, response.getStatus());
       String location = response.getHeaderString("Location");
       assertNotNull(location);
-      assertTrue(location.contains("/restaurants/restaurant-123"));
-      verify(restaurantService).createRestaurant(eq(TEST_OWNER_ID), any(RestaurantDto.class));
+      assertTrue(location.contains(String.format("/restaurants/%s", RESTAURANT_ID)));
+      verify(restaurantService).createRestaurant(eq(OWNER_ID), any(RestaurantDto.class));
     }
   }
 
@@ -159,7 +159,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
 
-      verify(restaurantService).getRestaurantListOfOwner(eq(TEST_OWNER_ID));
+      verify(restaurantService).getRestaurantListOfOwner(eq(OWNER_ID));
     }
   }
 
@@ -184,13 +184,13 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/restaurant-123")
+            .withPath(String.format("/restaurants/%s", RESTAURANT_ID))
             .buildGetResponse(target())) {
 
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
 
-      verify(restaurantService).getRestaurantByIdOfOwner(eq(TEST_OWNER_ID), eq(TEST_RESTAURANT_ID));
+      verify(restaurantService).getRestaurantByIdOfOwner(eq(OWNER_ID), eq(RESTAURANT_ID));
     }
   }
 
@@ -198,7 +198,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   public void givenMissingOwnerHeader_whenGet_thenReturns400() {
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/restaurant-123")
+            .withPath(String.format("/restaurants/%s", RESTAURANT_ID))
             .withIncludeHeaders(false)
             .buildGetResponse(target())) {
 
@@ -210,12 +210,14 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenNonExistentRestaurant_whenGet_thenReturns404() {
-    when(restaurantService.getRestaurantByIdOfOwner(any(), any()))
+    String restaurantId = "invalid";
+
+    when(restaurantService.getRestaurantByIdOfOwner(OWNER_ID, restaurantId))
         .thenThrow(new NotFoundException());
 
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/nonexistent")
+            .withPath(String.format("/restaurants/%s", restaurantId))
             .buildGetResponse(target())) {
       assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
@@ -304,9 +306,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @Test
   public void
       givenSearchRequestWithMultipleResults_whenSearchRestaurants_thenReturns200WithResults() {
-    RestaurantSearchResponseDto restaurant1 = mock(RestaurantSearchResponseDto.class);
-    RestaurantSearchResponseDto restaurant2 = mock(RestaurantSearchResponseDto.class);
-    List<RestaurantSearchResponseDto> restaurants = List.of(restaurant1, restaurant2);
+    List<RestaurantSearchResponseDto> restaurants =
+        List.of(mock(RestaurantSearchResponseDto.class), mock(RestaurantSearchResponseDto.class));
 
     when(restaurantService.getRestaurantBySearch(any())).thenReturn(restaurants);
 
@@ -323,15 +324,15 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenValidOwnerAndRestaurantId_whenDeleteRestaurant_thenReturns204NoContent() {
-    doNothing().when(restaurantService).deleteRestaurant(any(), any());
+    doNothing().when(restaurantService).deleteRestaurant(OWNER_ID, RESTAURANT_ID);
 
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/restaurant-123")
+            .withPath(String.format("/restaurants/%s", RESTAURANT_ID))
             .buildDeleteResponse(target())) {
 
       assertEquals(HTTP_NO_CONTENT, response.getStatus());
-      verify(restaurantService).deleteRestaurant(eq(TEST_OWNER_ID), eq(TEST_RESTAURANT_ID));
+      verify(restaurantService).deleteRestaurant(eq(OWNER_ID), eq(RESTAURANT_ID));
     }
   }
 
@@ -339,7 +340,7 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   public void givenMissingOwnerHeader_whenDeleteRestaurant_thenReturns400() {
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/restaurant-123")
+            .withPath(String.format("/restaurants/%s", RESTAURANT_ID))
             .withIncludeHeaders(false)
             .buildDeleteResponse(target())) {
 
@@ -351,11 +352,14 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenNonExistentRestaurant_whenDeleteRestaurant_thenReturns404() {
-    doThrow(new NotFoundException()).when(restaurantService).deleteRestaurant(any(), any());
+    String restaurantId = "invalid";
+    doThrow(new NotFoundException())
+        .when(restaurantService)
+        .deleteRestaurant(OWNER_ID, restaurantId);
 
     try (Response response =
         restaurantRessourceIntegrationTestFixture
-            .withPath("/restaurants/nonexistent")
+            .withPath(String.format("/restaurants/%s", restaurantId))
             .buildDeleteResponse(target())) {
 
       assertEquals(HTTP_NOT_FOUND, response.getStatus());
