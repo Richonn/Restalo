@@ -90,4 +90,76 @@ class RestaurantTest {
 
     assertThat(restaurant.generateDefaultAvailability()).isEqualTo(expectedDefaultAvailability);
   }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithNull_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName(null);
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithBlankString_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("   ");
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithEmptyString_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("");
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithMatchingQuery_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("pizza");
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithMatchingQueryDifferentCase_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("PALACE");
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithPartialMatch_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("zza");
+
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameWithNonMatchingQuery_thenReturnsFalse() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("burger");
+
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  void givenRestaurantWithName_whenMatchesNameIgnoresSpaces_thenReturnsTrue() {
+    Restaurant restaurant = restaurantFixture.withName("Pizza Palace").build(hours);
+
+    boolean result = restaurant.matchesName("pizz apal");
+
+    assertThat(result).isTrue();
+  }
 }
