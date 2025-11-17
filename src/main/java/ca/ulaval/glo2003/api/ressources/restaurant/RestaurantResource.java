@@ -81,7 +81,8 @@ public class RestaurantResource {
 
   @POST
   @Path("/search/restaurants")
-  public Response searchRestaurants(@Valid @NotNull(message = "Missing body") SearchRestaurantsRequestDto searchRequest) {
+  public Response searchRestaurants(
+      @Valid @NotNull(message = "Missing body") SearchRestaurantsRequestDto searchRequest) {
     return Response.status(Response.Status.OK)
         .entity(restaurantService.getRestaurantBySearch(searchRequest))
         .build();

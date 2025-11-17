@@ -57,7 +57,8 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @BeforeEach
   @Override
   public void setUp() throws Exception {
-      restaurantRessourceIntegrationTestFixture = new RestaurantRessourceIntegrationTestFixture(TEST_OWNER_ID);
+    restaurantRessourceIntegrationTestFixture =
+        new RestaurantRessourceIntegrationTestFixture(TEST_OWNER_ID);
     super.setUp();
   }
 
@@ -65,7 +66,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   public void givenValidRestaurant_whenPost_thenReturns201WithLocation() {
     when(restaurantService.createRestaurant(any(), any())).thenReturn(TEST_RESTAURANT_ID);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_CREATED, response.getStatus());
       String location = response.getHeaderString("Location");
       assertNotNull(location);
@@ -77,7 +81,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @Test
   public void givenMissingOwnerHeader_whenPost_thenReturns400() {
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withIncludeHeaders(false).buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withIncludeHeaders(false)
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
@@ -86,7 +94,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenMissingBody_whenPost_thenReturns400() {
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withIncludeBody(false).buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withIncludeBody(false)
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
     }
   }
@@ -94,7 +106,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @Test
   public void givenMissingHours_whenPost_thenReturns400() {
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withIncludeHours(false).buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withIncludeHours(false)
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("MISSING_PARAMETER"));
@@ -104,7 +120,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   @Test
   public void givenInvalidName_whenPost_thenReturns400() {
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withRestaurantName("").buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withRestaurantName("")
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("name"));
@@ -117,7 +137,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
         .thenThrow(
             new InvalidParameterException("The capacity of the restaurant must be positive"));
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withRestaurantCapacity(0).buildPostRestaurantResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withRestaurantCapacity(0)
+            .buildPostRestaurantResponse(target())) {
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
       assertTrue(body.contains("INVALID_PARAMETER") || body.contains("capacity"));
@@ -128,7 +152,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
   public void givenValidOwner_whenGetList_thenReturns200WithList() {
     when(restaurantService.getRestaurantListOfOwner(any())).thenReturn(Collections.emptyList());
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").buildGetResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .buildGetResponse(target())) {
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
 
@@ -138,7 +165,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenMissingOwnerHeader_whenGetList_thenReturns400() {
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants").withIncludeHeaders(false).buildGetResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants")
+            .withIncludeHeaders(false)
+            .buildGetResponse(target())) {
 
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
@@ -151,7 +182,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     RestaurantDto restaurantDto = mock(RestaurantDto.class);
     when(restaurantService.getRestaurantByIdOfOwner(any(), any())).thenReturn(restaurantDto);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/restaurant-123").buildGetResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/restaurant-123")
+            .buildGetResponse(target())) {
 
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
@@ -162,7 +196,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenMissingOwnerHeader_whenGet_thenReturns400() {
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/restaurant-123").withIncludeHeaders(false).buildGetResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/restaurant-123")
+            .withIncludeHeaders(false)
+            .buildGetResponse(target())) {
 
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
@@ -175,7 +213,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     when(restaurantService.getRestaurantByIdOfOwner(any(), any()))
         .thenThrow(new NotFoundException());
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/nonexistent").buildGetResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/nonexistent")
+            .buildGetResponse(target())) {
       assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
   }
@@ -185,7 +226,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
     when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .buildPostSearchResponse(target())) {
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
       verify(restaurantService).getRestaurantBySearch(any(SearchRestaurantsRequestDto.class));
@@ -197,7 +241,11 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
     when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").withIncludeSearchName(false).buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .withIncludeSearchName(false)
+            .buildPostSearchResponse(target())) {
 
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
@@ -209,7 +257,12 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     when(restaurantService.getRestaurantBySearch(any()))
         .thenThrow(new InvalidParameterException("Closing hour cannot be before opening hours"));
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").withSearchFrom("22:00:00").withSearchTo("11:00:00").buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .withSearchFrom("22:00:00")
+            .withSearchTo("11:00:00")
+            .buildPostSearchResponse(target())) {
 
       assertEquals(HTTP_BAD_REQUEST, response.getStatus());
       String body = response.readEntity(String.class);
@@ -222,7 +275,12 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     List<RestaurantSearchResponseDto> emptyRestaurants = Collections.emptyList();
     when(restaurantService.getRestaurantBySearch(any())).thenReturn(emptyRestaurants);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").withIncludeSearchName(false).withIncludeHours(false).buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .withIncludeSearchName(false)
+            .withIncludeHours(false)
+            .buildPostSearchResponse(target())) {
 
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
@@ -231,11 +289,15 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
   @Test
   public void givenNullBody_whenSearchRestaurants_thenReturns400() {
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").withIncludeBody(false).buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .withIncludeBody(false)
+            .buildPostSearchResponse(target())) {
 
-        assertEquals(HTTP_BAD_REQUEST, response.getStatus());
-        String body = response.readEntity(String.class);
-        assertTrue(body.contains("MISSING_PARAMETER"));
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
+      String body = response.readEntity(String.class);
+      assertTrue(body.contains("MISSING_PARAMETER"));
     }
   }
 
@@ -248,7 +310,10 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
 
     when(restaurantService.getRestaurantBySearch(any())).thenReturn(restaurants);
 
-    try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/search/restaurants").buildPostSearchResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/search/restaurants")
+            .buildPostSearchResponse(target())) {
 
       assertEquals(HTTP_OK, response.getStatus());
       assertNotNull(response.getEntity());
@@ -256,34 +321,44 @@ public class RestaurantResourceIntegrationTest extends JerseyTest {
     }
   }
 
-    @Test
-    public void givenValidOwnerAndRestaurantId_whenDeleteRestaurant_thenReturns204NoContent() {
-        doNothing().when(restaurantService).deleteRestaurant(any(), any());
+  @Test
+  public void givenValidOwnerAndRestaurantId_whenDeleteRestaurant_thenReturns204NoContent() {
+    doNothing().when(restaurantService).deleteRestaurant(any(), any());
 
-        try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/restaurant-123").buildDeleteResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/restaurant-123")
+            .buildDeleteResponse(target())) {
 
-            assertEquals(HTTP_NO_CONTENT, response.getStatus());
-            verify(restaurantService).deleteRestaurant(eq(TEST_OWNER_ID), eq(TEST_RESTAURANT_ID));
-        }
+      assertEquals(HTTP_NO_CONTENT, response.getStatus());
+      verify(restaurantService).deleteRestaurant(eq(TEST_OWNER_ID), eq(TEST_RESTAURANT_ID));
     }
+  }
 
-    @Test
-    public void givenMissingOwnerHeader_whenDeleteRestaurant_thenReturns400() {
-        try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/restaurant-123").withIncludeHeaders(false).buildDeleteResponse(target())) {
+  @Test
+  public void givenMissingOwnerHeader_whenDeleteRestaurant_thenReturns400() {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/restaurant-123")
+            .withIncludeHeaders(false)
+            .buildDeleteResponse(target())) {
 
-            assertEquals(HTTP_BAD_REQUEST, response.getStatus());
-            String body = response.readEntity(String.class);
-            assertTrue(body.contains("MISSING_PARAMETER"));
-        }
+      assertEquals(HTTP_BAD_REQUEST, response.getStatus());
+      String body = response.readEntity(String.class);
+      assertTrue(body.contains("MISSING_PARAMETER"));
     }
+  }
 
-    @Test
-    public void givenNonExistentRestaurant_whenDeleteRestaurant_thenReturns404() {
-        doThrow(new NotFoundException()).when(restaurantService).deleteRestaurant(any(), any());
+  @Test
+  public void givenNonExistentRestaurant_whenDeleteRestaurant_thenReturns404() {
+    doThrow(new NotFoundException()).when(restaurantService).deleteRestaurant(any(), any());
 
-        try (Response response = restaurantRessourceIntegrationTestFixture.withPath("/restaurants/nonexistent").buildDeleteResponse(target())) {
+    try (Response response =
+        restaurantRessourceIntegrationTestFixture
+            .withPath("/restaurants/nonexistent")
+            .buildDeleteResponse(target())) {
 
-            assertEquals(HTTP_NOT_FOUND, response.getStatus());
-        }
+      assertEquals(HTTP_NOT_FOUND, response.getStatus());
     }
+  }
 }
