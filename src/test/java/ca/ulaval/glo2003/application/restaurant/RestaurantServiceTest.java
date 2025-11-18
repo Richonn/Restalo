@@ -210,19 +210,15 @@ public class RestaurantServiceTest {
     String ownerId = "owner-123";
     String restaurantId = "restaurant-456";
 
-    Restaurant mockRestaurant =
-        new Restaurant(
-            "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
-
     when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId))
-        .thenReturn(mockRestaurant);
+        .thenReturn(restaurant);
     doNothing().when(reservationRepository).deleteAllReservationOfRestaurant(anyString());
     doNothing().when(restaurantRepository).delete(anyString());
 
     restaurantService.deleteRestaurant(ownerId, restaurantId);
 
-    verify(reservationRepository).deleteAllReservationOfRestaurant(mockRestaurant.getId());
-    verify(restaurantRepository).delete(mockRestaurant.getId());
+    verify(reservationRepository).deleteAllReservationOfRestaurant(restaurant.getId());
+    verify(restaurantRepository).delete(restaurant.getId());
   }
 
   @Test
