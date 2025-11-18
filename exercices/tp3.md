@@ -356,7 +356,7 @@ restaurant. Elle ne modifie pas POST /search/restaurants.
 
 ### Screenshot du GitHub Project (colonnes + issues)
 
-![alt text](screen-shots/rendu_3/)
+![alt text](screen-shots/rendu_3/github-project.png)
 
 ### Screenshots du Milestone (titre, description, date, issues)
 
@@ -403,5 +403,93 @@ restaurant. Elle ne modifie pas POST /search/restaurants.
 ## Diagramme d'architecture
 
 ![alt text](screen-shots/rendu_3/diagramme-arch.png)
+
+## Rôles des classes principales
+
+### Couche API (Présentation)
+
+#### RestaurantResource & ReservationResource
+Points d'entrée REST qui gèrent les requêtes HTTP (GET, POST, DELETE) et délèguent la logique métier aux Services applicatifs correspondants.
+
+### Couche Application
+
+#### RestaurantService
+Orchestre les cas d'utilisation liés aux restaurants (création, recherche, récupération, suppression). Coordonne RestaurantRepository, ReservationRepository (pour suppression en cascade), RestaurantDomainService, et RestaurantFactory. Utilise Mappers/Assemblers pour les conversions DTO ↔ Domain. Lors de la suppression d'un restaurant, supprime d'abord toutes ses réservations (via deleteAllReservationOfRestaurant) avant de supprimer le restaurant lui-même, respectant ainsi l'intégrité référentielle.
+
+#### ReservationService
+Orchestre les réservations (création, recherche, suppression, calcul des disponibilités). Coordonne les repositories, ReservationFactory et RestaurantDomainService. Valide la capacité disponible via RestaurantDomainService avant de créer une réservation.
+
+### Couche Domain
+
+#### Restaurant
+Agrégat représentant un restaurant avec ses règles métier de base. Génère un UUID unique et fournit des méthodes de recherche et de vérification d'horaires (matchesName, isFullyOpenDuring). La validation des champs est déléguée à RestaurantFactory.
+
+#### Reservation
+Agrégat représentant une réservation. Valide ses champs (date future, groupSize > 0), ajuste l'heure au prochain créneau de 15 minutes, et génère tous les créneaux occupés.
+
+#### RestaurantDomainService
+Service de domaine contenant la logique métier transversale qui nécessite plusieurs agrégats. Valide les headers et dates (convertDateStringToLocalDate, isTimeRangeValid), et calcule les disponibilités d'un restaurant (getRestaurantAvailability retourne un Map<LocalTime, Integer> des places disponibles par créneau de 15min, peut retourner des valeurs négatives si sur-réservé). Ne valide plus les restaurants individuels - cette responsabilité a été déplacée vers RestaurantFactory.
+
+#### RestaurantFactory
+Factory créant des restaurants valides. Orchestre la validation des champs (capacité > 0, fermeture après ouverture, ouverture minimum 1h, durée réservation 5-180min) avant la création. Encapsule la logique complexe de validation pour garantir qu'aucun restaurant invalide ne peut être créé. Cette factory centralise les validations qui étaient auparavant dispersées.
+
+#### ReservationFactory
+Factory créant des réservations valides. Orchestre: création, ajustement horaire 15min, validation des champs, et définition de l'heure de fin via le restaurant. Utilise TimeUtils pour les manipulations temporelles communes.
+
+### Couche Infrastructure
+
+#### InMemoryRestaurantRepository & InMemoryReservationRepository
+Implémentations en mémoire (HashMap). Stockage volatile pour développement et tests. Manipulent directement les objets du domaine.
+
+#### MongoRestaurantRepository & MongoReservationRepository
+Implémentations MongoDB avec Morphia ODM. Stockage persistant pour production. Utilisent MongoConnection pour accéder au Datastore, des Documents (RestaurantDocument, ReservationDocument - structures avec champs primitifs uniquement) et des DocumentMappers (RestaurantDocumentMapper, ReservationDocumentMapper) pour convertir Domain ↔ Document.
+
+#### MongoConnection
+Singleton gérant la connexion unique à MongoDB et la création du Datastore Morphia. Fournit l'accès à la base de données pour tous les repositories MongoDB.
+
+#### PersistenceConfig
+Configure le choix de l'implémentation de persistance (InMemory ou MongoDB) via propriété système. Permet de changer facilement entre les deux modes sans modifier le code applicatif.
+
+#### RestaurantDocument & ReservationDocument:
+Représentations Morphia des entités persistées. Contiennent uniquement des champs primitifs compatibles avec MongoDB.
+
+#### RestaurantDocumentMapper & ReservationDocumentMapper:
+Convertissent les objets Domain (avec leurs Value Objects et logique métier) vers/depuis les Documents (structures plates pour MongoDB).
+
+## Explication des Choix
+
+L'architecture du TP3 suit un modèle en couches horizontales inspiré du Domain-Driven Design (DDD) pour séparer clairement les responsabilités. Elle comprend quatre couches principales : l'API pour l'exposition des ressources via des API REST, l'Application pour la logique métier, le Domaine avec les entités métiers et les interfaces des repositories, et l'Infrastructure pour la persistance des données.
+
+### Séparation des Couches
+Nous avons suivi le principe de séparation des préoccupations en distinguant clairement les couches API (Présentation), Application (Service), Domaine et Infrastructure (Persistance) lors de notre implémentation. Cette séparation permet de maintenir un code organisé, évolutif et facilement testable. Chaque couche est responsable de son propre domaine et peut évoluer indépendamment des autres couches. Cela améliore la lisibilité du code, facilite la maintenance et permet de changer une couche sans affecter les autres (par exemple, changer la persistance en passant de MongoDB à une autre base de données, ou remplacer la couche API sans toucher à la logique métier).
+
+### Utilisation des Factories
+Les factories sont utilisées pour centraliser la création des objets métier comme Reservation et Restaurant, assurant leur validation avant leur entrée dans le domaine. Cela garantit que seuls des objets cohérents et valides sont utilisés, réduisant ainsi les erreurs. Ce modèle centralisé simplifie la logique des services en déléguant la création à des classes spécialisées, ce qui améliore la maintenabilité et l’évolutivité du code. Les règles de validation peuvent ainsi être modifiées facilement sans impacter d’autres parties du système, assurant une gestion efficace des dépendances.
+
+### Abstraction de la Persistance
+Nous avons séparé l'interface des repositories et leur implémentation. Les interfaces, comme ReservationRepository et RestaurantRepository, définissent les contrats nécessaires pour manipuler les entités sans exposer la logique de persistance. Cela permet de changer la technologie sous-jacente (par exemple, passer de MongoDB à une solution en mémoire) sans affecter le reste de l'application. L'implémentation spécifique de chaque repository (comme MongoReservationRepository ou InMemoryReservationRepository) se trouve dans la couche d'infrastructure et est utilisée par les services. Ainsi, cela offre une grande flexibilité dans le choix de la persistance tout en respectant le principe d'inversion des dépendances.
+
+## Relations Suspectes et Solutions Potentielles
+
+### 1. Couplage entre les services et les repositories
+Bien que les services comme ReservationService et RestaurantService orchestrent la logique métier, ils dépendent encore directement des repositories (ReservationRepository, RestaurantRepository) pour la persistance des données. Bien que cette approche fonctionne, elle peut créer un couplage étroit entre la logique métier et la couche d'accès aux données. Cela pourrait rendre l'application plus difficile à maintenir si des changements dans la stratégie de persistance sont nécessaires à l'avenir.
+
+#### Solution potentielle
+Bien que RestaurantDomainService centralise déjà la logique métier pour les restaurants, il serait avantageux de dégager davantage la logique de persistance des services métier comme RestaurantService et ReservationService. Cela pourrait inclure l'utilisation d'intermédiaires ou de façades dédiés à la gestion des accès aux données, afin de mieux encapsuler la persistance tout en gardant la logique métier isolée.
+
+
+### 2. Dépendances au sein des services
+Les services comme ReservationService et RestaurantService dépendent de nombreux composants tels que des Domain Services, des Repositories et des Factories. Bien que cela permette une séparation des responsabilités, un trop grand nombre de dépendances peut rendre ces services difficiles à tester et à maintenir.
+
+#### Solution potentielle
+Réduire le couplage direct entre les services et leurs dépendances en introduisant des interfaces pour les composants clés (comme les repositories et les factories). Cela permettrait de rendre les services plus flexibles et facilement testables.
+Organiser les services en fonctions plus spécifiques comme create, get, delete, etc., pour mieux distinguer les responsabilités de chaque service et améliorer leur lisibilité au niveau des routes et de l'API.
+Cette approche permettrait non seulement de réduire la complexité, mais aussi de rendre l’architecture plus modulaire et plus facile à maintenir à long terme.
+
+### 3. Risque de surcharge dans les services de domaine
+Le RestaurantDomainService gère plusieurs règles métier, notamment la validation des horaires, la conversion des dates et le calcul de la disponibilité des restaurants. Bien que cela permette une certaine centralisation de la logique, cette approche pourrait conduire à une surcharge de responsabilités et rendre le service difficile à maintenir à mesure que de nouvelles règles sont ajoutées.
+
+#### Solution potentielle
+Pour éviter cette surcharge, il serait pertinent de refactorer le RestaurantDomainService en plusieurs services spécialisés, chacun se concentrant sur un aspect spécifique de la logique métier (par exemple, un service pour la gestion des horaires, un autre pour la gestion des disponibilités). Cela permettrait de mieux respecter le Single Responsibility Principle (SRP), tout en améliorant la maintenabilité et la testabilité du code."
 
 ---
