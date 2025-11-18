@@ -28,30 +28,30 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 ### Pipeline CI
 
 1. Avant l'implémentation du pipeline de tests automatisés, combien de temps passiez-vous à vérifier et tester manuellement le code lors des intégrations et des remises ?
-***Réponse :*** ***Avant l'implémentation du pipeline, nous passions environ 20 à 30 minutes par fonctionnalité pour tester manuellement la nouvelle implémentation.***
+***Réponse :*** ***Avant l'implémentation du pipeline CI, nous consacrions approximativement 20 à 30 minutes par fonctionnalité pour effectuer les tests manuels de chaque nouvelle implémentation. Ce temps incluait la vérification des fonctionnalités, la validation des cas limites et la détection des régressions potentielles.***
 
 2. Après l'implémentation du CI, combien de temps passez-vous à effectuer ces vérifications ?
-***Réponse :*** ***Grâce à l'implémentation du CI, n'importe quel pull request permet de rouler les tests automatiquement permettant de gagner 20 à 30 minutes.***
+***Réponse :*** ***Grâce à l'implémentation du pipeline CI, les tests sont désormais exécutés automatiquement lors de chaque pull request, ce qui nous permet d'économiser les 20 à 30 minutes précédemment consacrées aux vérifications manuelles. Le temps d'attente pour les résultats des tests automatisés est généralement inférieur à 5 minutes, et nous pouvons travailler sur d'autres tâches pendant leur exécution.***
 
 3. Quels sont les points positifs que le CI a apportés à votre **processus**? Donnez-en au moins **trois**.
-***Réponse :*** ***Une détection rapide des erreurs, une qualité de code améliorée et un gain de temps et de productivité grâce à nos workflows de tests, linting et build.***
+***Réponse :*** ***Le pipeline CI a apporté trois améliorations majeures à notre processus de développement : (1) une détection rapide et systématique des erreurs dès l'intégration du code, (2) une amélioration de la qualité du code grâce aux workflows de tests unitaires, de linting et de build qui s'exécutent automatiquement, et (3) un gain significatif de temps et de productivité en libérant les développeurs des tâches répétitives de vérification manuelle.***
 
 4. Le pipeline CI introduit-il un élément qui pourrait devenir négatif ou risqué pour le processus, le produit et/ou l'équipe? Justifiez votre réponse.
-***Réponse :*** ***Oui, par exemple, le pipeline CI peut introduire une dépendance excessive à l'automatisation: certains problèmes peuvent passer inaperçus car la "pipeline est verte" et peut favoriser le fait de moins tester manuellement.***
+***Réponse :*** ***Oui, le pipeline CI peut introduire une dépendance excessive à l'automatisation qui présente certains risques. Lorsque tous les tests passent et que le pipeline affiche un statut "vert", l'équipe peut développer un faux sentiment de sécurité et négliger les tests manuels exploratoires. Certains problèmes, notamment ceux liés à l'expérience utilisateur ou aux cas d'usage complexes non couverts par les tests automatisés, peuvent ainsi passer inaperçus. Il est donc important de maintenir un équilibre entre automatisation et vérification manuelle ciblée.***
 
 ### Tests
 
 1. Quelle proportion de temps passez-vous à implémenter le code fonctionnel par rapport aux tests? Cette proportion évolue-t-elle avec le temps? Pourquoi?
-***Réponse :*** ***Plus de temps à implémenter les tests (apprentissage de comment coder des tests correctement de façon clean ainsi que les frameworks, etc). Elle diminue avec le temps plus que cela deviens naturel (courbe d'aprentissage)***
+***Réponse :*** ***Initialement, nous consacrons davantage de temps à l'implémentation des tests qu'au code fonctionnel lui-même, principalement en raison de la courbe d'apprentissage associée aux bonnes pratiques de test, aux frameworks de test et à la rédaction de tests propres et maintenables. Cependant, cette proportion évolue favorablement avec le temps : à mesure que l'équipe acquiert de l'expérience et de la familiarité avec les outils et méthodologies, l'écriture des tests devient plus naturelle et efficace, réduisant ainsi le temps nécessaire à leur implémentation.***
 
 2. L'implémentation des tests augmente naturellement la charge de travail. Comment cela a-t-il affecté votre processus? (ex. : taille des issues/PRs, temps d'implémentation, planification, etc.)
-***Réponse :*** ***Oui évidemment. La taille des issues n'a pas nécessairement grandit (division), mais la charge de travail par membre oui, puisque sa reste que celui qui dévloppe la feature fait les tests relier en général. Le temps d'implémentation combiner et donc plus long. Pas vraiment besoin de plus de planification.***
+***Réponse :*** ***L'implémentation des tests a effectivement augmenté la charge de travail globale du projet. Bien que la taille des issues individuelles n'ait pas significativement augmenté grâce à une meilleure décomposition des tâches, la charge de travail par développeur s'est accrue, car chaque membre est responsable de l'implémentation des tests relatifs aux fonctionnalités qu'il développe. En conséquence, le temps d'implémentation combiné (code fonctionnel + tests) est plus long. Toutefois, cette charge supplémentaire n'a pas nécessité de modifications majeures dans notre processus de planification, car nous avons intégré l'estimation des tests dès le début de chaque sprint.***
 
 3. Avez-vous davantage confiance en votre code maintenant que vous avez des tests? Justifiez votre réponse.
-***Réponse :*** ***Oui, cela permet d'assurer que le code fonctionne adéquatement (ce qui est tester et correctement). Ainsi, il est plus facile de pouvoir ce concentrer sur d'autres éléments sans craindre les sections de code bien tester.***
+***Réponse :*** ***Oui, la présence de tests nous confère une confiance significativement accrue dans la qualité et la fiabilité de notre code. Les tests garantissent que les fonctionnalités développées fonctionnent conformément aux spécifications et que les modifications ultérieures n'introduisent pas de régressions. Cette assurance nous permet de nous concentrer sur le développement de nouvelles fonctionnalités sans craindre d'impacter négativement les sections de code bien testées, ce qui améliore notre productivité et réduit le stress lié à l'intégration de changements.***
 
 4. Que pouvez-vous faire pour améliorer la qualité de vos tests? Donnez au moins **trois** solutions.
-***Réponse :*** ***Plus de fixture, une meilleur division des concepts/rôle et une meilleur clarter/nomenclature (nom des variables, méthodes (parfois), etc)***
+***Réponse :*** ***Pour améliorer la qualité de nos tests, nous pourrions mettre en œuvre trois stratégies principales : (1) augmenter l'utilisation de fixtures réutilisables pour standardiser les données de test et réduire la duplication de code, (2) améliorer la séparation des préoccupations en divisant mieux les concepts et les responsabilités au sein des tests, facilitant ainsi leur compréhension et leur maintenance, et (3) adopter des conventions de nomenclature plus claires et cohérentes pour les noms de variables, de méthodes de test et de classes, rendant le code de test plus lisible et auto-documenté.***
 
 ---
 
@@ -201,6 +201,8 @@ validité (dates de début et de fin).
 l'offre.
 - Consultation dédiée : Les clients peuvent consulter les offres valides d'un restaurant
 via un point d'accès dédié.
+- Limitation d'offres : Un restaurant ne peut créer qu'une seule offre spéciale à la
+fois.
 
 ### Spécifications
 Créer une Offre Spéciale (Nouvelle fonctionnalité)
@@ -276,6 +278,15 @@ Ceci est une nouvelle fonctionnalité qui ne modifie aucune route, requête ou r
 {
 "error": "MISSING_PARAMETER",
 "description": "string"
+}
+```
+
+`400 BAD REQUEST: une offre spéciale existe déjà`
+
+```json
+{
+"error": "OFFER_ALREADY_EXISTS",
+"description": "Un restaurant ne peut avoir qu'une seule offre spéciale à la fois."
 }
 ```
 
