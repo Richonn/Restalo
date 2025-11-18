@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.domain.restaurant;
 
+import ca.ulaval.glo2003.domain.utils.StringUtils;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +88,10 @@ public class Restaurant {
     if (nameQuery == null || nameQuery.isBlank()) {
       return true;
     }
-    String normalizedQuery = nameQuery.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
-    String normalizedName = name.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+    String normalizedQuery =
+        nameQuery.replaceAll(StringUtils.WHITESPACE_PATTERN, "").toLowerCase(Locale.ROOT);
+    String normalizedName =
+        name.replaceAll(StringUtils.WHITESPACE_PATTERN, "").toLowerCase(Locale.ROOT);
     return normalizedName.contains(normalizedQuery);
   }
 

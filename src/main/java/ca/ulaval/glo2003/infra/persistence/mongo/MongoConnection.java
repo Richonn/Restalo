@@ -38,12 +38,15 @@ public class MongoConnection {
           MongoClientSettings.builder()
               .applyConnectionString(connectionString)
               .applyToClusterSettings(
-                  builder -> builder.serverSelectionTimeout(5, TimeUnit.SECONDS))
+                  builder ->
+                      builder.serverSelectionTimeout(
+                          MongoConfig.SERVER_SELECTION_TIMEOUT_SECONDS, TimeUnit.SECONDS))
               .applyToConnectionPoolSettings(
                   builder -> {
-                    builder.maxConnectionIdleTime(10, TimeUnit.SECONDS);
-                    builder.minSize(1);
-                    builder.maxSize(10);
+                    builder.maxConnectionIdleTime(
+                        MongoConfig.MAX_CONNECTION_IDLE_TIME_SECONDS, TimeUnit.SECONDS);
+                    builder.minSize(MongoConfig.CONNECTION_POOL_MIN_SIZE);
+                    builder.maxSize(MongoConfig.CONNECTION_POOL_MAX_SIZE);
                   })
               .build();
 

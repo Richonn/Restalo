@@ -1,5 +1,7 @@
 package ca.ulaval.glo2003.api.ressources.restaurant;
 
+import ca.ulaval.glo2003.api.constants.ApiValidationMessages;
+import ca.ulaval.glo2003.api.constants.HttpHeaders;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
@@ -23,7 +25,6 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class RestaurantResource {
   private final RestaurantService restaurantService;
-  private static final String OWNER_HEADER = "Owner";
 
   private static final String BASE_URL = "http://0.0.0.0:8080";
   private static final String RESTAURANTS_BASE = BASE_URL + "/restaurants";
@@ -37,11 +38,11 @@ public class RestaurantResource {
   @POST
   @Path("restaurants")
   public Response createRestaurant(
-      @NotNull(message = "Missing Owner header")
-          @NotBlank(message = "Missing Owner header")
-          @HeaderParam(OWNER_HEADER)
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(HttpHeaders.OWNER_HEADER)
           String ownerId,
-      @Valid @NotNull(message = "Missing body") RestaurantDto restaurantDto) {
+      @Valid @NotNull(message = ApiValidationMessages.MISSING_BODY) RestaurantDto restaurantDto) {
 
     String restaurantGeneratedId = restaurantService.createRestaurant(ownerId, restaurantDto);
 
@@ -53,9 +54,9 @@ public class RestaurantResource {
   @GET
   @Path("restaurants")
   public Response getRestaurantListOfOwner(
-      @NotNull(message = "Missing Owner header")
-          @NotBlank(message = "Missing Owner header")
-          @HeaderParam(OWNER_HEADER)
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(HttpHeaders.OWNER_HEADER)
           String ownerId) {
 
     return Response.status(Response.Status.OK)
@@ -67,9 +68,9 @@ public class RestaurantResource {
   @GET
   @Path("restaurants/{id}")
   public Response getRestaurantByIdOfOwner(
-      @NotNull(message = "Missing Owner header")
-          @NotBlank(message = "Missing Owner header")
-          @HeaderParam(OWNER_HEADER)
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(HttpHeaders.OWNER_HEADER)
           String ownerId,
       @PathParam("id") String restaurantId) {
 
@@ -91,9 +92,9 @@ public class RestaurantResource {
   @DELETE
   @Path("restaurants/{id}")
   public Response deleteRestaurant(
-      @NotNull(message = "Missing Owner header")
-          @NotBlank(message = "Missing Owner header")
-          @HeaderParam(OWNER_HEADER)
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(HttpHeaders.OWNER_HEADER)
           String ownerId,
       @PathParam("id") String restaurantId) {
 
