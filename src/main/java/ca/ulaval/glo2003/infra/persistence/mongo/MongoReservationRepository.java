@@ -18,8 +18,6 @@ public class MongoReservationRepository implements ReservationRepository {
   @Inject
   public MongoReservationRepository(MongoConnection mongoConnection) {
     this.datastore = mongoConnection.getDatastore();
-    datastore.getMapper().map(ReservationDocument.class);
-    datastore.ensureIndexes();
   }
 
   @Override
