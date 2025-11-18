@@ -487,5 +487,4 @@ public class ReservationResourceIntegrationTest extends JerseyTest {
       verify(reservationService).deleteReservation(reservationId);
     }
   }
-
 }
