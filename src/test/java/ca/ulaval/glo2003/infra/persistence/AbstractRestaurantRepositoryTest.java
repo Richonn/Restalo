@@ -151,4 +151,23 @@ public abstract class AbstractRestaurantRepositoryTest {
 
     assertThat(getRepository().getRestaurantById(requestedRestaurantId)).isNull();
   }
+
+  @Test
+  void givenExistingRestaurant_whenDeleteRestaurant_thenRestaurantIsDeleted() {
+    String restaurantId = "restaurantId";
+    String ownerId = "ownerId";
+    Restaurant restaurant = createRestaurant(restaurantId, ownerId);
+    getRepository().save(restaurant);
+
+    getRepository().delete(restaurant.getId());
+
+    assertThat(getRepository().getRestaurantById(restaurant.getId())).isNull();
+  }
+
+  @Test
+  void givenNonExistentRestaurant_whenDeleteRestaurant_thenNoExceptionThrown() {
+    String nonExistentRestaurantId = "nonExistentId";
+
+    assertDoesNotThrow(() -> getRepository().delete(nonExistentRestaurantId));
+  }
 }

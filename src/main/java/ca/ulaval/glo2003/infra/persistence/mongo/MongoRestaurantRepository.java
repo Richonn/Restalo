@@ -18,8 +18,6 @@ public class MongoRestaurantRepository implements RestaurantRepository {
   @Inject
   public MongoRestaurantRepository(MongoConnection mongoConnection) {
     this.datastore = mongoConnection.getDatastore();
-    datastore.getMapper().map(RestaurantDocument.class);
-    datastore.ensureIndexes();
   }
 
   @Override

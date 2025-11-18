@@ -121,4 +121,37 @@ public abstract class AbstractReservationRepositoryTest {
 
     assertThat(getRepository().getReservationById(reservationId)).isNull();
   }
+
+  @Test
+  void
+      givenExistingReservationsForRestaurant_whenDeleteAllReservationOfRestaurant_thenAllReservationsAreDeleted() {
+    String restaurantId = "targetRestaurant";
+    String otherRestaurantId = "otherRestaurant";
+    String firstReservationId = "reservation1";
+    String secondReservationId = "reservation2";
+    String thirdReservationId = "reservation3";
+
+    Reservation firstReservation = createReservation(firstReservationId, restaurantId);
+    Reservation secondReservation = createReservation(secondReservationId, restaurantId);
+    Reservation thirdReservation = createReservation(thirdReservationId, otherRestaurantId);
+
+    getRepository().save(firstReservation);
+    getRepository().save(secondReservation);
+    getRepository().save(thirdReservation);
+
+    getRepository().deleteAllReservationOfRestaurant(restaurantId);
+
+    assertThat(getRepository().getReservationListOfRestaurant(restaurantId)).isEmpty();
+    assertThat(getRepository().getReservationById(firstReservation.getId())).isNull();
+    assertThat(getRepository().getReservationById(secondReservation.getId())).isNull();
+    assertThat(getRepository().getReservationById(thirdReservation.getId())).isNotNull();
+  }
+
+  @Test
+  void
+      givenNoReservationsForRestaurant_whenDeleteAllReservationOfRestaurant_thenNoExceptionThrown() {
+    String restaurantId = "nonExistentRestaurant";
+
+    assertDoesNotThrow(() -> getRepository().deleteAllReservationOfRestaurant(restaurantId));
+  }
 }

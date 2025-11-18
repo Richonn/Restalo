@@ -204,4 +204,35 @@ public class RestaurantServiceTest {
     assertNotNull(result);
     assertThat(result).isEmpty();
   }
+
+  @Test
+  void givenValidOwnerAndRestaurantId_whenDeleteRestaurant_thenRestaurantIsDeleted() {
+    String ownerId = "owner-123";
+    String restaurantId = "restaurant-456";
+
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId))
+        .thenReturn(restaurant);
+    doNothing().when(reservationRepository).deleteAllReservationOfRestaurant(anyString());
+    doNothing().when(restaurantRepository).delete(anyString());
+
+    restaurantService.deleteRestaurant(ownerId, restaurantId);
+
+    verify(reservationRepository).deleteAllReservationOfRestaurant(restaurant.getId());
+    verify(restaurantRepository).delete(restaurant.getId());
+  }
+
+  @Test
+  void givenNonExistentRestaurant_whenDeleteRestaurant_thenThrowsNotFoundException() {
+    String ownerId = "owner-123";
+    String restaurantId = "nonexistent";
+
+    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId)).thenReturn(null);
+
+    NotFoundException exception =
+        assertThrows(
+            NotFoundException.class,
+            () -> restaurantService.deleteRestaurant(ownerId, restaurantId));
+
+    assertThat(exception).isInstanceOf(NotFoundException.class);
+  }
 }
