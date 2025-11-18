@@ -39,7 +39,7 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 4. Le pipeline CI introduit-il un élément qui pourrait devenir négatif ou risqué pour le processus, le produit et/ou l'équipe? Justifiez votre réponse.
 ***Réponse :*** ***Oui, par exemple, le pipeline CI peut introduire une dépendance excessive à l'automatisation: certains problèmes peuvent passer inaperçus car la "pipeline est verte" et peut favoriser le fait de moins tester manuellement.***
 
-## Tests
+### Tests
 
 1. Quelle proportion de temps passez-vous à implémenter le code fonctionnel par rapport aux tests? Cette proportion évolue-t-elle avec le temps? Pourquoi?
 ***Réponse :*** ***Plus de temps à implémenter les tests (apprentissage de comment coder des tests correctement de façon clean ainsi que les frameworks, etc). Elle diminue avec le temps plus que cela deviens naturel (courbe d'aprentissage)***
@@ -55,161 +55,300 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 
 ---
 
-## Story 1 – Modifier un restaurant
-En tant que restaurateur, je peux modifier les informations de mon restaurant existant.
-
+## Story 1 - Créer une commande
+En tant qu'utilisateur, je peux effectuer une commande.
 ### Critères de succès
-- Accès restreint : Seul le propriétaire du restaurant peut le modifier. Cette condition doit
-être validée par un header Owner: string dans la requête.
-- Champs modifiables :
-    - Nom (name) : Ne peut pas être vide.
-    - Capacité (capacity) : Doit être supérieure ou égale à 1.
-    - Horaires (hours) :
-        - open : L’heure d’ouverture ne peut pas être après minuit.
-        - close : L’heure de fermeture doit être avant minuit.
-    - Configuration des réservations (reservations.duration) :
-        - La durée des réservations en minutes. Par défaut, elle est de 60 minutes.
-        - Si spécifiée, elle doit être un nombre entier positif.
-
+- L'id de la commande doit être unique
+- Le nom d'un client ne peut pas être vide
+- Les numéros de téléphone et addresses courriels doivent être valides
+- Un même client peut avoir plusieurs commandes en même temps
+- Le menu commander ne peut pas être vide
 ### Spécifications
-
-#### Requêtes
-
-**Path:**
-```PATCH /restaurants/<id>```
-
-**Headers:**
-Owner: string (ID du restaurateur)
-
-**Body:**
-Le body doit inclure uniquement les champs modifiés (par exemple, si seuls le nom et la capacité sont modifiés, seuls ces champs doivent être envoyés).
-
-**Exemple de body:**
+#### Requête
+##### Path
+`POST /restaurants/<id>/commandes`
+##### Body
 
 ```json
 {
-    "name": "La Botega",
-    "capacity": 20,
-    "hours": {
-        "open": "10:00:00",
-        "close": "22:00:00"
-    },
-    "reservations": {
-        "duration": 90
+    date: string, //date without time
+    menu: string,
+    customer: {
+        name: string,
+        email: string, // x@y.z
+        phoneNumber: string // 10 chiffres
     }
 }
 ```
+
+<details>
+<summary>Exemple</summary>
+
+```json
+{
+    "date": "2025-11-14",
+    "menu": "salade césar",
+    "customer": {
+        "name": "John Deer",
+        "email": "john.deer@gmail.com",
+        "phoneNumber": "1234567890"
+    }
+}
+```
+
+</details>
 
 #### Réponses
-```200 OK : Mise à jour réussie.```
+- `201 CREATED` : succès
+    ##### Headers
+    - `Location : string` : URI de la commande créée
+        - format: `<host>/commandes/<id>`
+        - Exemple: `http://localhost:8080/commandes/123`
+- `400 BAD REQUEST` : un des paramètres obligatoires est manquant
+    ##### Body
+    ```
+    {
+        error: "MISSING_PARAMETER",
+        description: string
+    }
+    ```
+- `404 BAD REQUEST` : un des paramètres n'est pas valide
+    ##### Body
+    ```
+    {
+        error: "INVALID_PARAMETER",
+        description: string
+    }
+    ```
+- `404 NOT FOUND` : le restaurant n'existe pas
 
-**Exemple de réponse :**
+---
+
+## Story 2 - Obtenir une commande
+En tant qu'utilisateur, je peux voir une de mes commande.
+### Critères de succès
+Voir la story "Créer une commande".
+### Spécifications
+#### Requête
+##### Path
+`GET /commandes/<number>`
+#### Réponses
+- `200 OK` : succès
+##### Body
 
 ```json
 {
-    "id": "983db20h98sad",
-    "name": "La Botega",
-    "capacity": 20,
-    "hours": {
-        "open": "10:00:00",
-        "close": "22:00:00"
+    number: string,
+    date: string, //date without time
+    menu: string,
+    customer: {
+        name: string,
+        email: string, // x@y.z
+        phoneNumber: string // 10 chiffres
     },
-    "reservations": {
-        "duration": 90
+    restaurant: {
+        id: string,
+        name: string,
+        hour: {
+            open: string, // time without timezone
+            close: string // time without timezone
+        }
     }
 }
 ```
 
-```400 BAD REQUEST : Erreur de validation (paramètre manquant ou invalide).```
-
-**Exemple de réponse d'erreur :**
+<details>
+<summary>Exemple</summary>
 
 ```json
 {
-    "error": "INVALID_PARAMETER",
-    "description": "La capacité doit être supérieure ou égale à 1."
+    "number": "12345"
+    "date": "2025-11-14",
+    "menu": "salade césar",
+    "customer": {
+        "name": "John Deer",
+        "email": "john.deer@gmail.com",
+        "phoneNumber": "1234567890"
+    },
+    "restaurant": {
+        "id": "54321"
+        "name": "La Botega",
+        "hours": {
+            "open": "11:00:00",
+            "close": "19:30:00"
+        }
+    }
 }
 ```
 
-## Story 2 - Ajouter une offre spéciale
-En tant que restaurateur, je peux ajouter une offre spéciale (par exemple, un menu saisonnier, un repas combiné, etc.) à mon restaurant, sfin que les clients soient informés de la promotion disponible.
+</details>
+
+- `404 NOT FOUND` : la commande n'existe pas
+
+---
+
+## Story 3 - Créer et consulter les offres spéciales des restaurants
+En tant que restaurateur, je souhaite créer et mettre en avant des offres spéciales (par
+exemple, menus saisonniers, repas combinés) pour mon restaurant, afin que les clients
+puissent consulter facilement les promotions disponibles et être incités à réserver.
 
 ### Critères de succès
-- Les restaurateurs peuvent ajouter des offres spéciales comme des menus saisonniers,
-des repas combinés, etc., dans leur profil de restaurant.
-- Ces offres apparaissent dans les résultats de recherche lorsque les utilisateurs
-recherchent des restaurants.
-- Chaque offre doit inclure :
-    - Un titre.
-    - Une description.
-    - La période de validité (date de début et date de fin).
-    - Des conditions spéciales éventuelles (par exemple, disponible uniquement les week-ends).
+- Création des offres : Le restaurateur peut enregistrer une offre spéciale associée à son
+restaurant.
+- Détails de l'offre : Chaque offre inclut un titre, une description, et une période de
+validité (dates de début et de fin).
+- Propriété : Seul le propriétaire du restaurant (vérifié par le header Owner) peut créer
+l'offre.
+- Consultation dédiée : Les clients peuvent consulter les offres valides d'un restaurant
+via un point d'accès dédié.
 
 ### Spécifications
+Créer une Offre Spéciale (Nouvelle fonctionnalité)
+Ceci est une nouvelle fonctionnalité qui ne modifie aucune route, requête ou réponse existante.
 
-#### Requêtes
+### Requête
 
-**Path :**
-```POST /restaurants/<id>/special-offers```
-
-**Body :**
+#### Path
+`POST /restaurants/<id>/special-offers`
+##### Headers Owner:
+`string: ID du restaurateur`
+##### Body
 
 ```json
 {
     "offer": {
-        "title": "Winter Menu",
-        "description": "A special winter-themed menu available on weekends.",
-        "validFrom": "2024-12-01",
-        "validUntil": "2024-12-31"
+    "title": "string",
+    "description": "string",
+    "validFrom": "string", // date sans time zone
+    "validUntil": "string" // date sans time zone
     }
 }
 ```
 
-#### Réponses
-
-```201 CREATED : Offre spéciale ajoutée avec succès.```
-
-**Exemple de réponse :**
+<details>
+<summary>Exemple</summary>
 
 ```json
 {
     "offer": {
-        "title": "Winter Menu",
-        "description": "A special winter-themed menu available on weekends.",
-        "validFrom": "2024-12-01",
-        "validUntil": "2024-12-31"
+    "title": "Menu d'hiver",
+    "description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
+    "validFrom": "2024-12-01",
+    "validUntil": "2024-12-31"
     }
 }
 ```
 
-```400 BAD REQUEST : Erreur de validation (paramètre manquant ou invalide).```
+</details>
 
-**Exemple de réponse d'erreur :**
-
-```json
-{
-    "error": "INVALID_PARAMETER",
-    "description": "Le titre de l'offre ne peut pas être vide."
-}
-```
-
-```404 NOT FOUND : Le restaurant n'existe pas.```
-**Exemple de réponse d'erreur :**
+##### Réponses
+`201 CREATED: succès Body`
 
 ```json
 {
-    "error": "NOT_FOUND",
-    "description": "Le restaurant spécifié n'existe pas."
+"id": "string",
+"title": "string",
+"description": "string",
+"validFrom": "string",
+"validUntil": "string"
 }
 ```
 
-## Story 3 - Obtenir une commande
+<details>
+<summary>Exemple</summary>
 
-<!-- to complete -->
+```json
+{
+"id": "12345",
+"title": "Menu d'hiver",
+"description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
+"validFrom": "2024-12-01",
+"validUntil": "2024-12-31"
+}
+```
+</details>
 
-## Story 4 - Créer une commande
+`400 BAD REQUEST: un des paramètres obligatoires est manquant`
 
-<!-- to complete -->
+##### Body
+
+```json
+{
+"error": "MISSING_PARAMETER",
+"description": "string"
+}
+```
+
+`404 NOT FOUND: le restaurant n'existe pas ou n'appartient pas au restaurateur`
+
+##### Body
+
+```json
+{
+"error": "NOT_FOUND",
+"description": "string"
+}
+```
+
+---
+
+## Story 4 - Obtenir les Offres Spéciales d'un Restaurant
+Ceci est une nouvelle route qui permet aux clients de consulter les offres après avoir identifié le
+restaurant. Elle ne modifie pas POST /search/restaurants.
+
+### Requête
+
+#### Path
+`GET /restaurants/<id>/special-offers`
+#### Headers
+`Aucun`
+
+#### Réponses
+
+`200 OK: succès Body`
+
+```json
+[
+    {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "validFrom": "string",
+        "validUntil": "string"
+    }
+]
+```
+
+<details>
+<summary>Exemple</summary>
+
+```json
+[
+    {
+        "id": "12345",
+        "title": "Menu d'hiver",
+        "description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
+        "validFrom": "2024-12-01",
+        "validUntil": "2024-12-31"
+    },
+    {
+        "id": "67890",
+        "title": "Combo pizza et bière",
+        "description": "Pizza large et deux bières artisanales.",
+        "validFrom": "2025-01-01",
+        "validUntil": "2025-03-31"
+    }
+]
+```
+
+```json
+[]
+```
+(si aucune offre valide n'est disponible)
+
+</details>
+
+`404 NOT FOUND: le restaurant n'existe pas`
 
 ---
 
