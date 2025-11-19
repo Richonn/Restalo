@@ -18,8 +18,8 @@ import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.domain.restaurant.RestaurantFactory;
 import jakarta.ws.rs.NotFoundException;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -39,6 +39,9 @@ public class RestaurantServiceTest {
   private RestaurantDto restaurantDto;
   private final Restaurant restaurant = mock(Restaurant.class);
 
+  public static final String INVALID_RESTAURANT_ID = "666";
+  public static final String OWNER_ID = "yvick";
+
   @BeforeEach
   public void setUp() {
     restaurantService =
@@ -49,6 +52,9 @@ public class RestaurantServiceTest {
             restaurantFactory);
     HoursDto hoursDto = new HoursDto(LocalTime.of(11, 0), LocalTime.of(22, 0));
     restaurantDto = new RestaurantDto("id-123", "Pizza Delamama", 50, hoursDto, null);
+
+    when(restaurantRepository.getRestaurantByIdOfOwner(OWNER_ID, INVALID_RESTAURANT_ID))
+        .thenReturn(null);
   }
 
   @Test
@@ -74,9 +80,9 @@ public class RestaurantServiceTest {
             "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
     Restaurant restaurant2 =
         new Restaurant("Burger King", 30, LocalTime.of(10, 0), LocalTime.of(21, 0), ownerId, null);
-    List<Restaurant> mockRestaurants = Arrays.asList(restaurant1, restaurant2);
+    List<Restaurant> restaurantList = Arrays.asList(restaurant1, restaurant2);
 
-    when(restaurantRepository.getRestaurantListOfOwner(ownerId)).thenReturn(mockRestaurants);
+    when(restaurantRepository.getRestaurantListOfOwner(ownerId)).thenReturn(restaurantList);
 
     List<RestaurantDto> result = restaurantService.getRestaurantListOfOwner(ownerId);
 
@@ -102,12 +108,12 @@ public class RestaurantServiceTest {
   void givenValidOwnerAndRestaurantId_whenGetRestaurantByIdOfOwner_thenReturnsRestaurantDto() {
     String ownerId = "owner-123";
     String restaurantId = "restaurant-456";
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), ownerId, null);
 
     when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId))
-        .thenReturn(mockRestaurant);
+        .thenReturn(restaurant);
 
     RestaurantDto result = restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId);
 
@@ -118,15 +124,10 @@ public class RestaurantServiceTest {
 
   @Test
   void givenNonExistentRestaurant_whenGetRestaurantByIdOfOwner_thenThrowsNotFoundException() {
-    String ownerId = "owner-123";
-    String restaurantId = "nonexistent";
-
-    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId)).thenReturn(null);
-
     NotFoundException exception =
         assertThrows(
             NotFoundException.class,
-            () -> restaurantService.getRestaurantByIdOfOwner(ownerId, restaurantId));
+            () -> restaurantService.getRestaurantByIdOfOwner(OWNER_ID, INVALID_RESTAURANT_ID));
 
     assertThat(exception).isInstanceOf(NotFoundException.class);
   }
@@ -223,15 +224,10 @@ public class RestaurantServiceTest {
 
   @Test
   void givenNonExistentRestaurant_whenDeleteRestaurant_thenThrowsNotFoundException() {
-    String ownerId = "owner-123";
-    String restaurantId = "nonexistent";
-
-    when(restaurantRepository.getRestaurantByIdOfOwner(ownerId, restaurantId)).thenReturn(null);
-
     NotFoundException exception =
         assertThrows(
             NotFoundException.class,
-            () -> restaurantService.deleteRestaurant(ownerId, restaurantId));
+            () -> restaurantService.deleteRestaurant(OWNER_ID, INVALID_RESTAURANT_ID));
 
     assertThat(exception).isInstanceOf(NotFoundException.class);
   }

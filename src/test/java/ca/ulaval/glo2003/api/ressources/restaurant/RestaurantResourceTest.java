@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003;
+package ca.ulaval.glo2003.api.ressources.restaurant;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,13 +6,12 @@ import static org.junit.Assert.assertThrows;
 
 import ca.ulaval.glo2003.api.assembler.RestaurantAssembler;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
-import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.domain.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import jakarta.ws.rs.NotFoundException;
@@ -32,19 +31,20 @@ public class RestaurantResourceTest {
   private final RestaurantResource resource = new RestaurantResource(restaurantService);
   private String restaurantId;
 
+  private static final String OWNER_ID = "george";
+  private static final String NAME = "Chez Mario";
+  private static final int CAPACITY = 10;
+  private static final LocalTime OPEN_TIME = LocalTime.parse("10:00:00");
+  private static final LocalTime CLOSE_TIME = LocalTime.parse("22:00:00");
+  private static final int RESERVATION_DURATION = 60;
+  private static final String INVALID_RESTAURANT_ID = "123";
+
   @Test
   public void givenValidRequest_whenPostRestaurant_thenReturns201() {
-    String ownerId = "george";
-    String nom = "Chez Mario";
-    int capacity = 10;
-    LocalTime open = LocalTime.parse("10:00:00");
-    LocalTime close = LocalTime.parse("22:00:00");
-    int reservationDuration = 60;
-
     Restaurant restaurant =
-        new Restaurant(nom, capacity, open, close, ownerId, reservationDuration);
+        new Restaurant(NAME, CAPACITY, OPEN_TIME, CLOSE_TIME, OWNER_ID, RESERVATION_DURATION);
     RestaurantDto restaurantDto = RestaurantAssembler.toRestaurantDto(restaurant);
-    Response response = resource.createRestaurant(ownerId, restaurantDto);
+    Response response = resource.createRestaurant(OWNER_ID, restaurantDto);
 
     String[] segmentsList = response.getLocation().getPath().split("/");
     restaurantId = segmentsList[segmentsList.length - 1];
@@ -55,9 +55,7 @@ public class RestaurantResourceTest {
 
   @Test
   public void givenValidRequest_whenGetRestaurantList_thenReturns200() {
-    String ownerId = "george";
-
-    Response response = resource.getRestaurantListOfOwner(ownerId);
+    Response response = resource.getRestaurantListOfOwner(OWNER_ID);
 
     assertEquals(200, response.getStatus());
     assertNotNull(response.getEntity());
@@ -67,9 +65,7 @@ public class RestaurantResourceTest {
   public void givenValidRequest_whenGetRestaurantById_thenReturns200() {
     givenValidRequest_whenPostRestaurant_thenReturns201();
 
-    String ownerId = "george";
-
-    Response response = resource.getRestaurantByIdOfOwner(ownerId, restaurantId);
+    Response response = resource.getRestaurantByIdOfOwner(OWNER_ID, restaurantId);
 
     assertEquals(200, response.getStatus());
     assertNotNull(response.getEntity());
@@ -77,11 +73,9 @@ public class RestaurantResourceTest {
 
   @Test
   public void givenInvalidRequest_whenGetRestaurantById_thenReturns404() {
-    String ownerId = "george";
-    String nonExistentRestaurantId = "123";
 
     assertThrows(
         NotFoundException.class,
-        () -> resource.getRestaurantByIdOfOwner(ownerId, nonExistentRestaurantId));
+        () -> resource.getRestaurantByIdOfOwner(OWNER_ID, INVALID_RESTAURANT_ID));
   }
 }

@@ -1,7 +1,6 @@
-package ca.ulaval.glo2003.domain.factories.restaurant;
+package ca.ulaval.glo2003.domain.restaurant;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalTime;
 
 public class RestaurantFactory {

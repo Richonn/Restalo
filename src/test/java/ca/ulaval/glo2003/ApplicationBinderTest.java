@@ -8,7 +8,7 @@ import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
+import ca.ulaval.glo2003.domain.reservation.ReservationFactory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.junit.jupiter.api.BeforeEach;

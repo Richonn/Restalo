@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api;
+package ca.ulaval.glo2003.api.ressources.restaurant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +10,6 @@ import static org.mockito.Mockito.*;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
 import ca.ulaval.glo2003.api.dto.request.SearchRestaurantsRequestDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchResponseDto;
-import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import jakarta.ws.rs.NotFoundException;

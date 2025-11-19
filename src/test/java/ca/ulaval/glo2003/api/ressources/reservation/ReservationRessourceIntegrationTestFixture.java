@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api;
+package ca.ulaval.glo2003.api.ressources.reservation;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.Invocation;

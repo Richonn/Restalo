@@ -1,11 +1,10 @@
-package ca.ulaval.glo2003.domain.factories.restaurant;
+package ca.ulaval.glo2003.domain.restaurant;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 

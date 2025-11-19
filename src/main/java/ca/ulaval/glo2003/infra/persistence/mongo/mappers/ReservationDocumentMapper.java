@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.infra.persistence.mongo.mappers;
 
-import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument;
