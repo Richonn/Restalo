@@ -71,12 +71,12 @@ En tant qu'utilisateur, je peux effectuer une commande.
 
 ```json
 {
-    date: string, //date without time
+    date: string, //date without time (cannot be null)
     menu: string,
     customer: {
         name: string,
-        email: string, // x@y.z
-        phoneNumber: string // 10 chiffres
+        email: string, // x@y.z (can be null)
+        phoneNumber: string // 10 chiffres (can be null)
     }
 }
 ```
