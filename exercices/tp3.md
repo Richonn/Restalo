@@ -417,7 +417,7 @@ Orchestre les réservations :
 
 #### `Reservation`
 **Agrégat** représentant une réservation :
-- Valide ses champs (date future, `groupSize > 0`)
+- La validation des champs est déléguée à `ReservationFactory`
 - Ajuste l'heure au prochain créneau de **15 minutes**
 - Génère tous les créneaux occupés
 
