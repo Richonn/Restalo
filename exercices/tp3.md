@@ -60,9 +60,10 @@ En tant qu'utilisateur, je peux effectuer une commande.
 ### Critères de succès
 - L'id de la commande doit être unique
 - Le nom d'un client ne peut pas être vide
-- Les numéros de téléphone et addresses courriels doivent être valides
+- Les numéros de téléphone et addresses courriels ne peuvent pas être vide et doivent être valides
 - Un même client peut avoir plusieurs commandes en même temps
 - Le menu commander ne peut pas être vide
+- La date de la commande ne peut pas être vide
 ### Spécifications
 #### Requête
 ##### Path
@@ -71,12 +72,12 @@ En tant qu'utilisateur, je peux effectuer une commande.
 
 ```json
 {
-    date: string, //date without time (cannot be null)
+    date: string, //date without time
     menu: string,
     customer: {
         name: string,
-        email: string, // x@y.z (can be null)
-        phoneNumber: string // 10 chiffres (can be null)
+        email: string, // x@y.z
+        phoneNumber: string // 10 chiffres
     }
 }
 ```
@@ -187,7 +188,7 @@ Voir la story "Créer une commande".
 
 ---
 
-## Story 3 - Créer et consulter les offres spéciales des restaurants
+## Story 3 - Créer des offres spéciales pour un restaurants
 En tant que restaurateur, je souhaite créer et mettre en avant des offres spéciales (par
 exemple, menus saisonniers, repas combinés) pour mon restaurant, afin que les clients
 puissent consulter facilement les promotions disponibles et être incités à réserver.
@@ -196,33 +197,26 @@ puissent consulter facilement les promotions disponibles et être incités à r�
 - Création des offres : Le restaurateur peut enregistrer une offre spéciale associée à son
 restaurant.
 - Détails de l'offre : Chaque offre inclut un titre, une description, et une période de
-validité (dates de début et de fin).
-- Propriété : Seul le propriétaire du restaurant (vérifié par le header Owner) peut créer
+validité (dates de début et de fin), ceux-ci ne peuvent pas être vide.
+- Propriété : Seul le propriétaire du restaurant (vérifié par le Owner header) peut créer
 l'offre.
-- Consultation dédiée : Les clients peuvent consulter les offres valides d'un restaurant
-via un point d'accès dédié.
-- Limitation d'offres : Un restaurant ne peut créer qu'une seule offre spéciale à la
-fois.
+- Une nouvelle offre ne peut pas superposer une période d'une offre existante.
 
 ### Spécifications
-Créer une Offre Spéciale (Nouvelle fonctionnalité)
-Ceci est une nouvelle fonctionnalité qui ne modifie aucune route, requête ou réponse existante.
-
-### Requête
-
-#### Path
+#### Requête
+##### Path
 `POST /restaurants/<id>/special-offers`
-##### Headers Owner:
-`string: ID du restaurateur`
+##### Headers :
+- `Owner: string`: id du restaurateur
 ##### Body
 
 ```json
 {
     "offer": {
-    "title": "string",
-    "description": "string",
-    "validFrom": "string", // date sans time zone
-    "validUntil": "string" // date sans time zone
+      "title": string,
+      "description": string,
+      "validFrom": string, // date sans time zone
+      "validUntil": string // date sans time zone
     }
 }
 ```
@@ -233,99 +227,72 @@ Ceci est une nouvelle fonctionnalité qui ne modifie aucune route, requête ou r
 ```json
 {
     "offer": {
-    "title": "Menu d'hiver",
-    "description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
-    "validFrom": "2024-12-01",
-    "validUntil": "2024-12-31"
+      "title": "Menu d'hiver",
+      "description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
+      "validFrom": "2024-12-01",
+      "validUntil": "2024-12-31"
     }
 }
 ```
 
 </details>
 
-##### Réponses
-`201 CREATED: succès Body`
+#### Réponses
+- `201 CREATED` : succès
+  ##### Headers
+    - `Location : string` : URI de l'offre créée
+        - format: `<host>/restaurants/<restaurantId>/<offerId>`
+        - Exemple: `http://localhost:8080/restaurants/restaurantid123/offerid123`
 
-```json
-{
-"id": "string",
-"title": "string",
-"description": "string",
-"validFrom": "string",
-"validUntil": "string"
-}
-```
+- `400 BAD REQUEST:` : un des paramètres obligatoires est manquant
+    ##### Body
+    ```json
+    {
+      "error": "MISSING_PARAMETER",
+      "description": string
+    }
+    ```
+- `404 BAD REQUEST` : un des paramètres n'est pas valide
+    ##### Body
+    ```json
+    {
+      "error": "INVALID_PARAMETER",
+      "description": string
+    }
+    ```
 
-<details>
-<summary>Exemple</summary>
+- `400 BAD REQUEST:` une offre spéciale existe déjà
+    ```json
+    {
+      "error": "INVALID_PARAMETER",
+      "description": "Un restaurant ne peut pas avoir de superposition d'offre."
+    }
+    ```
 
-```json
-{
-"id": "12345",
-"title": "Menu d'hiver",
-"description": "Un menu spécial sur le thème de l'hiver, disponible les weekends.",
-"validFrom": "2024-12-01",
-"validUntil": "2024-12-31"
-}
-```
-</details>
-
-`400 BAD REQUEST: un des paramètres obligatoires est manquant`
-
-##### Body
-
-```json
-{
-"error": "MISSING_PARAMETER",
-"description": "string"
-}
-```
-
-`400 BAD REQUEST: une offre spéciale existe déjà`
-
-```json
-{
-"error": "OFFER_ALREADY_EXISTS",
-"description": "Un restaurant ne peut avoir qu'une seule offre spéciale à la fois."
-}
-```
-
-`404 NOT FOUND: le restaurant n'existe pas ou n'appartient pas au restaurateur`
-
-##### Body
-
-```json
-{
-"error": "NOT_FOUND",
-"description": "string"
-}
-```
+- `404 NOT FOUND` : le restaurant n'existe pas
 
 ---
 
 ## Story 4 - Obtenir les Offres Spéciales d'un Restaurant
-Ceci est une nouvelle route qui permet aux clients de consulter les offres après avoir identifié le
-restaurant. Elle ne modifie pas POST /search/restaurants.
-
-### Requête
-
-#### Path
+En tant qu'utilisateur, je peux consulter des offres émises par un restaurant.
+### Critères de succès
+Voir la story "Créer des offres spéciales pour un restaurants".
+### Spécifications
+#### Requête
+##### Path
 `GET /restaurants/<id>/special-offers`
-#### Headers
-`Aucun`
-
 #### Réponses
-
-`200 OK: succès Body`
+- `200 OK` : succès
+##### Body
 
 ```json
 [
     {
-        "id": "string",
-        "title": "string",
-        "description": "string",
-        "validFrom": "string",
-        "validUntil": "string"
+        "id": string,
+        "title": string,
+        "description": string,
+        "validFrom": string, // date without time
+        "validUntil": string // date without time
     }
 ]
 ```
@@ -355,11 +322,10 @@ restaurant. Elle ne modifie pas POST /search/restaurants.
 ```json
 []
 ```
-(si aucune offre valide n'est disponible)
 
 </details>
 
-`404 NOT FOUND: le restaurant n'existe pas`
+- `404 NOT FOUND` : le restaurant n'existe pas
 
 ---
 
