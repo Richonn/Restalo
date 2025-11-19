@@ -1,6 +1,5 @@
 package ca.ulaval.glo2003.domain.reservation;
 
-import ca.ulaval.glo2003.domain.customer.Customer;
 import java.time.LocalDate;
 
 public class ReservationFixture {

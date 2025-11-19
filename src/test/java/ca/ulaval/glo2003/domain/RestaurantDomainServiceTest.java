@@ -4,9 +4,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.exceptions.MissingParameterException;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.domain.restaurant.OpenedHours;

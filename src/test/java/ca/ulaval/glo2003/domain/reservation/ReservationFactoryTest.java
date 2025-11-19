@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.domain.factories.reservation;
+package ca.ulaval.glo2003.domain.reservation;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalDate;
 import java.time.LocalTime;

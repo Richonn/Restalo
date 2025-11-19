@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.domain.customer;
+package ca.ulaval.glo2003.domain.reservation;
 
 import org.junit.jupiter.api.BeforeEach;
 

@@ -1,8 +1,7 @@
-package ca.ulaval.glo2003.domain.factories.reservation;
+package ca.ulaval.glo2003.domain.reservation;
 
 import ca.ulaval.glo2003.domain.TimeUtils;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import java.time.LocalDate;
 import java.time.LocalTime;

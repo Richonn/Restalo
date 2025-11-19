@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003;
+package ca.ulaval.glo2003.api.ressources.restaurant;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -6,13 +6,12 @@ import static org.junit.Assert.assertThrows;
 
 import ca.ulaval.glo2003.api.assembler.RestaurantAssembler;
 import ca.ulaval.glo2003.api.dto.common.RestaurantDto;
-import ca.ulaval.glo2003.api.ressources.restaurant.RestaurantResource;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.domain.factories.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
+import ca.ulaval.glo2003.domain.restaurant.RestaurantFactory;
 import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import jakarta.ws.rs.NotFoundException;

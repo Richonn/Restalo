@@ -3,7 +3,7 @@ package ca.ulaval.glo2003.infra.persistence.mongo.mappers;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.infra.persistence.mongo.MongoReservationDocumentFixture;

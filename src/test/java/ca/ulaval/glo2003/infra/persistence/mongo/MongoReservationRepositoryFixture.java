@@ -3,7 +3,7 @@ package ca.ulaval.glo2003.infra.persistence.mongo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import java.time.LocalDate;
 import java.time.LocalTime;

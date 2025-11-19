@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.api;
+package ca.ulaval.glo2003.api.ressources.reservation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +10,6 @@ import ca.ulaval.glo2003.api.dto.common.ReservationDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
 import ca.ulaval.glo2003.api.dto.response.ReservationSearchResponseDto;
 import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponseDto;
-import ca.ulaval.glo2003.api.ressources.reservation.ReservationResource;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import jakarta.ws.rs.NotFoundException;

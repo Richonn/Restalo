@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ca.ulaval.glo2003.api.dto.response.ReservationResponseDto;
-import ca.ulaval.glo2003.domain.customer.Customer;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.domain.restaurant.Hours;

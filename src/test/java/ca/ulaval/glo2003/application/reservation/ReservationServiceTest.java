@@ -20,10 +20,10 @@ import ca.ulaval.glo2003.api.dto.response.RestaurantSearchAvailabilitiesResponse
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
-import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
-import ca.ulaval.glo2003.domain.factories.reservation.ReservationFactory;
+import ca.ulaval.glo2003.domain.reservation.Customer;
 import ca.ulaval.glo2003.domain.reservation.Reservation;
+import ca.ulaval.glo2003.domain.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.reservation.ReservationTime;
 import ca.ulaval.glo2003.domain.restaurant.Restaurant;
 import jakarta.ws.rs.NotFoundException;

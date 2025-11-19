@@ -1,7 +1,6 @@
 package ca.ulaval.glo2003.domain.reservation;
 
 import ca.ulaval.glo2003.domain.TimeUtils;
-import ca.ulaval.glo2003.domain.customer.Customer;
 import ca.ulaval.glo2003.domain.exceptions.InvalidParameterException;
 import ca.ulaval.glo2003.domain.utils.StringUtils;
 import java.time.LocalDate;
