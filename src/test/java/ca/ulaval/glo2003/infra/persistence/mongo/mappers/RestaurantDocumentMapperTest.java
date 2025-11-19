@@ -13,6 +13,15 @@ import org.junit.jupiter.api.Test;
 
 public class RestaurantDocumentMapperTest {
 
+  private static final String NAME = "Le Bistro";
+  private static final int CAPACITY = 50;
+  private static final LocalTime OPENING_HOURS = LocalTime.of(10, 0);
+  private static final LocalTime CLOSING_HOURS = LocalTime.of(22, 0);
+  private static final Integer RESERVATION_DURATION = 60;
+  private static final String OWNER_ID = "owner123";
+  private static final String RESTAURANT_ID = "restaurant123";
+  private static final String PARSING_ERROR_MESSAGE = "could not be parsed";
+
   @Test
   void givenNullRestaurant_whenToDocument_thenReturnNull() {
     RestaurantDocument result = RestaurantDocumentMapper.toDocument(null);
@@ -22,36 +31,25 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenValidRestaurant_whenToDocument_thenReturnExpectedDocument() {
-    String name = "Le Bistro";
-    Integer capacity = 50;
-    LocalTime openingHour = LocalTime.of(10, 0);
-    LocalTime closingHour = LocalTime.of(22, 0);
-    Integer reservationDuration = 60;
-    String ownerId = "owner123";
-
-    Hours hours = new Hours(openingHour, closingHour, reservationDuration);
-    Restaurant restaurant = new Restaurant(name, capacity, hours, ownerId);
+    Hours hours = new Hours(OPENING_HOURS, CLOSING_HOURS, RESERVATION_DURATION);
+    Restaurant restaurant = new Restaurant(NAME, CAPACITY, hours, OWNER_ID);
 
     RestaurantDocument document = RestaurantDocumentMapper.toDocument(restaurant);
 
     assertThat(document).isNotNull();
     assertThat(document.getId()).isEqualTo(restaurant.getId());
-    assertThat(document.getName()).isEqualTo(name);
-    assertThat(document.getCapacity()).isEqualTo(capacity);
+    assertThat(document.getName()).isEqualTo(NAME);
+    assertThat(document.getCapacity()).isEqualTo(CAPACITY);
     assertThat(document.getOpeningHour()).isEqualTo("10:00");
     assertThat(document.getClosingHour()).isEqualTo("22:00");
-    assertThat(document.getReservationDuration()).isEqualTo(reservationDuration);
-    assertThat(document.getOwnerId()).isEqualTo(ownerId);
+    assertThat(document.getReservationDuration()).isEqualTo(RESERVATION_DURATION);
+    assertThat(document.getOwnerId()).isEqualTo(OWNER_ID);
   }
 
   @Test
   void givenRestaurantWithNullHours_whenToDocument_thenHandleGracefully() {
-    String name = "Le Bistro";
-    Integer capacity = 50;
-    String ownerId = "owner123";
-
     Hours hours = new Hours(null, null, 60);
-    Restaurant restaurant = new Restaurant(name, capacity, hours, ownerId);
+    Restaurant restaurant = new Restaurant(NAME, CAPACITY, hours, OWNER_ID);
 
     RestaurantDocument document = RestaurantDocumentMapper.toDocument(restaurant);
 
@@ -69,39 +67,32 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenValidDocument_whenToDomain_thenReturnExpectedRestaurant() {
-    String id = "restaurant123";
-    String name = "Le Bistro";
-    Integer capacity = 50;
-    LocalTime openingHour = LocalTime.of(10, 0);
-    LocalTime closingHour = LocalTime.of(22, 0);
-    Integer reservationDuration = 60;
-    String ownerId = "owner123";
-
     RestaurantDocument document =
         new RestaurantDocument(
-            id, name, capacity, openingHour, closingHour, reservationDuration, ownerId);
+            RESTAURANT_ID,
+            NAME,
+            CAPACITY,
+            OPENING_HOURS,
+            CLOSING_HOURS,
+            RESERVATION_DURATION,
+            OWNER_ID);
 
     Restaurant restaurant = RestaurantDocumentMapper.toDomain(document);
 
     assertThat(restaurant).isNotNull();
-    assertThat(restaurant.getName()).isEqualTo(name);
-    assertThat(restaurant.getCapacity()).isEqualTo(capacity);
-    assertThat(restaurant.getOpeningHour()).isEqualTo(openingHour);
-    assertThat(restaurant.getClosingHour()).isEqualTo(closingHour);
-    assertThat(restaurant.getReservationLength()).isEqualTo(reservationDuration);
-    assertThat(restaurant.getOwnerId()).isEqualTo(ownerId);
+    assertThat(restaurant.getName()).isEqualTo(NAME);
+    assertThat(restaurant.getCapacity()).isEqualTo(CAPACITY);
+    assertThat(restaurant.getOpeningHour()).isEqualTo(OPENING_HOURS);
+    assertThat(restaurant.getClosingHour()).isEqualTo(CLOSING_HOURS);
+    assertThat(restaurant.getReservationLength()).isEqualTo(RESERVATION_DURATION);
+    assertThat(restaurant.getOwnerId()).isEqualTo(OWNER_ID);
   }
 
   @Test
   void givenDocumentWithNullHours_whenToDomain_thenHandleGracefully() {
-    String id = "restaurant123";
-    String name = "Le Bistro";
-    Integer capacity = 50;
-    Integer reservationDuration = 60;
-    String ownerId = "owner123";
-
     RestaurantDocument document =
-        new RestaurantDocument(id, name, capacity, null, null, reservationDuration, ownerId);
+        new RestaurantDocument(
+            RESTAURANT_ID, NAME, CAPACITY, null, null, RESERVATION_DURATION, OWNER_ID);
 
     Restaurant restaurant = RestaurantDocumentMapper.toDomain(document);
 
@@ -112,15 +103,8 @@ public class RestaurantDocumentMapperTest {
 
   @Test
   void givenRestaurant_whenToDocumentAndBackToDomain_thenPreservesData() {
-    String name = "Le Bistro";
-    Integer capacity = 50;
-    LocalTime openingHour = LocalTime.of(10, 30);
-    LocalTime closingHour = LocalTime.of(22, 45);
-    Integer reservationDuration = 90;
-    String ownerId = "owner123";
-
-    Hours hours = new Hours(openingHour, closingHour, reservationDuration);
-    Restaurant originalRestaurant = new Restaurant(name, capacity, hours, ownerId);
+    Hours hours = new Hours(null, null, 60);
+    Restaurant originalRestaurant = new Restaurant(NAME, CAPACITY, hours, OWNER_ID);
 
     RestaurantDocument document = RestaurantDocumentMapper.toDocument(originalRestaurant);
     Restaurant restoredRestaurant = RestaurantDocumentMapper.toDomain(document);
@@ -144,7 +128,7 @@ public class RestaurantDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> RestaurantDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -156,7 +140,7 @@ public class RestaurantDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> RestaurantDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -167,7 +151,7 @@ public class RestaurantDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> RestaurantDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -179,6 +163,6 @@ public class RestaurantDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> RestaurantDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 }

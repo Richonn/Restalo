@@ -8,13 +8,17 @@ import org.junit.jupiter.api.Test;
 
 public class MongoConnectionTest {
 
+  private static final String MONGO_CLUSTER_URL = "MONGO_CLUSTER_URL";
+  private static final String RESTAURANT_COLLECTION = "restaurants";
+  private static final String RESERVATION_COLLECTION = "reservations";
+
   @Test
   void givenMongoConfig_whenCreatedWithoutEnvironmentVariables_thenThrowsIllegalStateException() {
     try {
       MongoConfig config = new MongoConfig();
       assertThat(config).isNotNull();
     } catch (IllegalStateException e) {
-      assertThat(e.getMessage()).contains("MONGO_CLUSTER_URL");
+      assertThat(e.getMessage()).contains(MONGO_CLUSTER_URL);
     }
   }
 
@@ -25,7 +29,7 @@ public class MongoConnectionTest {
 
     dev.morphia.annotations.Entity annotation =
         RestaurantDocument.class.getAnnotation(dev.morphia.annotations.Entity.class);
-    assertThat(annotation.value()).isEqualTo("restaurants");
+    assertThat(annotation.value()).isEqualTo(RESTAURANT_COLLECTION);
   }
 
   @Test
@@ -35,6 +39,6 @@ public class MongoConnectionTest {
 
     dev.morphia.annotations.Entity annotation =
         ReservationDocument.class.getAnnotation(dev.morphia.annotations.Entity.class);
-    assertThat(annotation.value()).isEqualTo("reservations");
+    assertThat(annotation.value()).isEqualTo(RESERVATION_COLLECTION);
   }
 }

@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 
 public class OpenedHoursMapperTest {
 
+  private static final LocalTime FROM = LocalTime.of(10, 0);
+  private static final LocalTime TO = LocalTime.of(18, 0);
+
   @Test
   public void givenNullDto_whenToOpenedHours_thenReturnsOpenedHoursWithNulls() {
     OpenedHours result = OpenedHoursMapper.toOpenedHours(null);
@@ -22,25 +25,21 @@ public class OpenedHoursMapperTest {
 
   @Test
   public void givenValidDto_whenToOpenedHours_thenMapsFromCorrectly() {
-    LocalTime from = LocalTime.of(10, 0);
-    LocalTime to = LocalTime.of(18, 0);
-    OpenedHoursDto dto = new OpenedHoursDto(from, to);
+    OpenedHoursDto dto = new OpenedHoursDto(FROM, TO);
 
     OpenedHours result = OpenedHoursMapper.toOpenedHours(dto);
 
     assertNotNull(result);
-    assertEquals(from, result.getFrom());
+    assertEquals(FROM, result.getFrom());
   }
 
   @Test
   public void givenValidDto_whenToOpenedHours_thenMapsToCorrectly() {
-    LocalTime from = LocalTime.of(10, 0);
-    LocalTime to = LocalTime.of(18, 0);
-    OpenedHoursDto dto = new OpenedHoursDto(from, to);
+    OpenedHoursDto dto = new OpenedHoursDto(FROM, TO);
 
     OpenedHours result = OpenedHoursMapper.toOpenedHours(dto);
 
     assertNotNull(result);
-    assertEquals(to, result.getTo());
+    assertEquals(TO, result.getTo());
   }
 }

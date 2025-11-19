@@ -23,6 +23,9 @@ import org.junit.jupiter.api.Test;
 public class RestaurantDomainServiceTest {
 
   private static RestaurantDomainService restaurantDomainService;
+  private static final String MISSING_DATE_QUERY_PARAM_ERROR_MESSAGE =
+      "Missing date query parameter";
+  private static final String INVALID_DATE_QUERY_PARAM_ERROR_MESSAGE = "Invalid date format";
 
   @BeforeEach
   public void setUp() {
@@ -47,7 +50,7 @@ public class RestaurantDomainServiceTest {
             () -> restaurantDomainService.convertDateStringToLocalDate(null));
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
+    assertThat(exception.getMessage()).isEqualTo(MISSING_DATE_QUERY_PARAM_ERROR_MESSAGE);
   }
 
   @Test
@@ -60,7 +63,7 @@ public class RestaurantDomainServiceTest {
             () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
 
     assertThat(exception).isInstanceOf(MissingParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Missing date query parameter");
+    assertThat(exception.getMessage()).isEqualTo(MISSING_DATE_QUERY_PARAM_ERROR_MESSAGE);
   }
 
   @Test
@@ -74,7 +77,7 @@ public class RestaurantDomainServiceTest {
             () -> restaurantDomainService.convertDateStringToLocalDate(dateString));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
-    assertThat(exception.getMessage()).isEqualTo("Invalid date format");
+    assertThat(exception.getMessage()).isEqualTo(INVALID_DATE_QUERY_PARAM_ERROR_MESSAGE);
   }
 
   @Test

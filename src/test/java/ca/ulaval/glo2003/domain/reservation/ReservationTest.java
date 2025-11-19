@@ -24,9 +24,6 @@ public class ReservationTest {
   @BeforeEach
   public void setUp() {
     reservationFixture = new ReservationFixture();
-
-    when(reservationTime.getStartTime()).thenReturn(LocalTime.of(18, 0));
-    when(reservationTime.getEndTime()).thenReturn(LocalTime.of(20, 0));
   }
 
   @Test

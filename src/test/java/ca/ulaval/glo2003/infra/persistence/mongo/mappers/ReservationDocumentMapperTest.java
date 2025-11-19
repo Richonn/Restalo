@@ -15,6 +15,16 @@ import org.junit.jupiter.api.Test;
 
 public class ReservationDocumentMapperTest {
 
+  private static final LocalDate DATE = LocalDate.of(2025, 12, 25);
+  private static final LocalTime START_TIME = LocalTime.of(18, 30);
+  private static final LocalTime END_TIME = LocalTime.of(20, 30);
+  private static final int GROUP_SIZE = 4;
+  private static final String CUSTOMER_NAME = "John Doe";
+  private static final String CUSTOMER_EMAIL = "john.doe@example.com";
+  private static final String CUSTOMER_PHONE = "1234567890";
+  private static final String RESTAURANT_ID = "restaurant123";
+  private static final String PARSING_ERROR_MESSAGE = "could not be parsed";
+
   @Test
   void givenNullReservation_whenToDocument_thenReturnNull() {
     ReservationDocument result = ReservationDocumentMapper.toDocument(null);
@@ -24,19 +34,10 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenValidReservation_whenToDocument_thenReturnExpectedDocument() {
-    LocalDate date = LocalDate.of(2025, 12, 25);
-    LocalTime startTime = LocalTime.of(18, 30);
-    LocalTime endTime = LocalTime.of(20, 30);
-    Integer groupSize = 4;
-    String customerName = "John Doe";
-    String customerEmail = "john.doe@example.com";
-    String customerPhone = "1234567890";
-    String restaurantId = "restaurant123";
-
-    Customer customer = new Customer(customerName, customerEmail, customerPhone);
-    ReservationTime reservationTime = new ReservationTime(startTime, endTime);
+    Customer customer = new Customer(CUSTOMER_NAME, CUSTOMER_EMAIL, CUSTOMER_PHONE);
+    ReservationTime reservationTime = new ReservationTime(START_TIME, END_TIME);
     Reservation reservation =
-        new Reservation(date, reservationTime, groupSize, customer, restaurantId);
+        new Reservation(DATE, reservationTime, GROUP_SIZE, customer, RESTAURANT_ID);
 
     ReservationDocument document = ReservationDocumentMapper.toDocument(reservation);
 
@@ -45,33 +46,25 @@ public class ReservationDocumentMapperTest {
     assertThat(document.getDate()).isEqualTo("2025-12-25");
     assertThat(document.getStartTime()).isEqualTo("18:30");
     assertThat(document.getEndTime()).isEqualTo("20:30");
-    assertThat(document.getGroupSize()).isEqualTo(groupSize);
-    assertThat(document.getRestaurantId()).isEqualTo(restaurantId);
+    assertThat(document.getGroupSize()).isEqualTo(GROUP_SIZE);
+    assertThat(document.getRestaurantId()).isEqualTo(RESTAURANT_ID);
     assertThat(document.getCustomer()).isNotNull();
-    assertThat(document.getCustomer().getName()).isEqualTo(customerName);
-    assertThat(document.getCustomer().getEmail()).isEqualTo(customerEmail);
-    assertThat(document.getCustomer().getPhoneNumber()).isEqualTo(customerPhone);
+    assertThat(document.getCustomer().getName()).isEqualTo(CUSTOMER_NAME);
+    assertThat(document.getCustomer().getEmail()).isEqualTo(CUSTOMER_EMAIL);
+    assertThat(document.getCustomer().getPhoneNumber()).isEqualTo(CUSTOMER_PHONE);
   }
 
   @Test
   void givenReservationWithNullEndTime_whenToDocument_thenHandleGracefully() {
-    LocalDate date = LocalDate.of(2025, 12, 25);
-    LocalTime startTime = LocalTime.of(18, 30);
-    Integer groupSize = 4;
-    String customerName = "John Doe";
-    String customerEmail = "john.doe@example.com";
-    String customerPhone = "1234567890";
-    String restaurantId = "restaurant123";
-
-    Customer customer = new Customer(customerName, customerEmail, customerPhone);
-    ReservationTime reservationTime = new ReservationTime(startTime, null);
+    Customer customer = new Customer(CUSTOMER_NAME, CUSTOMER_EMAIL, CUSTOMER_PHONE);
+    ReservationTime reservationTime = new ReservationTime(START_TIME, null);
     Reservation reservation =
-        new Reservation(date, reservationTime, groupSize, customer, restaurantId);
+        new Reservation(DATE, reservationTime, GROUP_SIZE, customer, RESTAURANT_ID);
 
     ReservationDocument document = ReservationDocumentMapper.toDocument(reservation);
 
     assertThat(document).isNotNull();
-    assertThat(document.getStartTime()).isEqualTo("18:30");
+    assertThat(document.getStartTime()).isEqualTo(START_TIME.toString());
     assertThat(document.getEndTime()).isNull();
   }
 
@@ -85,54 +78,46 @@ public class ReservationDocumentMapperTest {
   @Test
   void givenValidDocument_whenToDomain_thenReturnExpectedReservation() {
     String id = "reservation123";
-    LocalDate date = LocalDate.of(2025, 12, 25);
-    LocalTime startTime = LocalTime.of(18, 30);
-    LocalTime endTime = LocalTime.of(20, 30);
-    Integer groupSize = 4;
-    String restaurantId = "restaurant123";
 
     ReservationDocument document =
         new ReservationDocument(
             id,
-            date,
-            startTime,
-            endTime,
-            groupSize,
+            DATE,
+            START_TIME,
+            END_TIME,
+            GROUP_SIZE,
             new ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument(
-                "John Doe", "john.doe@example.com", "1234567890"),
-            restaurantId);
+                CUSTOMER_NAME, CUSTOMER_EMAIL, CUSTOMER_PHONE),
+            RESTAURANT_ID);
 
     Reservation reservation = ReservationDocumentMapper.toDomain(document);
 
     assertThat(reservation).isNotNull();
-    assertThat(reservation.getDate()).isEqualTo(date);
-    assertThat(reservation.getStartTime()).isEqualTo(startTime);
-    assertThat(reservation.getEndTime()).isEqualTo(endTime);
-    assertThat(reservation.getGroupSize()).isEqualTo(groupSize);
-    assertThat(reservation.getRestaurantId()).isEqualTo(restaurantId);
+    assertThat(reservation.getDate()).isEqualTo(DATE);
+    assertThat(reservation.getStartTime()).isEqualTo(START_TIME);
+    assertThat(reservation.getEndTime()).isEqualTo(END_TIME);
+    assertThat(reservation.getGroupSize()).isEqualTo(GROUP_SIZE);
+    assertThat(reservation.getRestaurantId()).isEqualTo(RESTAURANT_ID);
     assertThat(reservation.getCustomer()).isNotNull();
-    assertThat(reservation.getCustomer().getName()).isEqualTo("John Doe");
-    assertThat(reservation.getCustomer().getEmail()).isEqualTo("john.doe@example.com");
-    assertThat(reservation.getCustomer().getPhoneNumber()).isEqualTo("1234567890");
+    assertThat(reservation.getCustomer().getName()).isEqualTo(CUSTOMER_NAME);
+    assertThat(reservation.getCustomer().getEmail()).isEqualTo(CUSTOMER_EMAIL);
+    assertThat(reservation.getCustomer().getPhoneNumber()).isEqualTo(CUSTOMER_PHONE);
   }
 
   @Test
   void givenDocumentWithNullTimes_whenToDomain_thenHandleGracefully() {
     String id = "reservation123";
-    LocalDate date = LocalDate.of(2025, 12, 25);
-    Integer groupSize = 4;
-    String restaurantId = "restaurant123";
 
     ReservationDocument document =
         new ReservationDocument(
             id,
-            date,
+            DATE,
             null,
             null,
-            groupSize,
+            GROUP_SIZE,
             new ca.ulaval.glo2003.infra.persistence.mongo.documents.CustomerDocument(
-                "John Doe", "john.doe@example.com", "1234567890"),
-            restaurantId);
+                CUSTOMER_NAME, CUSTOMER_EMAIL, CUSTOMER_PHONE),
+            RESTAURANT_ID);
 
     Reservation reservation = ReservationDocumentMapper.toDomain(document);
 
@@ -143,19 +128,11 @@ public class ReservationDocumentMapperTest {
 
   @Test
   void givenReservation_whenToDocumentAndBackToDomain_thenPreservesData() {
-    LocalDate date = LocalDate.of(2025, 12, 25);
-    LocalTime startTime = LocalTime.of(18, 30);
-    LocalTime endTime = LocalTime.of(20, 30);
-    Integer groupSize = 4;
-    String customerName = "John Doe";
-    String customerEmail = "john.doe@example.com";
-    String customerPhone = "1234567890";
-    String restaurantId = "restaurant123";
 
-    Customer customer = new Customer(customerName, customerEmail, customerPhone);
-    ReservationTime reservationTime = new ReservationTime(startTime, endTime);
+    Customer customer = new Customer(CUSTOMER_NAME, CUSTOMER_EMAIL, CUSTOMER_PHONE);
+    ReservationTime reservationTime = new ReservationTime(START_TIME, null);
     Reservation originalReservation =
-        new Reservation(date, reservationTime, groupSize, customer, restaurantId);
+        new Reservation(DATE, reservationTime, GROUP_SIZE, customer, RESTAURANT_ID);
 
     ReservationDocument document = ReservationDocumentMapper.toDocument(originalReservation);
     Reservation restoredReservation = ReservationDocumentMapper.toDomain(document);
@@ -184,7 +161,7 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -196,7 +173,7 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -208,7 +185,7 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -219,7 +196,7 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -231,7 +208,7 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 
   @Test
@@ -243,6 +220,6 @@ public class ReservationDocumentMapperTest {
         assertThrows(
             DateTimeParseException.class, () -> ReservationDocumentMapper.toDomain(document));
 
-    assertThat(exception.getMessage()).contains("could not be parsed");
+    assertThat(exception.getMessage()).contains(PARSING_ERROR_MESSAGE);
   }
 }

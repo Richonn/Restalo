@@ -48,6 +48,9 @@ public class ReservationServiceTest {
   private final CustomerDto customerDto = mock(CustomerDto.class);
   private final Restaurant restaurant = mock(Restaurant.class);
 
+  private static final String VALID_RESTAURANT_ID = "123";
+  private static final String INVALID_RESTAURANT_ID = "999";
+
   @BeforeEach
   public void setUp() {
     reservationServiceFixture = new ReservationServiceFixture();
@@ -67,11 +70,8 @@ public class ReservationServiceTest {
     when(customerDto.email()).thenReturn("john.deer@gmail.com");
     when(customerDto.phoneNumber()).thenReturn("1234567890");
 
-    Restaurant mockRestaurant =
-        new Restaurant("Restaurant Name", 50, LocalTime.NOON, LocalTime.MIDNIGHT, "owner-123", 100);
-    when(restaurantRepository.getRestaurantById("123")).thenReturn(mockRestaurant);
-
-    when(restaurantRepository.getRestaurantById("999")).thenReturn(null);
+    when(restaurantRepository.getRestaurantById(VALID_RESTAURANT_ID)).thenReturn(restaurant);
+    when(restaurantRepository.getRestaurantById(INVALID_RESTAURANT_ID)).thenReturn(null);
 
     doNothing().when(reservationRepository).save(reservation);
   }
@@ -92,7 +92,8 @@ public class ReservationServiceTest {
         .thenReturn(reservation);
     when(reservation.getId()).thenReturn(expectedId);
 
-    assertThat(reservationService.createReservation(reservationDto, "123")).isEqualTo(expectedId);
+    assertThat(reservationService.createReservation(reservationDto, VALID_RESTAURANT_ID))
+        .isEqualTo(expectedId);
   }
 
   @Test
@@ -114,12 +115,10 @@ public class ReservationServiceTest {
   void
       givenInvalidReservationDTOAndRestaurantId_whenCreateReservation_thenThrowsNotFoundException() {
 
-    String restaurantId = "999";
-
     NotFoundException exception =
         assertThrows(
             NotFoundException.class,
-            () -> reservationService.createReservation(reservationDto, restaurantId));
+            () -> reservationService.createReservation(reservationDto, INVALID_RESTAURANT_ID));
     assertThat(exception).isInstanceOf(NotFoundException.class);
   }
 
@@ -128,7 +127,7 @@ public class ReservationServiceTest {
     String reservationId = "reservation-123";
     String restaurantId = "restaurant-123";
 
-    Reservation mockReservation =
+    Reservation reservation =
         new Reservation(
             LocalDate.of(2025, 10, 30),
             new ReservationTime(LocalTime.of(18, 0), LocalTime.of(19, 0)),
@@ -136,12 +135,12 @@ public class ReservationServiceTest {
             new Customer("John Doe", "john@example.com", "1234567890"),
             restaurantId);
 
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(11, 0), LocalTime.of(22, 0), "owner-123", 80);
 
-    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
-    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(mockRestaurant);
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(reservation);
+    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(restaurant);
 
     ReservationResponseDto result = reservationService.getReservationById(reservationId);
 
@@ -168,7 +167,7 @@ public class ReservationServiceTest {
     String reservationId = "reservation-123";
     String restaurantId = "restaurant-123";
 
-    Reservation mockReservation =
+    Reservation reservation =
         new Reservation(
             LocalDate.of(2025, 10, 30),
             new ReservationTime(LocalTime.of(18, 0), LocalTime.of(19, 0)),
@@ -176,7 +175,7 @@ public class ReservationServiceTest {
             new Customer("John Doe", "john@example.com", "1234567890"),
             restaurantId);
 
-    when(reservationRepository.getReservationById(reservationId)).thenReturn(mockReservation);
+    when(reservationRepository.getReservationById(reservationId)).thenReturn(reservation);
     when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
 
     NotFoundException exception =
@@ -367,34 +366,30 @@ public class ReservationServiceTest {
   void
       givenInvalidRestaurantId_whenGetRestaurantAvailabilitiesByDate_thenThrowsNotFoundException() {
 
-    String restaurantId = "doesnt exists";
-
-    when(restaurantRepository.getRestaurantById(restaurantId)).thenReturn(null);
-
     NotFoundException exception =
         assertThrows(
             NotFoundException.class,
             () ->
                 reservationService.getRestaurantAvailabilitiesByDate(
-                    restaurantId, LocalDate.now().toString()));
+                    INVALID_RESTAURANT_ID, LocalDate.now().toString()));
     assertThat(exception).isInstanceOf(NotFoundException.class);
   }
 
   @Test
   void givenNoExistingReservations_whenCreateReservation_thenReservationIsCreated() {
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
 
-    Reservation newReservation =
+    Reservation reservation =
         new Reservation(
             LocalDate.now(),
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             4,
             new Customer("John Doe", "john@example.com", "1234567890"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
-    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationFactory.createReservation(
             any(LocalDate.class),
             any(LocalTime.class),
@@ -403,33 +398,32 @@ public class ReservationServiceTest {
             anyString(),
             anyString(),
             any(Restaurant.class)))
-        .thenReturn(newReservation);
-    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+        .thenReturn(reservation);
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
         .thenReturn(new ArrayList<>());
     when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
         .thenReturn(createAvailabilityMap(50));
-    doNothing().when(reservationRepository).save(newReservation);
+    doNothing().when(reservationRepository).save(reservation);
 
-    String reservationId =
-        reservationService.createReservation(reservationDto, mockRestaurant.getId());
+    String reservationId = reservationService.createReservation(reservationDto, restaurant.getId());
 
     assertNotNull(reservationId);
-    verify(reservationRepository).save(newReservation);
+    verify(reservationRepository).save(reservation);
   }
 
   @Test
   void givenExactCapacityAvailable_whenCreateReservation_thenReservationIsCreated() {
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
 
-    Reservation existingReservation =
+    Reservation reservation =
         new Reservation(
             LocalDate.now(),
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             30,
             new Customer("Jane Smith", "jane@example.com", "0987654321"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
     Reservation newReservation =
         new Reservation(
@@ -437,9 +431,9 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             20,
             new Customer("John Doe", "john@example.com", "1234567890"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
-    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationFactory.createReservation(
             any(LocalDate.class),
             any(LocalTime.class),
@@ -449,14 +443,13 @@ public class ReservationServiceTest {
             anyString(),
             any(Restaurant.class)))
         .thenReturn(newReservation);
-    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
-        .thenReturn(List.of(existingReservation));
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
+        .thenReturn(List.of(reservation));
     when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
         .thenReturn(createAvailabilityMap(20));
     doNothing().when(reservationRepository).save(newReservation);
 
-    String reservationId =
-        reservationService.createReservation(reservationDto, mockRestaurant.getId());
+    String reservationId = reservationService.createReservation(reservationDto, restaurant.getId());
 
     assertNotNull(reservationId);
     verify(reservationRepository).save(newReservation);
@@ -464,7 +457,7 @@ public class ReservationServiceTest {
 
   @Test
   void givenCapacityExceededByOne_whenCreateReservation_thenThrowsInvalidParameterException() {
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
 
@@ -474,7 +467,7 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             30,
             new Customer("Jane Smith", "jane@example.com", "0987654321"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
     Reservation newReservation =
         new Reservation(
@@ -482,9 +475,9 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             21,
             new Customer("John Doe", "john@example.com", "1234567890"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
-    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationFactory.createReservation(
             any(LocalDate.class),
             any(LocalTime.class),
@@ -494,7 +487,7 @@ public class ReservationServiceTest {
             anyString(),
             any(Restaurant.class)))
         .thenReturn(newReservation);
-    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
         .thenReturn(List.of(existingReservation));
     when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
         .thenReturn(createAvailabilityMap(20));
@@ -502,7 +495,7 @@ public class ReservationServiceTest {
     InvalidParameterException exception =
         assertThrows(
             InvalidParameterException.class,
-            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+            () -> reservationService.createReservation(reservationDto, restaurant.getId()));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
     assertThat(exception.getMessage())
@@ -512,7 +505,7 @@ public class ReservationServiceTest {
   @Test
   void
       givenMultipleOverlappingReservations_whenCreateReservation_thenThrowsInvalidParameterException() {
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
 
@@ -522,7 +515,7 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             20,
             new Customer("Jane Smith", "jane@example.com", "0987654321"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
     Reservation existingReservation2 =
         new Reservation(
@@ -530,7 +523,7 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 30), LocalTime.of(13, 30)),
             20,
             new Customer("Bob Johnson", "bob@example.com", "1112223333"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
     Reservation newReservation =
         new Reservation(
@@ -538,9 +531,9 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 15), LocalTime.of(13, 15)),
             15,
             new Customer("John Doe", "john@example.com", "1234567890"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
-    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationFactory.createReservation(
             any(LocalDate.class),
             any(LocalTime.class),
@@ -550,7 +543,7 @@ public class ReservationServiceTest {
             anyString(),
             any(Restaurant.class)))
         .thenReturn(newReservation);
-    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
         .thenReturn(List.of(existingReservation1, existingReservation2));
     when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
         .thenReturn(createAvailabilityMap(10));
@@ -558,7 +551,7 @@ public class ReservationServiceTest {
     InvalidParameterException exception =
         assertThrows(
             InvalidParameterException.class,
-            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+            () -> reservationService.createReservation(reservationDto, restaurant.getId()));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
   }
@@ -566,7 +559,7 @@ public class ReservationServiceTest {
   @Test
   void
       givenCapacityExceededOnSingleSlot_whenCreateReservation_thenThrowsInvalidParameterException() {
-    Restaurant mockRestaurant =
+    Restaurant restaurant =
         new Restaurant(
             "Pizza Delamama", 50, LocalTime.of(9, 0), LocalTime.of(23, 0), "owner-123", 60);
 
@@ -576,7 +569,7 @@ public class ReservationServiceTest {
             new ReservationTime(LocalTime.of(12, 0), LocalTime.of(13, 0)),
             25,
             new Customer("John Doe", "john@example.com", "1234567890"),
-            mockRestaurant.getId());
+            restaurant.getId());
 
     Map<LocalTime, Integer> availabilityMap = new HashMap<>();
     availabilityMap.put(LocalTime.of(12, 0), 30);
@@ -584,7 +577,7 @@ public class ReservationServiceTest {
     availabilityMap.put(LocalTime.of(12, 30), 20);
     availabilityMap.put(LocalTime.of(12, 45), 30);
 
-    when(restaurantRepository.getRestaurantById(mockRestaurant.getId())).thenReturn(mockRestaurant);
+    when(restaurantRepository.getRestaurantById(restaurant.getId())).thenReturn(restaurant);
     when(reservationFactory.createReservation(
             any(LocalDate.class),
             any(LocalTime.class),
@@ -594,7 +587,7 @@ public class ReservationServiceTest {
             anyString(),
             any(Restaurant.class)))
         .thenReturn(newReservation);
-    when(reservationRepository.getReservationListOfRestaurant(mockRestaurant.getId()))
+    when(reservationRepository.getReservationListOfRestaurant(restaurant.getId()))
         .thenReturn(new ArrayList<>());
     when(restaurantDomainService.getRestaurantAvailability(any(Restaurant.class), anyList()))
         .thenReturn(availabilityMap);
@@ -602,7 +595,7 @@ public class ReservationServiceTest {
     InvalidParameterException exception =
         assertThrows(
             InvalidParameterException.class,
-            () -> reservationService.createReservation(reservationDto, mockRestaurant.getId()));
+            () -> reservationService.createReservation(reservationDto, restaurant.getId()));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
   }
