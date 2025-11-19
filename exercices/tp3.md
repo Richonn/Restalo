@@ -72,12 +72,12 @@ En tant qu'utilisateur, je peux effectuer une commande.
 
 ```json
 {
-    date: string, //date without time
-    menu: string,
-    customer: {
-        name: string,
-        email: string, // x@y.z
-        phoneNumber: string // 10 chiffres
+    "date": "string", //date without time
+    "menu": "string",
+    "customer": {
+        "name": "string",
+        "email": "string", // x@y.z
+        "phoneNumber": "string" // 10 chiffres
     }
 }
 ```
@@ -139,20 +139,20 @@ Voir la story "Créer une commande".
 
 ```json
 {
-    number: string,
-    date: string, //date without time
-    menu: string,
-    customer: {
-        name: string,
-        email: string, // x@y.z
-        phoneNumber: string // 10 chiffres
+    "number": "string",
+    "date": "string", //date without time
+    "menu": "string",
+    "customer": {
+        "name": "string",
+        "email": "string", // x@y.z
+        "phoneNumber": "string" // 10 chiffres
     },
-    restaurant: {
-        id: string,
-        name: string,
-        hour: {
-            open: string, // time without timezone
-            close: string // time without timezone
+    "restaurant": {
+        "id": "string",
+        "name": "string",
+        "hour": {
+            "open": "string", // time without timezone
+            "close": "string" // time without timezone
         }
     }
 }
@@ -213,10 +213,10 @@ l'offre.
 ```json
 {
     "offer": {
-      "title": string,
-      "description": string,
-      "validFrom": string, // date sans time zone
-      "validUntil": string // date sans time zone
+      "title": "string",
+      "description": "string",
+      "validFrom": "string", // date sans time zone
+      "validUntil": "string" // date sans time zone
     }
 }
 ```
@@ -249,7 +249,7 @@ l'offre.
     ```json
     {
       "error": "MISSING_PARAMETER",
-      "description": string
+      "description": "string"
     }
     ```
 - `404 BAD REQUEST` : un des paramètres n'est pas valide
@@ -257,7 +257,7 @@ l'offre.
     ```json
     {
       "error": "INVALID_PARAMETER",
-      "description": string
+      "description": "string"
     }
     ```
 
@@ -288,11 +288,11 @@ Voir la story "Créer des offres spéciales pour un restaurants".
 ```json
 [
     {
-        "id": string,
-        "title": string,
-        "description": string,
-        "validFrom": string, // date without time
-        "validUntil": string // date without time
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "validFrom": "string", // date without time
+        "validUntil": "string" // date without time
     }
 ]
 ```
