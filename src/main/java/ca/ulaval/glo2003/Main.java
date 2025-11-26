@@ -45,7 +45,6 @@ public class Main {
             options.setDsn(sentryDsn);
             options.setTracesSampleRate(1.0);
             options.setEnvironment(PersistenceConfig.isMongoMode() ? "production" : "development");
-            options.setDebug(true);
           });
       System.out.println("Sentry initialized successfully");
     } else {
