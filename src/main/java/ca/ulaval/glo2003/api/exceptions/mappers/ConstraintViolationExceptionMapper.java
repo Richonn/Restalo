@@ -3,6 +3,7 @@ package ca.ulaval.glo2003.api.exceptions.mappers;
 import static ca.ulaval.glo2003.api.exceptions.ErrorCodes.ERROR_MISSING_PARAMETER;
 
 import ca.ulaval.glo2003.api.dto.response.ErrorResponse;
+import io.sentry.Sentry;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.MediaType;
@@ -17,6 +18,8 @@ public class ConstraintViolationExceptionMapper
 
   @Override
   public Response toResponse(ConstraintViolationException exception) {
+    Sentry.captureException(exception);
+    Sentry.flush(2000);
     List<String> messages =
         exception.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
     String message = messages.getLast();
