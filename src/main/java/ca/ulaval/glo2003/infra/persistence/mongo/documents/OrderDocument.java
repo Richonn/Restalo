@@ -4,7 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import java.time.LocalDate;
 
-@Entity("order")
+@Entity("orders")
 public class OrderDocument {
   @Id private String id;
   private String restaurantId;

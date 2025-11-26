@@ -28,7 +28,7 @@ public class OrderResource {
 
   @POST
   @Path("restaurants/{id}/commandes")
-  public Response createRestaurant(
+  public Response createOrder(
       @Valid @NotNull(message = ApiValidationMessages.MISSING_BODY) OrderDto orderDto,
       @PathParam("id") String restaurantId) {
 
