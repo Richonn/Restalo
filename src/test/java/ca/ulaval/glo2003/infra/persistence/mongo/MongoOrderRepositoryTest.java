@@ -4,6 +4,7 @@ import ca.ulaval.glo2003.domain.OrderRepository;
 import ca.ulaval.glo2003.infra.persistence.AbstractOrderRepositoryTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -22,6 +23,11 @@ public class MongoOrderRepositoryTest extends AbstractOrderRepositoryTest {
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
   private static OrderRepository orderRepository;
+
+  @BeforeEach
+  public void setUp() {
+    super.setUp();
+  }
 
   @BeforeAll
   static void initializeMongoConnection() {

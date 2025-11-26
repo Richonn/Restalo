@@ -16,7 +16,7 @@ public abstract class AbstractOrderRepositoryTest {
   protected abstract void clearOrderRepository();
 
   @BeforeEach
-  void setUp() {
+  public void setUp() {
     abstractOrderRepositoryFixture = new AbstractOrderRepositoryFixture();
     clearOrderRepository();
   }
