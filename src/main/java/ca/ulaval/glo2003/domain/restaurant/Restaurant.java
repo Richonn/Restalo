@@ -2,6 +2,7 @@ package ca.ulaval.glo2003.domain.restaurant;
 
 import ca.ulaval.glo2003.domain.utils.StringUtils;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,7 @@ public class Restaurant {
   private final Integer capacity;
   private final Hours hours;
   private final String ownerId;
+  private final List<SpecialOffer> specialOffers;
 
   public Restaurant(
       String name,
@@ -28,6 +30,7 @@ public class Restaurant {
     this.capacity = capacity;
     this.hours = new Hours(openingHour, closingHour, reservationDuration);
     this.ownerId = ownerId;
+    this.specialOffers = new ArrayList<>();
   }
 
   public Restaurant(String name, Integer capacity, Hours hours, String ownerId) {
@@ -37,6 +40,7 @@ public class Restaurant {
     this.capacity = capacity;
     this.hours = hours;
     this.ownerId = ownerId;
+    this.specialOffers = new ArrayList<>();
   }
 
   public Restaurant(String id, String name, Integer capacity, Hours hours, String ownerId) {
@@ -46,6 +50,7 @@ public class Restaurant {
     this.capacity = capacity;
     this.hours = hours;
     this.ownerId = ownerId;
+    this.specialOffers = new ArrayList<>();
   }
 
   public String getId() {
@@ -108,5 +113,13 @@ public class Restaurant {
     }
 
     return defaultAvailability;
+  }
+
+  public List<SpecialOffer> getSpecialOffers() {
+    return specialOffers;
+  }
+
+  public void addSpecialOffer(SpecialOffer specialOffer) {
+    this.specialOffers.add(specialOffer);
   }
 }
