@@ -1,7 +1,7 @@
 package ca.ulaval.glo2003.infra.persistence;
 
 import ca.ulaval.glo2003.domain.SpecialOfferRepository;
-import ca.ulaval.glo2003.domain.restaurant.SpecialOffer;
+import ca.ulaval.glo2003.domain.specialOffer.SpecialOffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,15 +19,5 @@ public class InMemorySpecialOfferRepository implements SpecialOfferRepository {
     return specialOffers.values().stream()
         .filter(offer -> offer.getRestaurantId().equals(restaurantId))
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public SpecialOffer getSpecialOfferById(String offerId) {
-    return specialOffers.get(offerId);
-  }
-
-  @Override
-  public void delete(String offerId) {
-    specialOffers.remove(offerId);
   }
 }

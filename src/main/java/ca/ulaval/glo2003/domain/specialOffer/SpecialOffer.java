@@ -1,4 +1,4 @@
-package ca.ulaval.glo2003.domain.restaurant;
+package ca.ulaval.glo2003.domain.specialOffer;
 
 import java.time.LocalDate;
 import java.util.UUID;

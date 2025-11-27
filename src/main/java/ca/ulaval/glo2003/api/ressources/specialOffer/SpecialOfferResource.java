@@ -1,7 +1,7 @@
-package ca.ulaval.glo2003.api.ressources.restaurant;
+package ca.ulaval.glo2003.api.ressources.specialOffer;
 
 import ca.ulaval.glo2003.api.dto.request.SpecialOfferRequestDto;
-import ca.ulaval.glo2003.application.restaurant.SpecialOfferService;
+import ca.ulaval.glo2003.application.specialOffer.SpecialOfferService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -32,14 +32,7 @@ public class SpecialOfferResource {
       @NotNull @NotBlank @HeaderParam(OWNER_HEADER) String ownerId,
       @PathParam("id") String restaurantId,
       @Valid @NotNull SpecialOfferRequestDto request) {
-    String offerId =
-        specialOfferService.createSpecialOffer(
-            ownerId,
-            restaurantId,
-            request.offer().title(),
-            request.offer().description(),
-            request.offer().validFrom(),
-            request.offer().validUntil());
+    String offerId = specialOfferService.createSpecialOffer(ownerId, restaurantId, request);
 
     return Response.status(Response.Status.CREATED)
         .header("Location", String.format(OFFER_BASE, restaurantId, offerId))

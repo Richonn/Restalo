@@ -1,6 +1,6 @@
 package ca.ulaval.glo2003.infra.persistence.mongo.mappers;
 
-import ca.ulaval.glo2003.domain.restaurant.SpecialOffer;
+import ca.ulaval.glo2003.domain.specialOffer.SpecialOffer;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.SpecialOfferDocument;
 
 public class SpecialOfferDocumentMapper {

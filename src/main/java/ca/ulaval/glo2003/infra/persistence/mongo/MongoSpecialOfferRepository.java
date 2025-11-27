@@ -1,7 +1,7 @@
 package ca.ulaval.glo2003.infra.persistence.mongo;
 
 import ca.ulaval.glo2003.domain.SpecialOfferRepository;
-import ca.ulaval.glo2003.domain.restaurant.SpecialOffer;
+import ca.ulaval.glo2003.domain.specialOffer.SpecialOffer;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.SpecialOfferDocument;
 import ca.ulaval.glo2003.infra.persistence.mongo.mappers.SpecialOfferDocumentMapper;
 import dev.morphia.Datastore;
@@ -10,7 +10,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bson.types.ObjectId;
 
 @Singleton
 public class MongoSpecialOfferRepository implements SpecialOfferRepository {
@@ -38,23 +37,5 @@ public class MongoSpecialOfferRepository implements SpecialOfferRepository {
         .stream()
         .map(SpecialOfferDocumentMapper::toDomain)
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public SpecialOffer getSpecialOfferById(String offerId) {
-    SpecialOfferDocument document =
-        datastore
-            .find(SpecialOfferDocument.class)
-            .filter(Filters.eq("_id", new ObjectId(offerId)))
-            .first();
-    return SpecialOfferDocumentMapper.toDomain(document);
-  }
-
-  @Override
-  public void delete(String offerId) {
-    datastore
-        .find(SpecialOfferDocument.class)
-        .filter(Filters.eq("_id", new ObjectId(offerId)))
-        .delete();
   }
 }
