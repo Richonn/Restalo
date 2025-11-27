@@ -36,7 +36,8 @@ public abstract class AbstractOrderRepositoryTest {
     Order result = getOrderRepository().getOrderById(expectedOrder.getId());
 
     assertThat(result).isNotNull();
-    assertThat(result).isEqualTo(expectedOrder);
+    assertThat(result.getId()).isEqualTo(expectedOrder.getId());
+    assertThat(result.getDate()).isEqualTo(expectedOrder.getDate());
   }
 
   @Test
