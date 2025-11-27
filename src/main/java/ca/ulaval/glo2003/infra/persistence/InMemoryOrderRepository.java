@@ -14,4 +14,9 @@ public class InMemoryOrderRepository implements OrderRepository {
   public void save(Order order) {
     orders.put(order.getId(), order);
   }
+
+  @Override
+  public Order getOrderById(String orderId) {
+    return orders.get(orderId);
+  }
 }

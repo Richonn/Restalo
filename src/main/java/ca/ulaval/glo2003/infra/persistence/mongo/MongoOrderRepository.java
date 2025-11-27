@@ -5,6 +5,7 @@ import ca.ulaval.glo2003.domain.order.Order;
 import ca.ulaval.glo2003.infra.persistence.mongo.documents.OrderDocument;
 import ca.ulaval.glo2003.infra.persistence.mongo.mappers.OrderDocumentMapper;
 import dev.morphia.Datastore;
+import dev.morphia.query.filters.Filters;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -21,5 +22,12 @@ public class MongoOrderRepository implements OrderRepository {
   public void save(Order order) {
     OrderDocument orderDocument = OrderDocumentMapper.toDocument(order);
     datastore.save(orderDocument);
+  }
+
+  @Override
+  public Order getOrderById(String orderId) {
+    OrderDocument orderDocument =
+        datastore.find(OrderDocument.class).filter(Filters.eq("_id", orderId)).first();
+    return OrderDocumentMapper.toDomain(orderDocument);
   }
 }

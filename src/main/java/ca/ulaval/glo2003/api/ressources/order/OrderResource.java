@@ -38,4 +38,14 @@ public class OrderResource {
         .header("Location", String.format(ORDER_BY_ID, orderGeneratedId))
         .build();
   }
+
+  @GET
+  @Path("commandes/{id}")
+  public Response getOrderById(@PathParam("id") String orderId) {
+
+    return Response.status(Response.Status.OK)
+        .header("Location", String.format(ORDER_BY_ID, orderId))
+        .entity(orderService.getOrderById(orderId))
+        .build();
+  }
 }

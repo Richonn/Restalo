@@ -64,4 +64,8 @@ public class Order {
   public String getCustomerPhoneNumber() {
     return customer.getPhoneNumber();
   }
+
+  public Customer getCustomer() {
+    return customer;
+  }
 }
