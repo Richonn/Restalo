@@ -46,7 +46,47 @@ Comme les calculatrices n'ont pas éliminé les mathématiciens, l'IA ne remplac
 
 ---
 
+## Sécurité
+
+**Question:**
+Identifiez trois pratiques à intégrer dans un processus de développement logiciel afin de réduire les risques de vulnérabilités.
+
+---
+
+## Open sourcing
+
+**Question:**
+Nommez trois avantages de contribuer à des projets open source en tant qu'entreprise et expliquez en quoi cela peut être bénéfique pour tous.
+
+**Question:**
+Décrivez trois défis liés à la mise en place d'un projet open source et justifiez votre réponse.
+
+**Question:**
+Quelle information vous a le plus surpris à propos de l'open source?
+
+---
+
 ## Rétrospective - Processus
+
+**Question:**
+Décrivez deux problématiques liées à votre processus et proposez deux plans distincts pour les résoudre. Soyez
+constructifs dans vos critiques et évitez d'attribuer la faute à une personne ou un groupe en particulier.
+
+**Question:**
+Décrivez la démarche que vous avez entreprise pour intégrer de nouveaux outils technologiques. Quelles étaient les étapes du processus?
+
+**Question:**
+Comment avez-vous réagi aux différents bogues? Avez-vous exploré ces outils à l'aide de tests unitaires ou manuels? Qu'avez-vous appris grâce à cette démarche?
+Quels sont les bons coups de votre équipe? De quelles réalisations êtes-vous fiers? Nommez-en trois.
+
+**Question:**
+Quel conseil donneriez-vous aux prochains étudiants qui devront réaliser ce projet?
+
+**Question:**
+Quels apprentissages, astuces ou techniques acquis lors de ce projet pensez-vous pouvoir réutiliser plus tard?
+
+**Question:**
+Décrivez-en au moins deux. Il peut s'agir d'apprentissages techniques, pratiques, liés au travail d'équipe ou encore au processus de développement.
 
 ---
 
