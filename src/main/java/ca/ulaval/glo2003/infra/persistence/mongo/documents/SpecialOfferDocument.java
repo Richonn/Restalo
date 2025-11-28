@@ -2,7 +2,6 @@ package ca.ulaval.glo2003.infra.persistence.mongo.documents;
 
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
-import java.time.LocalDate;
 
 @Entity("special_offers")
 public class SpecialOfferDocument {
@@ -11,8 +10,8 @@ public class SpecialOfferDocument {
   private String restaurantId;
   private String title;
   private String description;
-  private LocalDate validFrom;
-  private LocalDate validUntil;
+  private String validFrom;
+  private String validUntil;
 
   public SpecialOfferDocument() {}
 
@@ -21,8 +20,8 @@ public class SpecialOfferDocument {
       String restaurantId,
       String title,
       String description,
-      LocalDate validFrom,
-      LocalDate validUntil) {
+      String validFrom,
+      String validUntil) {
     this.id = id;
     this.restaurantId = restaurantId;
     this.title = title;
@@ -63,19 +62,19 @@ public class SpecialOfferDocument {
     this.description = description;
   }
 
-  public LocalDate getValidFrom() {
+  public String getValidFrom() {
     return validFrom;
   }
 
-  public void setValidFrom(LocalDate validFrom) {
+  public void setValidFrom(String validFrom) {
     this.validFrom = validFrom;
   }
 
-  public LocalDate getValidUntil() {
+  public String getValidUntil() {
     return validUntil;
   }
 
-  public void setValidUntil(LocalDate validUntil) {
+  public void setValidUntil(String validUntil) {
     this.validUntil = validUntil;
   }
 }
