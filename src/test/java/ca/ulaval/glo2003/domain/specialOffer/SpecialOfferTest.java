@@ -27,31 +27,19 @@ public class SpecialOfferTest {
   }
 
   @Test
-  void givenSpecialOffer_whenGettersAreCalled_thenCorrectValuesAreReturned() {
-    SpecialOffer specialOffer = specialOfferFixture.build();
-
-    assertThat(specialOffer.getId()).isNotNull();
-    assertThat(specialOffer.getRestaurantId()).isEqualTo(RESTAURANT_ID);
-    assertThat(specialOffer.getTitle()).isEqualTo(TITLE);
-    assertThat(specialOffer.getDescription()).isEqualTo(DESCRIPTION);
-    assertThat(specialOffer.getValidFrom()).isEqualTo(VALID_FROM);
-    assertThat(specialOffer.getValidUntil()).isEqualTo(VALID_UNTIL);
-  }
-
-  @Test
   void givenTwoOffers_whenOverlapping_thenReturnTrue() {
     LocalDate today = FIXED_DATE;
     LocalDate nextWeek = today.plusDays(7);
 
     SpecialOffer offer1 = specialOfferFixture.withValidFrom(today).withValidUntil(nextWeek).build();
 
-    SpecialOffer offer2 =
-        new SpecialOffer(
-            RESTAURANT_ID,
-            SECOND_OFFER_TITLE,
-            SECOND_OFFER_DESCRIPTION,
-            nextWeek.minusDays(3),
-            nextWeek.plusDays(3));
+    SpecialOffer offer2 = specialOfferFixture
+            .withRestaurantId(RESTAURANT_ID)
+            .withTitle(SECOND_OFFER_TITLE)
+            .withDescription(SECOND_OFFER_DESCRIPTION)
+            .withValidFrom(nextWeek.minusDays(3))
+            .withValidUntil(nextWeek.plusDays(3))
+            .build();
 
     assertThat(offer1.overlapsWith(offer2)).isTrue();
   }

@@ -166,4 +166,120 @@ public class SpecialOfferDomainServiceTest {
     assertDoesNotThrow(
         () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, new ArrayList<>()));
   }
+
+  @Test
+  void givenOfferStartingOnExistingOfferEnd_thenThrowsException() {
+    SpecialOffer existingOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Summer Special", "desc",
+                    LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30));
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "July Special", "desc",
+                    LocalDate.of(2024, 6, 30), LocalDate.of(2024, 7, 10));
+    List<SpecialOffer> existingOffers = List.of(existingOffer);
+
+    InvalidParameterException exception = assertThrows(
+            InvalidParameterException.class,
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+
+    assertThat(exception.getMessage()).isEqualTo(OVERLAP_ERROR_MESSAGE);
+  }
+
+  @Test
+  void givenOfferEndingOnExistingOfferStart_thenThrowsException() {
+    SpecialOffer existingOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "July Special", "desc",
+                    LocalDate.of(2024, 7, 1), LocalDate.of(2024, 7, 15));
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "June Special", "desc",
+                    LocalDate.of(2024, 6, 20), LocalDate.of(2024, 7, 1));
+    List<SpecialOffer> existingOffers = List.of(existingOffer);
+
+    InvalidParameterException exception = assertThrows(
+            InvalidParameterException.class,
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+
+    assertThat(exception.getMessage()).isEqualTo(OVERLAP_ERROR_MESSAGE);
+  }
+
+  @Test
+  void givenOfferCompletelyInsideExistingOffer_thenThrowsException() {
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Inside Offer", "Description",
+                    LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 15));
+    List<SpecialOffer> existingOffers = List.of(
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Winter Offer", "Description",
+                    LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31)));
+
+    InvalidParameterException exception = assertThrows(
+            InvalidParameterException.class,
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+
+    assertThat(exception.getMessage()).isEqualTo(OVERLAP_ERROR_MESSAGE);
+  }
+
+  @Test
+  void givenOfferCompletelyCoversExistingOffer_thenThrowsException() {
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Big Offer", "Description",
+                    LocalDate.of(2024, 12, 1), LocalDate.of(2024, 12, 31));
+    List<SpecialOffer> existingOffers = List.of(
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Short Offer", "Description",
+                    LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 15)));
+
+    InvalidParameterException exception = assertThrows(
+            InvalidParameterException.class,
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+
+    assertThat(exception.getMessage()).isEqualTo(OVERLAP_ERROR_MESSAGE);
+  }
+
+  @Test
+  void givenOfferOverlappingWithMultipleExistingOffers_thenThrowsException() {
+    SpecialOffer offer1 =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Spring Special", "desc",
+                    LocalDate.of(2024, 3, 1), LocalDate.of(2024, 3, 31));
+    SpecialOffer offer2 =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Summer Special", "desc",
+                    LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30));
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Summer Overlap", "desc",
+                    LocalDate.of(2024, 6, 15), LocalDate.of(2024, 7, 15));
+    List<SpecialOffer> existingOffers = List.of(offer1, offer2);
+
+    InvalidParameterException exception = assertThrows(
+            InvalidParameterException.class,
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+
+    assertThat(exception.getMessage()).isEqualTo(OVERLAP_ERROR_MESSAGE);
+  }
+
+  @Test
+  void givenMultipleNonOverlappingExistingOffers_thenNoException() {
+    SpecialOffer newOffer =
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "New Offer", "desc",
+                    LocalDate.of(2024, 8, 1), LocalDate.of(2024, 8, 15));
+    List<SpecialOffer> existingOffers = List.of(
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Offer 1", "desc",
+                    LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 15)),
+            specialOfferFactory.createSpecialOffer(
+                    "restaurant-1", "Offer 2", "desc",
+                    LocalDate.of(2024, 7, 1), LocalDate.of(2024, 7, 15))
+    );
+
+    assertDoesNotThrow(
+            () -> specialOfferDomainService.validateNoOverlappingOffers(newOffer, existingOffers));
+  }
 }
