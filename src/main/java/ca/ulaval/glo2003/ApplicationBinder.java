@@ -1,15 +1,20 @@
 package ca.ulaval.glo2003;
 
+import ca.ulaval.glo2003.application.order.OrderService;
 import ca.ulaval.glo2003.application.reservation.ReservationService;
 import ca.ulaval.glo2003.application.restaurant.RestaurantService;
+import ca.ulaval.glo2003.domain.OrderRepository;
 import ca.ulaval.glo2003.domain.ReservationRepository;
 import ca.ulaval.glo2003.domain.RestaurantDomainService;
 import ca.ulaval.glo2003.domain.RestaurantRepository;
+import ca.ulaval.glo2003.domain.order.OrderFactory;
 import ca.ulaval.glo2003.domain.reservation.ReservationFactory;
 import ca.ulaval.glo2003.domain.restaurant.RestaurantFactory;
+import ca.ulaval.glo2003.infra.persistence.InMemoryOrderRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.InMemoryRestaurantRepository;
 import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
+import ca.ulaval.glo2003.infra.persistence.mongo.MongoOrderRepository;
 import ca.ulaval.glo2003.infra.persistence.mongo.MongoReservationRepository;
 import ca.ulaval.glo2003.infra.persistence.mongo.MongoRestaurantRepository;
 import jakarta.inject.Singleton;
@@ -27,6 +32,10 @@ public class ApplicationBinder extends AbstractBinder {
     bindAsContract(ReservationService.class).in(Singleton.class);
     bindReservationRepository();
     bindAsContract(ReservationFactory.class).in(Singleton.class);
+
+    bindAsContract(OrderService.class).in(Singleton.class);
+    bindOrderRepository();
+    bindAsContract(OrderFactory.class).in(Singleton.class);
   }
 
   private void bindRestaurantRepository() {
@@ -42,6 +51,14 @@ public class ApplicationBinder extends AbstractBinder {
       bind(InMemoryReservationRepository.class).to(ReservationRepository.class).in(Singleton.class);
     } else {
       bind(MongoReservationRepository.class).to(ReservationRepository.class).in(Singleton.class);
+    }
+  }
+
+  private void bindOrderRepository() {
+    if (PersistenceConfig.isInMemoryMode()) {
+      bind(InMemoryOrderRepository.class).to(OrderRepository.class).in(Singleton.class);
+    } else {
+      bind(MongoOrderRepository.class).to(OrderRepository.class).in(Singleton.class);
     }
   }
 }

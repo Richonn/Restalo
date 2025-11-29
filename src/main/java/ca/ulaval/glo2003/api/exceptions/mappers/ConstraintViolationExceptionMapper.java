@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.api.exceptions.mappers;
 
+import static ca.ulaval.glo2003.api.exceptions.ErrorCodes.ERROR_INVALID_PARAMETER;
 import static ca.ulaval.glo2003.api.exceptions.ErrorCodes.ERROR_MISSING_PARAMETER;
 
 import ca.ulaval.glo2003.api.dto.response.ErrorResponse;
@@ -10,7 +11,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import java.util.List;
 
 @Provider
 public class ConstraintViolationExceptionMapper
@@ -20,11 +20,21 @@ public class ConstraintViolationExceptionMapper
   public Response toResponse(ConstraintViolationException exception) {
     Sentry.captureException(exception);
     Sentry.flush(2000);
-    List<String> messages =
-        exception.getConstraintViolations().stream().map(ConstraintViolation::getMessage).toList();
-    String message = messages.getLast();
 
-    ErrorResponse err = new ErrorResponse(ERROR_MISSING_PARAMETER, message);
+    ConstraintViolation<?> violation = exception.getConstraintViolations().iterator().next();
+    String errorCode;
+
+    if (violation.getConstraintDescriptor().getAnnotation()
+            instanceof jakarta.validation.constraints.NotNull
+        || violation.getConstraintDescriptor().getAnnotation()
+            instanceof jakarta.validation.constraints.NotBlank) {
+      errorCode = ERROR_MISSING_PARAMETER;
+    } else {
+      errorCode = ERROR_INVALID_PARAMETER;
+    }
+
+    ErrorResponse err = new ErrorResponse(errorCode, violation.getMessage());
+
     return Response.status(Response.Status.BAD_REQUEST)
         .type(MediaType.APPLICATION_JSON)
         .entity(err)
