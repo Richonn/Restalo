@@ -33,7 +33,8 @@ public class SpecialOfferTest {
 
     SpecialOffer offer1 = specialOfferFixture.withValidFrom(today).withValidUntil(nextWeek).build();
 
-    SpecialOffer offer2 = specialOfferFixture
+    SpecialOffer offer2 =
+        specialOfferFixture
             .withRestaurantId(RESTAURANT_ID)
             .withTitle(SECOND_OFFER_TITLE)
             .withDescription(SECOND_OFFER_DESCRIPTION)

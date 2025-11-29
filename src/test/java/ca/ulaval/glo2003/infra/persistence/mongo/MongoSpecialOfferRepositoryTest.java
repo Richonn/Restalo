@@ -31,7 +31,6 @@ public class MongoSpecialOfferRepositoryTest {
 
   @BeforeAll
   static void initializeMongoConnection() {
-    // Make sure the container is started BEFORE using its URL
     mongoDBContainer.start();
 
     System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
