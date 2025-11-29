@@ -123,6 +123,12 @@
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-bean-validation</artifactId>
         </dependency>
+        <!-- Sentry for error tracking -->
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
+            <version>7.16.0</version>
+        </dependency>
     </dependencies>
 
     <build>

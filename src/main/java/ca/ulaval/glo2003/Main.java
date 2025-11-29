@@ -1,6 +1,7 @@
 package ca.ulaval.glo2003;
 
 import ca.ulaval.glo2003.api.exceptions.mappers.IllegalArgumentExceptionMapper;
+import ca.ulaval.glo2003.infra.monitoring.SentryConfig;
 import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
 import ca.ulaval.glo2003.infra.persistence.mongo.MongoConnection;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -34,6 +35,8 @@ public class Main {
   public static void main(String[] args) {
     String baseUri = getBaseUri();
     Dotenv.configure().ignoreIfMissing().systemProperties().load();
+
+    SentryConfig.initialize();
 
     System.out.printf(
         "Starting application with persistence mode: %s%n",
