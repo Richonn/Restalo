@@ -25,6 +25,10 @@ public class OrderResourceIntegrationTestFixture {
         return buildPostResponse(target, buildOrderJson());
     }
 
+    public Response buildGetResponse(WebTarget target) {
+        return target.path(PATH).request(MediaType.APPLICATION_JSON).get();
+    }
+
     public OrderResourceIntegrationTestFixture withOrderMenu(String menu) {
         this.MENU = menu;
         return this;

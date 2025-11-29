@@ -1,7 +1,9 @@
 package ca.ulaval.glo2003.api.ressources.order;
 
 import ca.ulaval.glo2003.api.dto.common.OrderDto;
+import ca.ulaval.glo2003.api.dto.response.OrderResponseDto;
 import ca.ulaval.glo2003.application.order.OrderService;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -160,6 +163,27 @@ public class OrderResourceIntegrationTest extends JerseyTest {
             assertEquals(HTTP_BAD_REQUEST, response.getStatus());
             String body = response.readEntity(String.class);
             assertTrue(body.contains(INVALID_PARAMETER_ERROR) && body.contains("email"));
+        }
+    }
+
+    @Test
+    public void givenExistingOrder_whenGetOrderById_thenReturns200() {
+        when(orderService.getOrderById(ORDER_ID)).thenReturn(mock(OrderResponseDto.class));
+
+        try(Response response = orderResourceIntegrationTestFixture.withPath(String.format(GET_ORDER_PATH, ORDER_ID)).buildGetResponse(target())) {
+            assertEquals(HTTP_OK, response.getStatus());
+            assertThat(response.getEntity()).isNotNull();
+            verify(orderService).getOrderById(eq(ORDER_ID));
+        }
+    }
+
+    @Test
+    public void givenNoExistingOrder_whenGetOrderById_thenReturns404() {
+        when(orderService.getOrderById(ORDER_ID)).thenThrow(new NotFoundException());
+
+        try(Response response = orderResourceIntegrationTestFixture.withPath(String.format(GET_ORDER_PATH, ORDER_ID)).buildGetResponse(target())) {
+            assertEquals(HTTP_NOT_FOUND, response.getStatus());
+            verify(orderService).getOrderById(eq(ORDER_ID));
         }
     }
 }
