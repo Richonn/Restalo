@@ -221,7 +221,6 @@
             </plugin>
 
             <!-- PMD for code security analysis -->
-            <!-- Exécuter manuellement avec: mvn pmd:pmd -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
