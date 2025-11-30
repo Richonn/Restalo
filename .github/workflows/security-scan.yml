@@ -1,13 +1,10 @@
 name: Security Scan
 
 on:
-  pull_request:
-    branches:
-      - 111-software-security
-
   push:
     branches:
       - main
+      - 111-software-security
 
 jobs:
   security-scan:
