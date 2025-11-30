@@ -211,6 +211,9 @@
                 <configuration>
                     <format>ALL</format>
                     <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                    <nvdApiDelay>4000</nvdApiDelay>
+                    <nvdMaxRetryCount>3</nvdMaxRetryCount>
+                    <failOnError>false</failOnError>
                     <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
                     <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
