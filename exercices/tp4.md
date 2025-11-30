@@ -166,7 +166,7 @@ Décrivez-en au moins deux. Il peut s'agir d'apprentissages techniques, pratique
 
 ### Screenshots de l'arbre de commits et branches (≥10 commits)
 
-![alt text](screen-shots/rendu_4/)
+![alt text](screen-shots/rendu_4/committree.png)
 
 ---
 
