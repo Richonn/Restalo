@@ -3,7 +3,7 @@ name: Security Scan
 on:
   pull_request:
     branches:
-      - 111-security-scan
+      - 111-software-security
 
   push:
     branches:
