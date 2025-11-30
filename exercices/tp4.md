@@ -99,8 +99,7 @@ L'information la plus surprenante concerne **l'importance des contributions non-
 ## Rétrospective - Processus
 
 **Question:**
-Décrivez deux problématiques liées à votre processus et proposez deux plans distincts pour les résoudre. Soyez
-constructifs dans vos critiques et évitez d'attribuer la faute à une personne ou un groupe en particulier.
+Décrivez deux problématiques liées à votre processus et proposez deux plans distincts pour les résoudre. Soyez constructifs dans vos critiques et évitez d'attribuer la faute à une personne ou un groupe en particulier.
 
 **Question:**
 Décrivez la démarche que vous avez entreprise pour intégrer de nouveaux outils technologiques. Quelles étaient les étapes du processus?
@@ -124,45 +123,55 @@ Décrivez-en au moins deux. Il peut s'agir d'apprentissages techniques, pratique
 
 ### Screenshot du GitHub Project (colonnes + issues)
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/github-project.png)
 
 ### Screenshots du Milestone (titre, description, date, issues)
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/milestone1.png)
+![alt text](screen-shots/rendu_4/milestone2.png)
+![alt text](screen-shots/rendu_4/milestone3.png)
 
 ### Screenshots de 3 issues
 
 #### Issue 1
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/issue1-1.png)
+![alt text](screen-shots/rendu_4/issue1-2.png)
 
 #### Issue 2
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/issue2-1.png)
+![alt text](screen-shots/rendu_4/issue2-2.png)
 
-#### Issue 3 (Parent-issue)
+#### Issue 3
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/issue3.png)
 
 ### Screenshot de 3 Pull Requests (avec reviews)
 
 #### Pull request 1
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/pullrequest1-1.png)
+![alt text](screen-shots/rendu_4/pullrequest1-2.png)
 
 #### Pull request 2
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/pullrequest2-1.png)
+![alt text](screen-shots/rendu_4/pullrequest2-2.png)
+![alt text](screen-shots/rendu_4/pullrequest2-3.png)
+![alt text](screen-shots/rendu_4/pullrequest2-4.png)
 
 #### Pull request 3
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/pullrequest3-1.png)
+![alt text](screen-shots/rendu_4/pullrequest3-2.png)
+![alt text](screen-shots/rendu_4/pullrequest3-3.png)
 
-### Screenshots de 'arbre de commits et branches (≥10 commits)
+### Screenshots de l'arbre de commits et branches (≥10 commits)
 
-![alt text](screen-shots/)
+![alt text](screen-shots/rendu_4/)
 
 ---
 
 ## Diagramme d'architecture
 
-![alt text](screen-shots/.png)
+![alt text](screen-shots/rendu_4/diagramme.png)
 
 ---
