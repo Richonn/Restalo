@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - 111-software-security
 
 jobs:
   security-scan:
