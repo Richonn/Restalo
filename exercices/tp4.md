@@ -58,11 +58,41 @@ Identifiez trois pratiques à intégrer dans un processus de développement logi
 **Question:**
 Nommez trois avantages de contribuer à des projets open source en tant qu'entreprise et expliquez en quoi cela peut être bénéfique pour tous.
 
+**Réponse:**
+
+1. **Développement des compétences et recrutement** : Contribuer à l'open source permet aux employés de développer leurs compétences techniques, de se tenir à jour avec les technologies émergentes, et de construire une réputation professionnelle. L'entreprise devient également plus visible auprès de talents potentiels qui peuvent observer la qualité du code et la culture de contribution.
+
+2. **Réduction des coûts de développement et mutualisation** : En partageant un projet open source, l'entreprise peut bénéficier de contributions externes qui améliorent le logiciel sans coût interne. Les bugs sont identifiés plus rapidement, et des fonctionnalités sont développées par la communauté, réduisant ainsi le fardeau de maintenance.
+
+3. **Innovation collaborative et standardisation** : L'open source permet de créer des standards industriels et de favoriser l'innovation collaborative. En rendant un projet public, l'entreprise peut influencer l'écosystème technologique et s'assurer que les solutions évoluent dans une direction alignée avec ses besoins stratégiques.
+
 **Question:**
 Décrivez trois défis liés à la mise en place d'un projet open source et justifiez votre réponse.
 
+**Réponse:**
+
+1. **Risque de burnout des mainteneurs** : Gérer un projet open source demande un investissement constant en temps et énergie. Répondre aux issues, réviser les pull requests, et maintenir la qualité du code peut rapidement devenir épuisant. Comme l'article "Best Practices for Maintainers" le mentionne, il faut "établir des frontières saines" et apprendre à dire non pour éviter l'accumulation et le surmenage.
+
+2. **Gestion de la gouvernance et prise de décision** : Déterminer qui a le pouvoir de décision (BDFL, méritocratie, contribution libérale) et comment formaliser la structure de leadership peut être complexe. Il faut trouver un équilibre entre accueillir les contributions et maintenir une vision cohérente du projet.
+
+3. **Application du code de conduite et gestion de la communauté** : Créer une communauté saine nécessite d'appliquer rigoureusement un code de conduite. Comme le souligne l'article "Your Code of Conduct" : "Un code de conduite non appliqué est pire que pas de code du tout". Cela demande du temps pour enquêter sur les signalements et prendre des mesures appropriées.
+
 **Question:**
 Quelle information vous a le plus surpris à propos de l'open source?
+
+**Réponse:**
+
+L'information la plus surprenante concerne **l'importance des contributions non-code**. Nous sous pensions que l'open source se concentrait principalement sur le code, mais l'article "How to Contribute to Open Source" révèle que **28% des contributions occasionnelles concernent la documentation**. Cela démontre que l'open source valorise autant (sinon plus) la clarté, l'accessibilité et le support communautaire que les lignes de code elles-mêmes. Cette perspective change complètement la perception de qui peut contribuer et comment on peut avoir un impact significatif sans être un développeur expert.
+
+### Choix de la licence : MIT License
+
+**Trois raisons principales :**
+
+1. **Simplicité et clarté** : La licence MIT est extrêmement courte et facile à comprendre, ce qui élimine l'ambiguïté juridique. Comme recommandé dans l'article "The Legal Side of Open Source", la MIT offre "simplicité et flexibilité".
+
+2. **Flexibilité maximale pour les utilisateurs** : La MIT est une licence permissive qui permet aux utilisateurs d'utiliser le code dans des projets commerciaux, de modifier et redistribuer librement, et d'intégrer le code dans des projets propriétaires.
+
+3. **Compatibilité et adoption dans l'écosystème** : La MIT est compatible avec pratiquement toutes les autres licences, facilitant l'intégration de dépendances externes et permettant à d'autres projets d'utiliser notre code sans conflits de licence. C'est particulièrement important pour un écosystème Node.js/TypeScript où de nombreuses bibliothèques utilisent des licences permissives. L'article "The Legal Side of Open Source" souligne que les "dependencies" et la "license compatibility" sont des facteurs cruciaux dans le choix d'une licence.
 
 ---
 
