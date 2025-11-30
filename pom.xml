@@ -210,10 +210,27 @@
                 <version>9.2.0</version>
                 <configuration>
                     <format>ALL</format>
-                    <autoUpdate>false</autoUpdate>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
                     <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
+                </configuration>
+            </plugin>
+
+            <!-- PMD for code security analysis -->
+            <!-- Exécuter manuellement avec: mvn pmd:pmd -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.25.0</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/java/quickstart.xml</ruleset>
+                        <ruleset>/category/java/security.xml</ruleset>
+                        <ruleset>/category/java/bestpractices.xml</ruleset>
+                    </rulesets>
+                    <printFailingErrors>true</printFailingErrors>
+                    <failOnViolation>false</failOnViolation>
                 </configuration>
             </plugin>
 

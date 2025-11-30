@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 111-security-scan
 
 jobs:
   security-scan:
@@ -21,7 +22,12 @@ jobs:
           cache: 'maven'
 
       - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: mvn dependency-check:check
+
+      - name: Run PMD Code Analysis
+        run: mvn pmd:pmd
 
       - name: Upload OWASP Report
         if: always()
@@ -29,3 +35,10 @@ jobs:
         with:
           name: owasp-dependency-check-report
           path: target/dependency-check-report/
+
+      - name: Upload PMD Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmd-report
+          path: target/site/pmd.html
