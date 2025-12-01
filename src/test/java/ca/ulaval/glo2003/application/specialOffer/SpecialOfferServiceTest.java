@@ -29,6 +29,8 @@ public class SpecialOfferServiceTest {
 
   private SpecialOfferService specialOfferService;
 
+  private final String TITLE = "Special Pizza";
+  private final String DESCRIPTION = "50% off large pizza";
   private final String OWNER_ID = "owner-123";
   private final String RESTAURANT_ID = "restaurant-123";
   private SpecialOfferRequestDto requestDto;
@@ -50,8 +52,7 @@ public class SpecialOfferServiceTest {
     startDate = LocalDate.now();
     endDate = startDate.plusDays(7);
 
-    SpecialOfferDto offerDto =
-        new SpecialOfferDto("Special Pizza", "50% off large pizza", startDate, endDate);
+    SpecialOfferDto offerDto = new SpecialOfferDto(TITLE, DESCRIPTION, startDate, endDate);
     requestDto = new SpecialOfferRequestDto(offerDto);
   }
 
@@ -64,11 +65,7 @@ public class SpecialOfferServiceTest {
     when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(Collections.emptyList());
     when(specialOfferFactory.createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate)))
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate)))
         .thenReturn(specialOffer);
     doNothing()
         .when(specialOfferDomainService)
@@ -85,11 +82,7 @@ public class SpecialOfferServiceTest {
             specialOffer, Collections.emptyList()); // Ensure validation is called
     verify(specialOfferFactory)
         .createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate));
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate));
   }
 
   @Test
@@ -111,11 +104,7 @@ public class SpecialOfferServiceTest {
     when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(existingOffers);
     when(specialOfferFactory.createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate)))
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate)))
         .thenReturn(specialOffer);
 
     specialOfferService.createSpecialOffer(OWNER_ID, RESTAURANT_ID, requestDto);
