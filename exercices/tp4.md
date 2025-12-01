@@ -123,35 +123,28 @@ Au début du projet, nos Pull Requests étaient volumineuses car directement li�
 
 **Résultat observé :** Après avoir implémenté le découpage des issues à mi-parcours, nous avons constaté une amélioration significative de notre fluidité de travail et une réduction des temps d'attente.
 
-### Problématique 2 : Manque de visibilité sur l'avancement et coordination inter-membres
+### Problématique 2 : Gestion des tests et méthodologie de validation
 
 **Description du problème :**
-Bien que nous utilisions GitHub Projects et Discord, il y avait parfois un manque de visibilité sur qui travaillait sur quoi et l'état d'avancement réel des tâches. Certains membres découvraient tardivement qu'un collègue travaillait sur une fonctionnalité connexe, ou qu'une décision architecturale avait été prise sans que tous les concernés soient au courant. Cela créait occasionnellement des doublons d'efforts ou des incohérences dans l'implémentation.
+Nous avons parfois sous-estimé le temps nécessaire pour tester correctement toutes les fonctionnalités des stories. Les tests étaient souvent implémentés sans une méthodologie très précise, ce qui pouvait rallonger le temps nécessaire pour vérifier toutes les fonctionnalités. Bien que cela n'ait pas entraîné d'erreurs majeures dans le code grâce à notre approche préventive, cette situation a créé du stress et un ralentissement dans la validation des stories, particulièrement lors des phases de revue.
 
-**Impact :** Perte de temps sur des tâches redondantes, décisions architecturales re-débattues, besoin de refactoring pour harmoniser le code.
+**Impact :** Stress accru lors de la validation, ralentissement du processus de revue, temps de développement moins prévisible, difficulté à estimer le temps nécessaire pour compléter une story.
 
 **Plan de résolution :**
 
-1. **Stand-ups asynchrones quotidiens** :
-   - Chaque membre poste un message sur Discord avec :
-     - Ce qui a été fait hier
-     - Ce qui sera fait aujourd'hui
-     - Les blocages ou questions éventuels
-   - Format court (3-5 lignes maximum)
-   - Permet une visibilité sans réunions synchrones qui peuvent être chronophages
+1. **Définir une méthodologie de tests claire dès le début du développement** :
+   - Créer une checklist de tests obligatoires pour chaque story, incluant les cas unitaires et d'intégration à vérifier
+   - Définir une métrique de couverture minimale pour valider les PRs avant merge
+   - Structurer le travail pour savoir exactement quelles fonctionnalités tester à chaque étape
+   - Standardiser les approches de test au sein de l'équipe
 
-2. **Documentation des décisions architecturales (ADR - Architecture Decision Records)** :
-   - Créer un fichier `docs/decisions/` dans le repo
-   - Documenter chaque décision architecturale importante avec :
-     - Contexte et problème
-     - Options considérées
-     - Décision prise et justification
-     - Conséquences et compromis
-   - Exemples de décisions à documenter : choix du pattern Repository, stratégie de persistance dual-mode, structure en couches DDD
-   - Référencer ces ADR dans les PRs concernées
-   - Permet aux nouveaux venus (ou membres revenant après une absence) de comprendre le "pourquoi" derrière le code
+2. **Intégration des tests dès le développement (Test-Driven Development adapté)** :
+   - Écrire les tests unitaires et d'intégration le plus tôt possible lors du développement, au fur et à mesure que les fonctionnalités sont développées
+   - Répartir la charge de travail pour détecter rapidement tout problème potentiel
+   - Organiser des mini-revues de tests au sein de l'équipe pour partager les méthodes et s'assurer que chacun suit la même approche
+   - Uniformiser la qualité et réduire le temps global consacré aux tests
 
-**Bénéfices attendus :** Meilleure coordination, réduction des re-discussions, historique des décisions accessible, onboarding facilité.
+**Bénéfices attendus :** Réduction du stress lors des validations, temps de revue plus prévisibles, meilleure confiance dans la qualité du code, processus de validation plus fluide et standardisé.
 
 ---
 
@@ -160,29 +153,87 @@ Décrivez la démarche que vous avez entreprise pour intégrer de nouveaux outil
 
 **Réponse:**
 
-Notre processus d'intégration de nouveaux outils technologiques a varié selon la complexité de l'outil et l'expertise disponible dans l'équipe. Globalement pour l'intégration de chaque nouvelle technologies, nous avons :
-- Évalué le besoin et fait des recherches sur la technologie nécessaire en fonction du problème à résoudre
-- Implémentation d'une version minimale de la nouvelle technologie pour tester l'intégration avec le reste du système (PoC)
-- Adapter le PoC aux standards du projet (clean architecture, tests, etc.) et soumettre une pull request avec une description de la nouvelle technologie et de son implémentation.
-- Code review par plusieurs membres de l'équipe et validation de la réponse au besoin par la technologie.
-- Vérification de la qualité de l'implémentation, merge et premier usages.
+Notre processus d'intégration de nouveaux outils technologiques a varié selon la complexité de l'outil et l'expertise disponible dans l'équipe. Nous avons notamment intégré **Sentry** pour la remontée d'erreurs et **OWASP Dependency Check** comme outil SCA (Software Composition Analysis) pour l'analyse de sécurité et de qualité du code. OWASP permet de scanner le projet à la recherche des principales vulnérabilités connues (CVEs) et génère un rapport à chaque exécution. Nous l'avons intégré dans notre pipeline CI/CD afin qu'il s'exécute automatiquement à chaque push ou merge sur la branche principale.
 
-Nos apprentissages à ce sujet :
-- L'expertise interne accélère considérablement l'intégration
-- L'apprentissage d'outils complexes prend du temps
-- Une architecture propre facilite l'ajout de nouveaux outils
+### Étapes du processus d'intégration :
+
+1. **Évaluation du besoin et recherche**
+   - Identification du problème à résoudre (monitoring d'erreurs, sécurité)
+   - Lecture de la documentation officielle de Sentry et OWASP
+   - Recherche sur les technologies disponibles et leur adéquation avec notre stack
+
+2. **Implémentation d'un Proof of Concept (PoC)**
+   - Configuration initiale de Sentry et d'OWASP dans le projet
+   - Implémentation d'une version minimale pour tester l'intégration avec le reste du système
+   - Tests dans l'environnement de développement local
+
+3. **Intégration dans l'environnement de test et CI/CD**
+   - Intégration progressive dans la pipeline CI/CD
+   - Observation du comportement des outils à chaque exécution
+   - Adaptation du PoC aux standards du projet (clean architecture, tests, etc.)
+
+4. **Analyse et correction**
+   - Analyse des alertes et vulnérabilités remontées par OWASP
+   - Examen des erreurs détectées par Sentry
+   - Application progressive des corrections nécessaires
+
+5. **Validation et déploiement**
+   - Soumission d'une pull request avec description détaillée de la nouvelle technologie
+   - Code review par plusieurs membres de l'équipe
+   - Vérification des fonctionnalités à l'aide de tests unitaires et manuels
+   - Merge et premiers usages en production
 
 ---
 
 **Question:**
 Comment avez-vous réagi aux différents bogues? Avez-vous exploré ces outils à l'aide de tests unitaires ou manuels? Qu'avez-vous appris grâce à cette démarche?
-Quels sont les bons coups de votre équipe? De quelles réalisations êtes-vous fiers? Nommez-en trois.
 
 **Réponse:**
 
-### Gestion des bogues
+### Gestion des bogues et exploration des outils
 
 Notre stratégie de gestion des bogues s'est appuyée principalement sur une **approche préventive par les tests** plutôt que réactive. Grâce à cette démarche, nous n'avons pas rencontré de bugs majeurs durant le développement, mais plutôt des bugs mineurs détectés et résolus avant même d'atteindre la branche principale.
+
+Pour chaque problème détecté par Sentry ou OWASP, nous avons suivi une **approche méthodique** :
+
+1. **Identifier et reproduire l'erreur** : Utilisation des rapports Sentry pour comprendre le contexte de l'erreur et les logs OWASP pour identifier la vulnérabilité
+2. **Analyser la cause racine** : Examen du code concerné ou de la configuration des outils pour comprendre l'origine du problème
+3. **Appliquer les corrections appropriées** : Mise en place de la solution adaptée (correction de code, mise à jour de dépendances, ajustement de configuration)
+4. **Vérifier le bon fonctionnement** : Tests unitaires et manuels pour s'assurer que les ajustements n'affectaient pas le bon fonctionnement du projet et que les outils s'exécutaient correctement
+
+Cette démarche nous a permis de mieux comprendre le comportement et les limites des outils tout en garantissant la stabilité du projet.
+
+### Apprentissages clés
+
+Grâce à l'intégration de Sentry et d'OWASP, nous avons appris plusieurs aspects essentiels :
+
+**1. Intégration structurée d'outils externes**
+- Comment incorporer de nouveaux outils technologiques dans un projet existant de manière structurée et sécurisée
+- La valeur d'avoir des outils automatisés pour détecter les erreurs et vulnérabilités avant qu'elles n'atteignent la production
+- L'importance de configurer et intégrer des outils externes dans une pipeline CI/CD de manière efficace
+
+**2. Analyse et priorisation**
+- Comment analyser les rapports générés par ces outils (stack traces Sentry, CVE reports OWASP)
+- Prioriser les problèmes à corriger en fonction de leur sévérité et impact
+- Vérifier l'impact des ajustements sur le reste du projet avant le déploiement
+
+**3. Culture de tests et qualité**
+- Renforcement de nos compétences en tests unitaires et manuels
+- Comprendre l'importance de tester tôt et souvent pour éviter des problèmes évitables
+- L'expertise interne accélère considérablement l'intégration, tandis que l'apprentissage d'outils complexes prend du temps
+- Une architecture propre facilite l'ajout de nouveaux outils
+
+**4. Contraintes et limites**
+- Mieux comprendre les contraintes et limites des outils utilisés dans un projet réel
+- Apprendre à configurer les seuils d'alerte pour éviter les faux positifs
+- Savoir quand un outil est approprié et quand il ne l'est pas
+
+---
+
+**Question:**
+Quels sont les bons coups de votre équipe? De quelles réalisations êtes-vous fiers? Nommez-en trois.
+
+**Réponse:**
 
 ### Bons coups de l'équipe
 
