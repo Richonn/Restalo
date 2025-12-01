@@ -101,21 +101,159 @@ L'information la plus surprenante concerne **l'importance des contributions non-
 **Question:**
 Décrivez deux problématiques liées à votre processus et proposez deux plans distincts pour les résoudre. Soyez constructifs dans vos critiques et évitez d'attribuer la faute à une personne ou un groupe en particulier.
 
+**Réponse:**
+
+### Problématique 1 : Temps de revue élevé causé par la taille des Pull Requests
+
+**Description du problème :**
+Au début du projet, nos Pull Requests étaient volumineuses car directement liées à des issues de grande taille. Cela entraînait des temps de revue prolongés, parfois jusqu'à 48 heures, créant des périodes d'attente où les développeurs se retrouvaient bloqués pour continuer à avancer sur des fonctionnalités dépendantes. Les reviewers devaient également consacrer beaucoup de temps à examiner de larges changements, ce qui ralentissait la vélocité globale de l'équipe.
+
+**Impact :** Frustration des développeurs en attente, réduction de la productivité, accumulation de PRs en attente de revue, et risque accru de conflits de merge.
+
+**Plan de résolution :**
+
+1. **Décomposition systématique des issues** (ce que nous avons mis en place à mi-parcours) :
+   - Diviser chaque grande fonctionnalité en sous-tâches plus petites dès la phase de planification
+   - Viser des PRs de 200-300 lignes maximum (hors tests et fichiers générés)
+   - Créer des issues intermédiaires qui peuvent être mergées indépendamment
+
+2. **Établir des sessions de revue dédiées** :
+   - Gérer les merge des PRs pendant des réunions de groupe
+   - Prioriser les PRs bloquantes pendant ces sessions
+
+**Résultat observé :** Après avoir implémenté le découpage des issues à mi-parcours, nous avons constaté une amélioration significative de notre fluidité de travail et une réduction des temps d'attente.
+
+### Problématique 2 : Manque de visibilité sur l'avancement et coordination inter-membres
+
+**Description du problème :**
+Bien que nous utilisions GitHub Projects et Discord, il y avait parfois un manque de visibilité sur qui travaillait sur quoi et l'état d'avancement réel des tâches. Certains membres découvraient tardivement qu'un collègue travaillait sur une fonctionnalité connexe, ou qu'une décision architecturale avait été prise sans que tous les concernés soient au courant. Cela créait occasionnellement des doublons d'efforts ou des incohérences dans l'implémentation.
+
+**Impact :** Perte de temps sur des tâches redondantes, décisions architecturales re-débattues, besoin de refactoring pour harmoniser le code.
+
+**Plan de résolution :**
+
+1. **Stand-ups asynchrones quotidiens** :
+   - Chaque membre poste un message sur Discord avec :
+     - Ce qui a été fait hier
+     - Ce qui sera fait aujourd'hui
+     - Les blocages ou questions éventuels
+   - Format court (3-5 lignes maximum)
+   - Permet une visibilité sans réunions synchrones qui peuvent être chronophages
+
+2. **Documentation des décisions architecturales (ADR - Architecture Decision Records)** :
+   - Créer un fichier `docs/decisions/` dans le repo
+   - Documenter chaque décision architecturale importante avec :
+     - Contexte et problème
+     - Options considérées
+     - Décision prise et justification
+     - Conséquences et compromis
+   - Exemples de décisions à documenter : choix du pattern Repository, stratégie de persistance dual-mode, structure en couches DDD
+   - Référencer ces ADR dans les PRs concernées
+   - Permet aux nouveaux venus (ou membres revenant après une absence) de comprendre le "pourquoi" derrière le code
+
+**Bénéfices attendus :** Meilleure coordination, réduction des re-discussions, historique des décisions accessible, onboarding facilité.
+
+---
+
 **Question:**
 Décrivez la démarche que vous avez entreprise pour intégrer de nouveaux outils technologiques. Quelles étaient les étapes du processus?
+
+**Réponse:**
+
+Notre processus d'intégration de nouveaux outils technologiques a varié selon la complexité de l'outil et l'expertise disponible dans l'équipe. Globalement pour l'intégration de chaque nouvelle technologies, nous avons :
+- Évalué le besoin et fait des recherches sur la technologie nécessaire en fonction du problème à résoudre
+- Implémentation d'une version minimale de la nouvelle technologie pour tester l'intégration avec le reste du système (PoC)
+- Adapter le PoC aux standards du projet (clean architecture, tests, etc.) et soumettre une pull request avec une description de la nouvelle technologie et de son implémentation.
+- Code review par plusieurs membres de l'équipe et validation de la réponse au besoin par la technologie.
+- Vérification de la qualité de l'implémentation, merge et premier usages.
+
+Nos apprentissages à ce sujet :
+- L'expertise interne accélère considérablement l'intégration
+- L'apprentissage d'outils complexes prend du temps
+- Une architecture propre facilite l'ajout de nouveaux outils
+
+---
 
 **Question:**
 Comment avez-vous réagi aux différents bogues? Avez-vous exploré ces outils à l'aide de tests unitaires ou manuels? Qu'avez-vous appris grâce à cette démarche?
 Quels sont les bons coups de votre équipe? De quelles réalisations êtes-vous fiers? Nommez-en trois.
 
+**Réponse:**
+
+### Gestion des bogues
+
+Notre stratégie de gestion des bogues s'est appuyée principalement sur une **approche préventive par les tests** plutôt que réactive. Grâce à cette démarche, nous n'avons pas rencontré de bugs majeurs durant le développement, mais plutôt des bugs mineurs détectés et résolus avant même d'atteindre la branche principale.
+
+### Bons coups de l'équipe
+
+**Investissement dans la qualité dès le début**
+
+Dès le départ du projet, nous avons fait le choix stratégique de privilégier la qualité du code et l'établissement de bonnes pratiques plutôt que la vitesse de développement. Cette décision s'est matérialisée par la mise en place des outils de qualité dès le TP1, une architecture propre dès les premières fonctionnalités, et des tests intégrés dès le début.
+Cet investissement initial a payé tout au long du projet. Les TP2, TP3 et TP4 ont été nettement moins chronophages car le code était déjà propre et documenté, l'architecture permettait d'ajouter facilement de nouvelles fonctionnalités, les tests garantissaient la stabilité lors des modifications, et la documentation était à jour et complète.
+
+**Réunion d'équipe quotidienne**
+
+Nous avons établi une cohésion forte dans l'équipe grâce tout d'abord à des réunions quotidiennes qui nous on permis d'apprendre à nous connaître et d'être plus à l'aise. Grâce à cela, la communication dans l'équipe à pu être transparente et permettre d'avancer rapidement et sans risques de tensions au sein de l'équipe
+
+Nous sommes fiers d'avoir réussi à maintenir ce climat sans que cela devienne une source de friction. Au contraire, les reviews étaient perçues comme un moment d'apprentissage, d'amélioration collective et de communication honnête.
+
+**Entraide permanente**
+
+Nous avons instauré un climat d'équipe basé sur l'entraide qui a contribué à une communication honnête de la part de chacun. Cela à permis, dans le cas où quelqu'un rencontrait une difficulté sur la tâche qui lui a été assigné, de rapidemment faire en sorte qu'une autre personne avec moins de difficultés ou plus de temps s'en occupe et par conséquent d'éviter de perdre du temps inutilement.
+
+---
+
 **Question:**
 Quel conseil donneriez-vous aux prochains étudiants qui devront réaliser ce projet?
 
-**Question:**
-Quels apprentissages, astuces ou techniques acquis lors de ce projet pensez-vous pouvoir réutiliser plus tard?
+**Réponse:**
+
+### Conseil principal : Privilégiez la qualité à la quantité dès le départ
+
+L'instinct naturel en début de projet est de vouloir avancer vite, coder rapidement pour "avoir quelque chose qui marche". Cette approche semble productive au début, mais elle crée une dette technique qui se paie très cher plus tard : code difficile à maintenir, bugs difficiles à tracer, impossibilité d'ajouter de nouvelles fonctionnalités sans tout casser.
+
+**Notre recommandation : Prenez directement le temps de bien faire les choses, même si cela semble plus lent au début.**
+
+Vous n'êtes pas notés sur la quantité de code produit, mais sur la qualité du résultat final. Un projet avec 3 fonctionnalités parfaitement implémentées, une architecture propre et maintenable, des tests complets, une documentation claire, et un code qui respecte les standards vaut infiniment mieux qu'un projet avec 10 fonctionnalités mal faites, du code spaghetti, pas de tests, documentation inexistante, et bugs à chaque coin de rue.
+
+Si nous devions refaire ce projet, nous ferions exactement la même chose : investir massivement dans la qualité dès le début. Cette approche nous a permis d'avoir une branche `main` stable en permanence (0 bug majeur), d'ajouter de nouvelles fonctionnalités facilement et avec plaisir, de passer les TP suivants sans stress, d'être fiers du résultat final, et d'apprendre des compétences réellement utiles pour notre carrière.
+
+**Notre conseil final : Ne cherchez pas à aller vite, cherchez à bien faire. La vitesse viendra naturellement une fois que vous aurez de bonnes fondations.**
+
+---
 
 **Question:**
-Décrivez-en au moins deux. Il peut s'agir d'apprentissages techniques, pratiques, liés au travail d'équipe ou encore au processus de développement.
+Quels apprentissages, astuces ou techniques acquis lors de ce projet pensez-vous pouvoir réutiliser plus tard? Décrivez-en au moins deux. Il peut s'agir d'apprentissages techniques, pratiques, liés au travail d'équipe ou encore au processus de développement.
+
+**Réponse:**
+
+### 1. Apprentissage technique : Architecture logicielle en couches et principes du Clean Code
+
+**Compétence acquise :**
+La capacité à concevoir et implémenter une architecture logicielle en couches (layered architecture) en respectant les principes du Domain-Driven Design (DDD) et du Clean Code.
+
+**Concrètement, nous avons appris à :**
+- Structurer un projet en couches avec responsabilités claires
+- Appliquer les principes SOLID
+- Utiliser des Design Patterns appropriés
+- Respecter les conventions Clean Code
+
+**Pourquoi c'est réutilisable :**
+Ces compétences sont fondamentale pour toute carrière en développement logiciel. Les projets professionnels utilisent ces patterns (microservices, architectures hexagonales, DDD). Une architecture propre permet de faire évoluer un projet sur des années. La structure claire améliore la collaboration en équipe. Le code compréhensible réduit le temps de maintenance. Ces principes s'appliquent à tous les langages (Java, C#, Python, TypeScript, etc.).
+
+### 2. Apprentissage pratique : Travail d'équipe efficace avec transparence et communication
+
+**Compétence acquise :**
+La capacité à travailler efficacement en équipe sur un projet de développement logiciel avec des pratiques de collaboration qui minimisent les frictions et maximisent la productivité.
+
+**Concrètement, nous avons appris à :**
+- Établir un cadre de collaboration clair dès le départ
+- Pratiquer la transparence systématique
+- Gérer les conflits et blocages de manière constructive
+- Maintenir la qualité sans sacrifier la vélocité
+
+**Pourquoi c'est réutilisable :**
+Ces compétences sont essentielles dans tout environnement professionnel : travail en entreprise (développement logiciel moderne = travail d'équipe distribué), projets open source (collaboration avec des contributeurs du monde entier), startups (vélocité élevée avec qualité maintenue), grandes entreprises (coordination de multiples équipes sur un même codebase), et remote work (communication asynchrone efficace, de plus en plus courant).
 
 ---
 
