@@ -51,6 +51,132 @@ Comme les calculatrices n'ont pas éliminé les mathématiciens, l'IA ne remplac
 **Question:**
 Identifiez trois pratiques à intégrer dans un processus de développement logiciel afin de réduire les risques de vulnérabilités.
 
+**Réponse:**
+
+Pour réduire les risques de vulnérabilités dans notre processus de développement, nous avons identifié et implémenté trois pratiques de sécurité essentielles :
+
+### 1. Analyse automatique des dépendances (Software Supply Chain Security)
+
+**Domaine :** Software Supply Chain Security
+
+**Description :**
+Cette pratique consiste à scanner automatiquement toutes les dépendances du projet (directes et transitives) pour détecter des vulnérabilités connues avant leur déploiement en production.
+
+**Pourquoi c'est important :**
+- Les applications modernes dépendent de centaines de librairies externes
+- Une seule dépendance vulnérable peut compromettre toute l'application
+- Les nouvelles CVE sont découvertes régulièrement dans des librairies populaires
+- 80% des vulnérabilités proviennent de composants tiers (OWASP Top 10)
+
+**Comment nous l'appliquons :**
+- Utilisation d'OWASP Dependency-Check intégré au pipeline CI/CD
+- Exécution automatique à chaque commit sur les branches principales
+- Analyse de toutes les dépendances Maven (directes et transitives)
+- Corrélation avec la base de données NVD (National Vulnerability Database)
+- Génération de rapports détaillés avec liens vers les CVE et versions corrigées
+- Alertes immédiates en cas de nouvelles vulnérabilités détectées
+
+**Résultat :**
+Cette pratique nous permet de :
+- Identifier rapidement les dépendances vulnérables
+- Prioriser les mises à jour en fonction du score CVSS
+- Maintenir un inventaire à jour de nos dépendances
+- Réduire la surface d'attaque de notre application
+
+---
+
+### 2. Static Application Security Testing - SAST (CI/CD/CS)
+
+**Domaine :** Continuous Security (CI/CD/CS) et DevSecOps
+
+**Description :**
+Le SAST (Static Application Security Testing) est une technique d'analyse du code source sans l'exécuter, permettant de détecter des failles de sécurité dès les premières phases du développement.
+
+**Pourquoi c'est important :**
+- Détecte les vulnérabilités avant l'exécution du code
+- Coût de correction 10x moins élevé en développement qu'en production
+- Identifie les erreurs de programmation courantes (OWASP Top 10)
+- Permet de former les développeurs sur les bonnes pratiques
+
+**Comment nous l'appliquons :**
+- Utilisation de PMD avec les rulesets de sécurité et bonnes pratiques
+- Intégration dans le workflow CI/CD (`.github/workflows/security-scan.yml`)
+- Analyse automatique à chaque commit
+- Détection de :
+  - Injections SQL potentielles
+  - Cross-Site Scripting (XSS)
+  - Hard-coded credentials
+  - Gestion incorrecte des exceptions
+  - Fuites de ressources
+  - Violations de principes SOLID
+
+**Résultat :**
+Cette pratique nous permet de :
+- "Shift left" la sécurité (détecter tôt dans le cycle)
+- Réduire le nombre de bugs en production
+- Améliorer la qualité globale du code
+- Former l'équipe aux bonnes pratiques de sécurité
+
+---
+
+### 3. Gestion sécurisée des secrets (DevSecOps)
+
+**Domaine :** DevSecOps et SSDLC (Secure Software Development Life Cycle)
+
+**Description :**
+Cette pratique vise à empêcher l'exposition de credentials, API keys, tokens et autres informations sensibles dans le code source ou l'historique Git.
+
+**Pourquoi c'est important :**
+- Les secrets commitées sont accessibles dans tout l'historique Git (même après suppression)
+- Les repos publics sont scannés automatiquement par des bots malveillants
+- Une seule clé API exposée peut compromettre tout le système
+- Conformité avec les standards de sécurité (PCI-DSS, SOC2, ISO 27001)
+
+**Comment nous l'appliquons :**
+- Utilisation de GitHub Secrets pour stocker les clés sensibles :
+  - `NVD_API_KEY` pour l'accès à la base de données NVD
+  - Variables d'environnement pour les credentials MongoDB
+- Fichiers `.env` exclus du versioning (`.gitignore`)
+- Template `.env.example` pour documenter les variables nécessaires sans exposer les valeurs
+- Injection des secrets uniquement au runtime via variables d'environnement
+- Configuration Maven utilisant `${env.VARIABLE}` au lieu de valeurs en dur
+
+**Exemple d'implémentation :**
+```xml
+<!-- pom.xml - Utilisation sécurisée de l'API key -->
+<configuration>
+    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+</configuration>
+```
+
+```yaml
+# .github/workflows/security-scan.yml - Injection du secret
+- name: Run OWASP Dependency-Check
+  env:
+    NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+  run: mvn dependency-check:check
+```
+
+**Résultat :**
+Cette pratique nous permet de :
+- Protéger les credentials de l'équipe et du projet
+- Faciliter la rotation des secrets (changement sans commit)
+- Respecter le principe de séparation des responsabilités
+- Éviter les fuites de données sensibles
+- Conformité avec les standards de sécurité
+
+---
+
+## Conclusion
+
+L'intégration de ces trois pratiques dans notre processus de développement nous permet de :
+- Détecter et corriger les vulnérabilités en amont
+- Réduire significativement les risques de sécurité
+- Améliorer la qualité globale du code
+- Créer une culture de sécurité au sein de l'équipe
+
+Ces pratiques s'inscrivent dans une démarche DevSecOps où la sécurité est intégrée dès le début du cycle de développement plutôt que d'être ajoutée en fin de processus.
+
 ---
 
 ## Open sourcing
