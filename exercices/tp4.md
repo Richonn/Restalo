@@ -13,11 +13,13 @@ Pour ce projet, certains membres de l'équipe ont utilisé **ChatGPT** d'OpenAI 
 ### Comment nous avons intégré l'IA dans notre travail
 - Nous avons demandé à ChatGPT d'aider à subdiviser et structurer les étapes globales du travail.
 - Nous avons utilisé ChatGPT pour générer des exemples de commandes `curl` pour tester l'API REST.
+- Pour comprendre certains aspect technique nouveaux.
 
 ### Rôle de l'IA dans la réalisation du projet
 - L'IA a servi d'assistant pour organiser le projet en sous-tâches et faciliter la compréhension des interactions avec l'API.
-- Elle a facilité la mise en place des tests à l'aide du terminal.
+- Elle a facilité la mise en place des tests.
 - Elle a fourni des suggestions pour améliorer la clarté du code et la validation des données.
+- Elle a aidé dans la compréhension d'erreurs de compilation.
 
 ### Principal avantage qu'offre une telle technologie
 Le principal avantage de l'IA pour les développeurs est l'accélération significative du développement en automatisant les tâches répétitives et en fournissant une assistance instantanée.
@@ -33,14 +35,16 @@ Il y a plusieurs dangers potentiels à l'utilisation de l'IA :
 - Qualité et fiabilité du code : Le code généré peut contenir des bugs subtils, des failles de sécurité, des mauvaises pratiques et l'IA peut "halluciner".
 - Dépendance et compétences : Risque de dépendance excessive qui peut freiner l'apprentissage des fondamentaux pour les développeurs débutants.
 - Sécurité et confidentialité : Risque d'exposer du code propriétaire ou sensible selon l'outil utilisé.
-L'utilisation d'un tel outil nécessite une revue critique et des tests rigoureux. Elle doit rester un assistant et non pas comme un remplaçant.
+- Manque de pris en compte du contexte : Un LLM ne comprend pas toujours les aspects contextuels, éthiques et humains d'un problème. Cela peut mener à des réponses inadaptées ou trop génériques, sans tenir compte des spécificités du projet ou des enjeux plus larges.
+
+L'utilisation d'un tel outil nécessite une revue critique et des tests rigoureux. Elle doit rester un assistant et non pas comme un remplaçant. Son utilisation doit donc être transformationnelle, impliquant une évaluation continue des résultats produits.
 
 ### Aura-t-on toujours besoin de spécialistes en développement logiciel malgré cette technologie
 On aura toujours besoin de spécialistes en développement logiciel, mais le rôle évolue.
 L'architecture logicielle complexe nécessite une vision d'ensemble et une expertise que l'IA n'a pas. L'IA manque toujours de compétences pour résoudre de nouveaux problèmes qui sortent des patterns habituels.
 Quelqu'un devra toujours évaluer, réviser et valider le code généré par l'IA.
 Les développeurs deviennent plus des "architectes" et "superviseurs" que des "codeurs" qui passent plus de temps sur la conception, l'innovation et la résolution de problèmes complexes.
-Comme les calculatrices n'ont pas éliminé les mathématiciens, l'IA ne remplacera pas les développeurs.
+Comme les calculatrices n'ont pas éliminé les mathématiciens, l'IA ne remplacera pas les développeurs. Leur capacité à résoudre des problèmes complexes, à travailler de manière collaborative et à adapter les technologies aux besoins spécifiques de chaque projet est irremplaçable.
 
 **Nous certifions que le code soumis est le fruit de notre travail personnel, avec l'appui de l'outil mentionné**.
 
