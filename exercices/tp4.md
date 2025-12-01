@@ -469,33 +469,73 @@ Quels apprentissages, astuces ou techniques acquis lors de ce projet pensez-vous
 
 **Réponse:**
 
-### 1. Apprentissage technique : Architecture logicielle en couches et principes du Clean Code
+### 1. Architecture logicielle en couches et principes du Clean Code
 
 **Compétence acquise :**
-La capacité à concevoir et implémenter une architecture logicielle en couches (layered architecture) en respectant les principes du Domain-Driven Design (DDD) et du Clean Code.
+
+La capacité à concevoir et implémenter une architecture logicielle en couches (layered architecture) en respectant les principes du Domain-Driven Design (DDD) et du Clean Code. Ce projet nous a montré qu'une architecture claire, avec des couches bien séparées (API, application, domaine, infrastructure), facilite la lisibilité, la maintenance et l'implémentation de nouvelles fonctionnalités ou modifications.
 
 **Concrètement, nous avons appris à :**
-- Structurer un projet en couches avec responsabilités claires
-- Appliquer les principes SOLID
-- Utiliser des Design Patterns appropriés
-- Respecter les conventions Clean Code
+- Structurer un projet en couches avec des responsabilités claires et une séparation nette des préoccupations
+- Appliquer les principes SOLID pour un code maintenable et extensible
+- Utiliser des Design Patterns appropriés (Repository, Factory, Domain Services)
+- Respecter les conventions Clean Code pour améliorer la lisibilité et la collaboration
 
 **Pourquoi c'est réutilisable :**
-Ces compétences sont fondamentale pour toute carrière en développement logiciel. Les projets professionnels utilisent ces patterns (microservices, architectures hexagonales, DDD). Une architecture propre permet de faire évoluer un projet sur des années. La structure claire améliore la collaboration en équipe. Le code compréhensible réduit le temps de maintenance. Ces principes s'appliquent à tous les langages (Java, C#, Python, TypeScript, etc.).
 
-### 2. Apprentissage pratique : Travail d'équipe efficace avec transparence et communication
+Cette bonne pratique sera précieuse dans tous nos futurs projets pour rendre le code plus compréhensible, collaboratif et adaptable aux changements. Les projets professionnels utilisent ces patterns (microservices, architectures hexagonales, DDD). Une architecture propre permet de faire évoluer un projet sur des années sans accumulation de dette technique. La structure claire améliore la collaboration en équipe et facilite l'onboarding de nouveaux membres. Ces principes s'appliquent à tous les langages et technologies (Java, C#, Python, TypeScript, etc.).
+
+### 2. Tests en amont, intégration continue et qualité du code
 
 **Compétence acquise :**
-La capacité à travailler efficacement en équipe sur un projet de développement logiciel avec des pratiques de collaboration qui minimisent les frictions et maximisent la productivité.
+
+Écrire les tests unitaires et d'intégration dès le début du développement et mettre en place une pipeline CI/CD complète a été un apprentissage clé. Cette approche nous a permis de détecter rapidement les erreurs ou vulnérabilités, de sécuriser la qualité du code et de réduire le stress lié à la validation des fonctionnalités.
 
 **Concrètement, nous avons appris à :**
-- Établir un cadre de collaboration clair dès le départ
-- Pratiquer la transparence systématique
+- Intégrer les tests dès le développement plutôt que de les considérer comme une tâche à faire "plus tard"
+- Configurer une pipeline CI/CD avec des vérifications automatiques (tests, linting, analyse de sécurité)
+- Utiliser des outils comme OWASP Dependency Check pour l'analyse de sécurité et la détection de vulnérabilités
+- Utiliser Sentry pour le monitoring des erreurs en production et la détection rapide des problèmes
+- Établir des métriques de couverture de code pour garantir la qualité
+
+**Pourquoi c'est réutilisable :**
+
+Cette approche combinée pourra être appliquée dans tous nos projets futurs pour garantir un développement fiable, sûr et efficace. Les tests automatisés et la CI/CD sont devenus des standards de l'industrie et sont essentiels pour tout projet professionnel. Cette compétence nous permet de détecter rapidement les vulnérabilités et problèmes potentiels, de prioriser les corrections et de livrer du code de qualité avec confiance.
+
+### 3. Planification et gestion des tâches avec GitHub Projects
+
+**Compétence acquise :**
+
+L'importance de planifier et de suivre les tâches dès le départ en utilisant des outils de gestion de projet adaptés. L'utilisation de GitHub Projects pour organiser les issues, milestones et PRs a permis de visualiser les dépendances entre les tâches et de découper les fonctionnalités en sous-tâches faciles à traiter.
+
+**Concrètement, nous avons appris à :**
+- Créer et organiser des issues claires et bien découpées
+- Structurer le travail en milestones avec des objectifs précis
+- Visualiser et gérer les dépendances entre les tâches pour éviter les blocages
+- Découper les grandes fonctionnalités en sous-tâches indépendantes
+- Utiliser des labels et des workflows pour suivre l'avancement du projet
+
+**Pourquoi c'est réutilisable :**
+
+Cette approche assure un flux de travail plus fluide et permet à chaque membre de progresser même si certaines parties du projet ne sont pas encore terminées. Nous pourrons réutiliser cette méthode dans tous nos futurs projets pour améliorer la coordination, éviter les blocages liés aux dépendances et maintenir une visibilité claire sur l'avancement. Ces compétences en gestion de projet sont transférables à d'autres outils (Jira, Linear, etc.) et sont essentielles dans tout environnement professionnel.
+
+### 4. Communication et travail d'équipe efficace
+
+**Compétence acquise :**
+
+La capacité à travailler efficacement en équipe sur un projet de développement logiciel avec des pratiques de collaboration qui minimisent les frictions et maximisent la productivité. Le projet a mis en évidence l'importance de réunions régulières, de revues de PR collaboratives et d'une communication transparente.
+
+**Concrètement, nous avons appris à :**
+- Organiser des réunions régulières pour partager l'avancement et identifier rapidement les blocages
+- Pratiquer la transparence systématique dans la communication
+- Conduire des revues de PR constructives qui renforcent la cohésion de l'équipe et améliorent la qualité du code
+- Discuter des dépendances entre tâches de manière proactive
 - Gérer les conflits et blocages de manière constructive
 - Maintenir la qualité sans sacrifier la vélocité
 
 **Pourquoi c'est réutilisable :**
-Ces compétences sont essentielles dans tout environnement professionnel : travail en entreprise (développement logiciel moderne = travail d'équipe distribué), projets open source (collaboration avec des contributeurs du monde entier), startups (vélocité élevée avec qualité maintenue), grandes entreprises (coordination de multiples équipes sur un même codebase), et remote work (communication asynchrone efficace, de plus en plus courant).
+
+Cette approche proactive pourra être réutilisée dans n'importe quelle équipe pour faciliter la collaboration et réduire les malentendus. Ces compétences sont essentielles dans tout environnement professionnel : travail en entreprise (développement logiciel moderne = travail d'équipe distribué), projets open source (collaboration avec des contributeurs du monde entier), startups (vélocité élevée avec qualité maintenue), grandes entreprises (coordination de multiples équipes sur un même codebase), et remote work (communication asynchrone efficace, de plus en plus courant).
 
 ---
 
