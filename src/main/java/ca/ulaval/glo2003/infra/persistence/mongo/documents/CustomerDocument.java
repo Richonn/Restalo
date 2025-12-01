@@ -1,8 +1,8 @@
 package ca.ulaval.glo2003.infra.persistence.mongo.documents;
 
-import dev.morphia.annotations.Embedded;
+import dev.morphia.annotations.Entity;
 
-@Embedded
+@Entity
 public class CustomerDocument {
   private String name;
   private String email;

@@ -1,5 +1,6 @@
 package ca.ulaval.glo2003.api.ressources.specialOffer;
 
+import ca.ulaval.glo2003.api.constants.ApiValidationMessages;
 import ca.ulaval.glo2003.api.dto.request.SpecialOfferRequestDto;
 import ca.ulaval.glo2003.application.specialOffer.SpecialOfferService;
 import jakarta.inject.Inject;
@@ -29,7 +30,10 @@ public class SpecialOfferResource {
   @POST
   @Path("restaurants/{id}/special-offers")
   public Response createSpecialOffer(
-      @NotNull @NotBlank @HeaderParam(OWNER_HEADER) String ownerId,
+      @NotNull(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @NotBlank(message = ApiValidationMessages.MISSING_OWNER_HEADER)
+          @HeaderParam(OWNER_HEADER)
+          String ownerId,
       @PathParam("id") String restaurantId,
       @Valid @NotNull SpecialOfferRequestDto request) {
     String offerId = specialOfferService.createSpecialOffer(ownerId, restaurantId, request);

@@ -19,8 +19,6 @@ public class MongoSpecialOfferRepository implements SpecialOfferRepository {
   @Inject
   public MongoSpecialOfferRepository(MongoConnection mongoConnection) {
     this.datastore = mongoConnection.getDatastore();
-    datastore.getMapper().map(SpecialOfferDocument.class);
-    datastore.ensureIndexes();
   }
 
   @Override
