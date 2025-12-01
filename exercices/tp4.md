@@ -363,20 +363,59 @@ Quels sont les bons coups de votre équipe? De quelles réalisations êtes-vous 
 
 ### Bons coups de l'équipe
 
-**Investissement dans la qualité dès le début**
+**1. Une architecture propre et bien structurée dès le début**
 
-Dès le départ du projet, nous avons fait le choix stratégique de privilégier la qualité du code et l'établissement de bonnes pratiques plutôt que la vitesse de développement. Cette décision s'est matérialisée par la mise en place des outils de qualité dès le TP1, une architecture propre dès les premières fonctionnalités, et des tests intégrés dès le début.
-Cet investissement initial a payé tout au long du projet. Les TP2, TP3 et TP4 ont été nettement moins chronophages car le code était déjà propre et documenté, l'architecture permettait d'ajouter facilement de nouvelles fonctionnalités, les tests garantissaient la stabilité lors des modifications, et la documentation était à jour et complète.
+Dès le départ du projet, nous avons fait le choix stratégique de privilégier la qualité du code et l'établissement de bonnes pratiques plutôt que la vitesse de développement. Nous avons réussi à séparer clairement les différentes couches du projet (API, application, domaine, infrastructure), ce qui a amélioré la lisibilité du code et facilité sa maintenance.
 
-**Réunion d'équipe quotidienne**
+Cette décision s'est matérialisée par :
+- La mise en place d'une architecture propre dès les premières fonctionnalités
+- Des tests unitaires et d'intégration intégrés dès le début
+- Une documentation claire et à jour tout au long du projet
 
-Nous avons établi une cohésion forte dans l'équipe grâce tout d'abord à des réunions quotidiennes qui nous on permis d'apprendre à nous connaître et d'être plus à l'aise. Grâce à cela, la communication dans l'équipe à pu être transparente et permettre d'avancer rapidement et sans risques de tensions au sein de l'équipe
+Cet investissement initial a payé tout au long du projet. Les TP2, TP3 et TP4 ont été nettement moins chronophages car :
+- Le code était déjà propre et documenté
+- L'architecture permettait d'ajouter facilement de nouvelles fonctionnalités
+- Les tests garantissaient la stabilité lors des modifications
+- Chaque membre de l'équipe pouvait mieux comprendre le fonctionnement du projet et collaborer plus efficacement
 
-Nous sommes fiers d'avoir réussi à maintenir ce climat sans que cela devienne une source de friction. Au contraire, les reviews étaient perçues comme un moment d'apprentissage, d'amélioration collective et de communication honnête.
+Cette organisation a facilité l'implémentation des nouvelles fonctionnalités et modifications, tout en assurant que le reste du code restait stable et fonctionnel.
 
-**Entraide permanente**
+**2. Une pipeline CI/CD complète et une organisation GitHub rigoureuse**
 
-Nous avons instauré un climat d'équipe basé sur l'entraide qui a contribué à une communication honnête de la part de chacun. Cela à permis, dans le cas où quelqu'un rencontrait une difficulté sur la tâche qui lui a été assigné, de rapidemment faire en sorte qu'une autre personne avec moins de difficultés ou plus de temps s'en occupe et par conséquent d'éviter de perdre du temps inutilement.
+Nous sommes fiers d'avoir mis en place une infrastructure de développement professionnelle et complète :
+
+**Pipeline CI/CD automatisée :**
+- Intégration de tests unitaires et d'intégration exécutés automatiquement
+- Outils de sécurité comme OWASP Dependency Check pour détecter les vulnérabilités
+- Monitoring en temps réel avec Sentry pour capturer et analyser les erreurs
+- Vérifications automatiques à chaque push et merge
+
+**Organisation GitHub collaborative :**
+- GitHub Project clair et à jour tout au long du projet
+- Issues bien découpées et structurées avec des milestones
+- Pull Requests revues de manière proactive et collaborative
+- Processus de code review rigoureux perçu comme un moment d'apprentissage
+
+Ces processus automatisés ont renforcé la qualité du code et assuré que chaque mise à jour passait automatiquement par des vérifications essentielles. Ils ont également permis à l'équipe de travailler avec plus de confiance et de fluidité, sachant que les changements étaient validés et surveillés automatiquement. Cette organisation nous a permis de mieux coordonner notre travail et d'avancer efficacement tout au long du projet.
+
+**3. Une collaboration d'équipe exceptionnelle basée sur la transparence et l'entraide**
+
+Nous avons établi une cohésion forte dans l'équipe grâce à plusieurs pratiques clés :
+
+**Réunions quotidiennes et communication transparente :**
+- Réunions d'équipe quotidiennes qui nous ont permis d'apprendre à nous connaître et d'être plus à l'aise
+- Communication transparente qui a permis d'avancer rapidement et sans risques de tensions
+- Au fil du projet, cette collaboration régulière a renforcé la confiance entre les membres de l'équipe
+
+**Entraide permanente et responsabilité collective :**
+- Climat d'équipe basé sur l'entraide et la communication honnête
+- Dans le cas où quelqu'un rencontrait une difficulté sur sa tâche, une autre personne avec moins de difficultés ou plus de temps pouvait rapidement s'en occuper
+- Cela a permis d'éviter de perdre du temps inutilement et de maintenir la vélocité de l'équipe
+
+**Culture de feedback constructif :**
+- Les code reviews étaient perçues comme un moment d'apprentissage, d'amélioration collective et de communication honnête
+- Nous sommes fiers d'avoir réussi à maintenir ce climat sans que cela devienne une source de friction
+- Au contraire, chaque feedback était une opportunité de progresser ensemble
 
 ---
 
@@ -862,4 +901,3 @@ public Response toResponse(Exception exception) {
 - **2 implémentations** par repository : InMemory (dev/test) + MongoDB (production)
 - **Switch runtime** : Basé sur variable d'environnement via `PersistenceConfig`
 - **Pattern Strategy** : Choix de l'implémentation à l'exécution
-
