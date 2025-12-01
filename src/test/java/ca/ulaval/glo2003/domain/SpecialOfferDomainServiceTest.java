@@ -19,17 +19,27 @@ import org.mockito.MockitoAnnotations;
 
 public class SpecialOfferDomainServiceTest {
 
+  private static final String RESTAURANT_ID = "restaurant-1";
+  private static final String WINTER_SPECIAL_TITLE = "Winter Special";
+  private static final String WINTER_SPECIAL_DESCRIPTION = "Winter discount menu";
+  private static final String SUMMER_SPECIAL_TITLE = "Summer Special";
+  private static final String SUMMER_SPECIAL_DESCRIPTION = "Summer discount menu";
+  private static final String AUTUMN_SPECIAL_TITLE = "Autumn Special";
+  private static final String AUTUMN_SPECIAL_DESCRIPTION = "Autumn menu";
+  private static final String OVERLAP_ERROR_MESSAGE =
+      "A special offer already exists for this period.";
+  private static final String INVALID_RESTAURANT_ID = "nonexistent-restaurant";
+
+  private static final LocalDate DATE_START = LocalDate.of(2024, 12, 1);
+  private static final LocalDate DATE_END = LocalDate.of(2024, 12, 31);
+  private static final LocalDate DATE_OVERLAP_START = LocalDate.of(2024, 12, 5);
+  private static final LocalDate DATE_OVERLAP_END = LocalDate.of(2024, 12, 15);
+
   @Mock private SpecialOfferRepository specialOfferRepository;
 
   @InjectMocks private SpecialOfferDomainService specialOfferDomainService;
 
   private SpecialOfferFactory specialOfferFactory;
-
-  private static final String OVERLAP_ERROR_MESSAGE =
-      "A special offer already exists for this period.";
-
-  private static final String INVALID_PARAMETER_ERROR_MESSAGE =
-      "Un des paramètres n'est pas valide";
 
   @BeforeEach
   public void setUp() {
@@ -41,22 +51,18 @@ public class SpecialOfferDomainServiceTest {
   void givenValidOffer_whenValidateNoOverlappingOffers_thenNoException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Winter Special",
-            "Winter discount menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            RESTAURANT_ID, WINTER_SPECIAL_TITLE, WINTER_SPECIAL_DESCRIPTION, DATE_START, DATE_END);
 
     List<SpecialOffer> existingOffers = new ArrayList<>();
     existingOffers.add(
         new SpecialOffer(
-            "restaurant-1",
-            "Summer Special",
-            "Summer discount menu",
+            RESTAURANT_ID,
+            SUMMER_SPECIAL_TITLE,
+            SUMMER_SPECIAL_DESCRIPTION,
             LocalDate.of(2024, 6, 1),
             LocalDate.of(2024, 6, 30)));
 
-    when(specialOfferRepository.getSpecialOffersByRestaurantId("restaurant-1"))
+    when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(existingOffers);
 
     assertDoesNotThrow(
@@ -67,22 +73,22 @@ public class SpecialOfferDomainServiceTest {
   void givenOverlappingOffer_whenValidateNoOverlappingOffers_thenThrowsInvalidParameterException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Winter Special",
-            "Winter discount menu",
+            RESTAURANT_ID,
+            WINTER_SPECIAL_TITLE,
+            WINTER_SPECIAL_DESCRIPTION,
             LocalDate.of(2024, 12, 10),
             LocalDate.of(2024, 12, 20));
 
     List<SpecialOffer> existingOffers = new ArrayList<>();
     existingOffers.add(
         new SpecialOffer(
-            "restaurant-1",
-            "Autumn Special",
-            "Autumn menu",
-            LocalDate.of(2024, 12, 5),
-            LocalDate.of(2024, 12, 15)));
+            RESTAURANT_ID,
+            AUTUMN_SPECIAL_TITLE,
+            AUTUMN_SPECIAL_DESCRIPTION,
+            DATE_OVERLAP_START,
+            DATE_OVERLAP_END));
 
-    when(specialOfferRepository.getSpecialOffersByRestaurantId("restaurant-1"))
+    when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(existingOffers);
 
     InvalidParameterException exception =
@@ -97,22 +103,14 @@ public class SpecialOfferDomainServiceTest {
   void givenIdenticalOffer_whenValidateNoOverlappingOffers_thenThrowsInvalidParameterException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Winter Special",
-            "Winter discount menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            RESTAURANT_ID, WINTER_SPECIAL_TITLE, WINTER_SPECIAL_DESCRIPTION, DATE_START, DATE_END);
 
     List<SpecialOffer> existingOffers = new ArrayList<>();
     existingOffers.add(
         new SpecialOffer(
-            "restaurant-1",
-            "Winter Special",
-            "Winter discount menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31)));
+            RESTAURANT_ID, WINTER_SPECIAL_TITLE, WINTER_SPECIAL_DESCRIPTION, DATE_START, DATE_END));
 
-    when(specialOfferRepository.getSpecialOffersByRestaurantId("restaurant-1"))
+    when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(existingOffers);
 
     InvalidParameterException exception =
@@ -128,11 +126,7 @@ public class SpecialOfferDomainServiceTest {
     assertDoesNotThrow(
         () ->
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
-                "",
-                "Winter discount menu",
-                LocalDate.of(2024, 12, 1),
-                LocalDate.of(2024, 12, 31)));
+                RESTAURANT_ID, "", WINTER_SPECIAL_DESCRIPTION, DATE_START, DATE_END));
   }
 
   @Test
@@ -142,23 +136,23 @@ public class SpecialOfferDomainServiceTest {
         InvalidParameterException.class,
         () ->
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
-                "Winter Special",
-                "Winter discount menu",
-                LocalDate.of(2024, 12, 31),
-                LocalDate.of(2024, 12, 1)));
+                RESTAURANT_ID,
+                WINTER_SPECIAL_TITLE,
+                WINTER_SPECIAL_DESCRIPTION,
+                DATE_END,
+                DATE_START));
   }
 
   @Test
   void givenNonExistentRestaurant_whenCreateSpecialOffer_thenNoException() {
-    String nonExistentRestaurantId = "nonexistent-restaurant";
+    String nonExistentRestaurantId = INVALID_RESTAURANT_ID;
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
             nonExistentRestaurantId,
-            "Winter Special",
-            "Winter discount menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            WINTER_SPECIAL_TITLE,
+            WINTER_SPECIAL_DESCRIPTION,
+            DATE_START,
+            DATE_END);
 
     when(specialOfferRepository.getSpecialOffersByRestaurantId(nonExistentRestaurantId))
         .thenReturn(new ArrayList<>());
@@ -171,14 +165,14 @@ public class SpecialOfferDomainServiceTest {
   void givenOfferStartingOnExistingOfferEnd_thenThrowsException() {
     SpecialOffer existingOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Summer Special",
+            RESTAURANT_ID,
+            SUMMER_SPECIAL_TITLE,
             "desc",
             LocalDate.of(2024, 6, 1),
             LocalDate.of(2024, 6, 30));
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "July Special",
             "desc",
             LocalDate.of(2024, 6, 30),
@@ -197,14 +191,14 @@ public class SpecialOfferDomainServiceTest {
   void givenOfferEndingOnExistingOfferStart_thenThrowsException() {
     SpecialOffer existingOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "July Special",
             "desc",
             LocalDate.of(2024, 7, 1),
             LocalDate.of(2024, 7, 15));
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "June Special",
             "desc",
             LocalDate.of(2024, 6, 20),
@@ -223,19 +217,15 @@ public class SpecialOfferDomainServiceTest {
   void givenOfferCompletelyInsideExistingOffer_thenThrowsException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "Inside Offer",
             "Description",
             LocalDate.of(2024, 12, 10),
-            LocalDate.of(2024, 12, 15));
+            DATE_OVERLAP_END);
     List<SpecialOffer> existingOffers =
         List.of(
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
-                "Winter Offer",
-                "Description",
-                LocalDate.of(2024, 12, 1),
-                LocalDate.of(2024, 12, 31)));
+                RESTAURANT_ID, "Winter Offer", "Description", DATE_START, DATE_END));
 
     InvalidParameterException exception =
         assertThrows(
@@ -249,19 +239,15 @@ public class SpecialOfferDomainServiceTest {
   void givenOfferCompletelyCoversExistingOffer_thenThrowsException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Big Offer",
-            "Description",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            RESTAURANT_ID, "Big Offer", "Description", DATE_START, DATE_END);
     List<SpecialOffer> existingOffers =
         List.of(
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
+                RESTAURANT_ID,
                 "Short Offer",
                 "Description",
                 LocalDate.of(2024, 12, 10),
-                LocalDate.of(2024, 12, 15)));
+                DATE_OVERLAP_END));
 
     InvalidParameterException exception =
         assertThrows(
@@ -275,21 +261,21 @@ public class SpecialOfferDomainServiceTest {
   void givenOfferOverlappingWithMultipleExistingOffers_thenThrowsException() {
     SpecialOffer offer1 =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "Spring Special",
             "desc",
             LocalDate.of(2024, 3, 1),
             LocalDate.of(2024, 3, 31));
     SpecialOffer offer2 =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
-            "Summer Special",
+            RESTAURANT_ID,
+            SUMMER_SPECIAL_TITLE,
             "desc",
             LocalDate.of(2024, 6, 1),
             LocalDate.of(2024, 6, 30));
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "Summer Overlap",
             "desc",
             LocalDate.of(2024, 6, 15),
@@ -308,7 +294,7 @@ public class SpecialOfferDomainServiceTest {
   void givenMultipleNonOverlappingExistingOffers_thenNoException() {
     SpecialOffer newOffer =
         specialOfferFactory.createSpecialOffer(
-            "restaurant-1",
+            RESTAURANT_ID,
             "New Offer",
             "desc",
             LocalDate.of(2024, 8, 1),
@@ -316,13 +302,13 @@ public class SpecialOfferDomainServiceTest {
     List<SpecialOffer> existingOffers =
         List.of(
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
+                RESTAURANT_ID,
                 "Offer 1",
                 "desc",
                 LocalDate.of(2024, 6, 1),
                 LocalDate.of(2024, 6, 15)),
             specialOfferFactory.createSpecialOffer(
-                "restaurant-1",
+                RESTAURANT_ID,
                 "Offer 2",
                 "desc",
                 LocalDate.of(2024, 7, 1),

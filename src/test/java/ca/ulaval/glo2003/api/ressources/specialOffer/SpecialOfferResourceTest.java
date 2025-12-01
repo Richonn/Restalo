@@ -18,6 +18,7 @@ public class SpecialOfferResourceTest {
 
   private static final String OWNER_ID = "owner-123";
   private static final String RESTAURANT_ID = "restaurant-123";
+  private static final String OFFER_ID = "offer-123";
 
   @BeforeEach
   void setUp() {
@@ -31,13 +32,13 @@ public class SpecialOfferResourceTest {
     SpecialOfferRequestDto requestDto = fixture.givenValidSpecialOfferRequest();
 
     when(specialOfferService.createSpecialOffer(OWNER_ID, RESTAURANT_ID, requestDto))
-        .thenReturn("offer-123");
+        .thenReturn(OFFER_ID);
 
     Response response = resource.createSpecialOffer(OWNER_ID, RESTAURANT_ID, requestDto);
 
     assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
     assertNotNull(response.getHeaderString("Location"));
-    assertTrue(response.getHeaderString("Location").contains("offer-123"));
+    assertTrue(response.getHeaderString("Location").contains(OFFER_ID));
 
     verify(specialOfferService).createSpecialOffer(OWNER_ID, RESTAURANT_ID, requestDto);
   }

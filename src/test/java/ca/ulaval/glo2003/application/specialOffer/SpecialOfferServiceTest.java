@@ -21,6 +21,12 @@ import org.junit.jupiter.api.Test;
 
 public class SpecialOfferServiceTest {
 
+  private final String TITLE = "Special Pizza";
+  private final String DESCRIPTION = "50% off large pizza";
+  private final String OWNER_ID = "owner-123";
+  private final String RESTAURANT_ID = "restaurant-123";
+  private static final String OFFER_ID = "offer-123";
+
   private final RestaurantRepository restaurantRepository = mock(RestaurantRepository.class);
   private final SpecialOfferFactory specialOfferFactory = mock(SpecialOfferFactory.class);
   private final SpecialOfferRepository specialOfferRepository = mock(SpecialOfferRepository.class);
@@ -29,10 +35,6 @@ public class SpecialOfferServiceTest {
 
   private SpecialOfferService specialOfferService;
 
-  private final String TITLE = "Special Pizza";
-  private final String DESCRIPTION = "50% off large pizza";
-  private final String OWNER_ID = "owner-123";
-  private final String RESTAURANT_ID = "restaurant-123";
   private SpecialOfferRequestDto requestDto;
   private final Restaurant restaurant = mock(Restaurant.class);
   private final SpecialOffer specialOffer = mock(SpecialOffer.class);
@@ -58,7 +60,7 @@ public class SpecialOfferServiceTest {
 
   @Test
   void givenValidOwnerAndRestaurant_whenCreateSpecialOffer_thenReturnId() {
-    String expectedId = "offer-123";
+    String expectedId = OFFER_ID;
 
     when(restaurantRepository.getRestaurantByIdOfOwner(OWNER_ID, RESTAURANT_ID))
         .thenReturn(restaurant);
@@ -78,8 +80,7 @@ public class SpecialOfferServiceTest {
     assertThat(actualId).isEqualTo(expectedId);
     verify(specialOfferRepository).save(specialOffer);
     verify(specialOfferDomainService)
-        .validateNoOverlappingOffers(
-            specialOffer, Collections.emptyList()); // Ensure validation is called
+        .validateNoOverlappingOffers(specialOffer, Collections.emptyList());
     verify(specialOfferFactory)
         .createSpecialOffer(
             eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate));
