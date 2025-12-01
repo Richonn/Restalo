@@ -21,6 +21,12 @@ import org.junit.jupiter.api.Test;
 
 public class SpecialOfferServiceTest {
 
+  private final String TITLE = "Special Pizza";
+  private final String DESCRIPTION = "50% off large pizza";
+  private final String OWNER_ID = "owner-123";
+  private final String RESTAURANT_ID = "restaurant-123";
+  private static final String OFFER_ID = "offer-123";
+
   private final RestaurantRepository restaurantRepository = mock(RestaurantRepository.class);
   private final SpecialOfferFactory specialOfferFactory = mock(SpecialOfferFactory.class);
   private final SpecialOfferRepository specialOfferRepository = mock(SpecialOfferRepository.class);
@@ -29,8 +35,6 @@ public class SpecialOfferServiceTest {
 
   private SpecialOfferService specialOfferService;
 
-  private final String OWNER_ID = "owner-123";
-  private final String RESTAURANT_ID = "restaurant-123";
   private SpecialOfferRequestDto requestDto;
   private final Restaurant restaurant = mock(Restaurant.class);
   private final SpecialOffer specialOffer = mock(SpecialOffer.class);
@@ -50,25 +54,20 @@ public class SpecialOfferServiceTest {
     startDate = LocalDate.now();
     endDate = startDate.plusDays(7);
 
-    SpecialOfferDto offerDto =
-        new SpecialOfferDto("Special Pizza", "50% off large pizza", startDate, endDate);
+    SpecialOfferDto offerDto = new SpecialOfferDto(TITLE, DESCRIPTION, startDate, endDate);
     requestDto = new SpecialOfferRequestDto(offerDto);
   }
 
   @Test
   void givenValidOwnerAndRestaurant_whenCreateSpecialOffer_thenReturnId() {
-    String expectedId = "offer-123";
+    String expectedId = OFFER_ID;
 
     when(restaurantRepository.getRestaurantByIdOfOwner(OWNER_ID, RESTAURANT_ID))
         .thenReturn(restaurant);
     when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(Collections.emptyList());
     when(specialOfferFactory.createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate)))
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate)))
         .thenReturn(specialOffer);
     doNothing()
         .when(specialOfferDomainService)
@@ -81,15 +80,10 @@ public class SpecialOfferServiceTest {
     assertThat(actualId).isEqualTo(expectedId);
     verify(specialOfferRepository).save(specialOffer);
     verify(specialOfferDomainService)
-        .validateNoOverlappingOffers(
-            specialOffer, Collections.emptyList()); // Ensure validation is called
+        .validateNoOverlappingOffers(specialOffer, Collections.emptyList());
     verify(specialOfferFactory)
         .createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate));
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate));
   }
 
   @Test
@@ -111,11 +105,7 @@ public class SpecialOfferServiceTest {
     when(specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID))
         .thenReturn(existingOffers);
     when(specialOfferFactory.createSpecialOffer(
-            eq(RESTAURANT_ID),
-            eq("Special Pizza"),
-            eq("50% off large pizza"),
-            eq(startDate),
-            eq(endDate)))
+            eq(RESTAURANT_ID), eq(TITLE), eq(DESCRIPTION), eq(startDate), eq(endDate)))
         .thenReturn(specialOffer);
 
     specialOfferService.createSpecialOffer(OWNER_ID, RESTAURANT_ID, requestDto);

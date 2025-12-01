@@ -12,10 +12,12 @@ import org.junit.jupiter.api.Test;
 public class SpecialOfferDocumentMapperTest {
 
   private static final String RESTAURANT_ID = "restaurant123";
+  private static final String OFFER_ID = "offer123";
   private static final String TITLE = "Winter Special";
   private static final String DESCRIPTION = "Special winter menu";
   private static final LocalDate VALID_FROM = LocalDate.of(2024, 12, 1);
   private static final LocalDate VALID_UNTIL = LocalDate.of(2024, 12, 31);
+  private static final String INVALID_DATE_FORMAT = "invalid-date";
 
   @Test
   void givenNullSpecialOffer_whenToDocument_thenReturnNull() {
@@ -64,7 +66,7 @@ public class SpecialOfferDocumentMapperTest {
   void givenValidDocument_whenToDomain_thenReturnExpectedSpecialOffer() {
     SpecialOfferDocument document =
         new SpecialOfferDocument(
-            "offer123",
+            OFFER_ID,
             RESTAURANT_ID,
             TITLE,
             DESCRIPTION,
@@ -85,7 +87,7 @@ public class SpecialOfferDocumentMapperTest {
   void givenDocumentWithInvalidDateFormat_whenToDomain_thenThrowsDateTimeParseException() {
     SpecialOfferDocument document =
         new SpecialOfferDocument(
-            "offer123", RESTAURANT_ID, TITLE, DESCRIPTION, "invalid-date", "2024-12-31");
+            OFFER_ID, RESTAURANT_ID, TITLE, DESCRIPTION, INVALID_DATE_FORMAT, "2024-12-31");
 
     assertThrows(DateTimeParseException.class, () -> SpecialOfferDocumentMapper.toDomain(document));
   }
@@ -94,7 +96,7 @@ public class SpecialOfferDocumentMapperTest {
   void givenDocumentWithMissingValidUntil_whenToDomain_thenHandleGracefully() {
     SpecialOfferDocument document =
         new SpecialOfferDocument(
-            "offer123", RESTAURANT_ID, TITLE, DESCRIPTION, VALID_FROM.toString(), null);
+            OFFER_ID, RESTAURANT_ID, TITLE, DESCRIPTION, VALID_FROM.toString(), null);
 
     SpecialOffer specialOffer = SpecialOfferDocumentMapper.toDomain(document);
 

@@ -16,6 +16,8 @@ public class SpecialOfferFactoryTest {
   private static final String RESTAURANT_ID = "restaurant-1";
   private static final String TITLE = "Pizza Special";
   private static final String DESCRIPTION = "50% off pizza";
+  private static final String ERROR_MESSAGE =
+      "The end date of the offer cannot be before the start date";
 
   @BeforeEach
   void setUp() {
@@ -57,11 +59,10 @@ public class SpecialOfferFactoryTest {
             InvalidParameterException.class,
             () ->
                 specialOfferFactory.createSpecialOffer(
-                    "restaurant-1", "Pizza Special", "50% off pizza", validFrom, validUntil));
+                    RESTAURANT_ID, TITLE, DESCRIPTION, validFrom, validUntil));
 
     assertThat(exception).isInstanceOf(InvalidParameterException.class);
-    assertThat(exception.getMessage())
-        .isEqualTo("The end date of the offer cannot be before the start date");
+    assertThat(exception.getMessage()).isEqualTo(ERROR_MESSAGE);
   }
 
   @Test

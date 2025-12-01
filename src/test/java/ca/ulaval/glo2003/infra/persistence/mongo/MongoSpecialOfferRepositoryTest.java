@@ -23,6 +23,17 @@ public class MongoSpecialOfferRepositoryTest {
   private static final String MONGO_DATABASE_PROPERTY = "MONGO_DATABASE";
   private static final String TEST_DATABASE_NAME = "test_special_offer_db";
 
+  private static final String RESTAURANT_ID = "restaurant123";
+  private static final String WINTER_SPECIAL_TITLE = "Winter Special";
+  private static final String WINTER_SPECIAL_DESCRIPTION = "Special winter menu";
+  private static final String SUMMER_SPECIAL_TITLE = "Summer Special";
+  private static final String SUMMER_SPECIAL_DESCRIPTION = "Special summer menu";
+  private static final LocalDate WINTER_SPECIAL_START_DATE = LocalDate.of(2024, 12, 1);
+  private static final LocalDate WINTER_SPECIAL_END_DATE = LocalDate.of(2024, 12, 31);
+  private static final LocalDate SUMMER_SPECIAL_START_DATE = LocalDate.of(2024, 6, 1);
+  private static final LocalDate SUMMER_SPECIAL_END_DATE = LocalDate.of(2024, 6, 30);
+  private static final String NON_EXISTENT_RESTAURANT_ID = "nonexistentRestaurant";
+
   @Container
   private static final MongoDBContainer mongoDBContainer =
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
@@ -54,71 +65,71 @@ public class MongoSpecialOfferRepositoryTest {
   void givenSpecialOffer_whenSave_thenItIsSavedInMongoDB() {
     SpecialOffer specialOffer =
         new SpecialOffer(
-            "restaurant123",
-            "Winter Special",
-            "Special winter menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            RESTAURANT_ID,
+            WINTER_SPECIAL_TITLE,
+            WINTER_SPECIAL_DESCRIPTION,
+            WINTER_SPECIAL_START_DATE,
+            WINTER_SPECIAL_END_DATE);
 
     specialOfferRepository.save(specialOffer);
 
     List<SpecialOffer> savedSpecialOffers =
-        specialOfferRepository.getSpecialOffersByRestaurantId("restaurant123");
+        specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID);
 
     assertThat(savedSpecialOffers).hasSize(1);
     SpecialOffer retrievedSpecialOffer = savedSpecialOffers.get(0);
-    assertThat(retrievedSpecialOffer.getRestaurantId()).isEqualTo("restaurant123");
-    assertThat(retrievedSpecialOffer.getTitle()).isEqualTo("Winter Special");
-    assertThat(retrievedSpecialOffer.getDescription()).isEqualTo("Special winter menu");
-    assertThat(retrievedSpecialOffer.getValidFrom()).isEqualTo(LocalDate.of(2024, 12, 1));
-    assertThat(retrievedSpecialOffer.getValidUntil()).isEqualTo(LocalDate.of(2024, 12, 31));
+    assertThat(retrievedSpecialOffer.getRestaurantId()).isEqualTo(RESTAURANT_ID);
+    assertThat(retrievedSpecialOffer.getTitle()).isEqualTo(WINTER_SPECIAL_TITLE);
+    assertThat(retrievedSpecialOffer.getDescription()).isEqualTo(WINTER_SPECIAL_DESCRIPTION);
+    assertThat(retrievedSpecialOffer.getValidFrom()).isEqualTo(WINTER_SPECIAL_START_DATE);
+    assertThat(retrievedSpecialOffer.getValidUntil()).isEqualTo(WINTER_SPECIAL_END_DATE);
   }
 
   @Test
   void givenMultipleSpecialOffers_whenSave_thenFindAllByRestaurantId() {
     SpecialOffer specialOffer1 =
         new SpecialOffer(
-            "restaurant123",
-            "Winter Special",
-            "Special winter menu",
-            LocalDate.of(2024, 12, 1),
-            LocalDate.of(2024, 12, 31));
+            RESTAURANT_ID,
+            WINTER_SPECIAL_TITLE,
+            WINTER_SPECIAL_DESCRIPTION,
+            WINTER_SPECIAL_START_DATE,
+            WINTER_SPECIAL_END_DATE);
     SpecialOffer specialOffer2 =
         new SpecialOffer(
-            "restaurant123",
-            "Summer Special",
-            "Special summer menu",
-            LocalDate.of(2024, 6, 1),
-            LocalDate.of(2024, 6, 30));
+            RESTAURANT_ID,
+            SUMMER_SPECIAL_TITLE,
+            SUMMER_SPECIAL_DESCRIPTION,
+            SUMMER_SPECIAL_START_DATE,
+            SUMMER_SPECIAL_END_DATE);
 
     specialOfferRepository.save(specialOffer1);
     specialOfferRepository.save(specialOffer2);
 
     List<SpecialOffer> specialOffers =
-        specialOfferRepository.getSpecialOffersByRestaurantId("restaurant123");
+        specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID);
 
     assertThat(specialOffers).hasSize(2);
 
-    assertThat(specialOffers.get(0).getTitle()).isEqualTo("Winter Special");
-    assertThat(specialOffers.get(1).getTitle()).isEqualTo("Summer Special");
+    assertThat(specialOffers.get(0).getTitle()).isEqualTo(WINTER_SPECIAL_TITLE);
+    assertThat(specialOffers.get(1).getTitle()).isEqualTo(SUMMER_SPECIAL_TITLE);
   }
 
   @Test
   void givenNoSpecialOffers_whenGetSpecialOffers_thenReturnEmptyList() {
     List<SpecialOffer> specialOffers =
-        specialOfferRepository.getSpecialOffersByRestaurantId("nonexistentRestaurant");
+        specialOfferRepository.getSpecialOffersByRestaurantId(NON_EXISTENT_RESTAURANT_ID);
 
     assertThat(specialOffers).isEmpty();
   }
 
   @Test
   void givenSpecialOfferWithNullFields_whenSave_thenHandleNullValuesCorrectly() {
-    SpecialOffer specialOffer = new SpecialOffer("restaurant123", null, null, null, null);
+    SpecialOffer specialOffer = new SpecialOffer(RESTAURANT_ID, null, null, null, null);
 
     specialOfferRepository.save(specialOffer);
 
     List<SpecialOffer> specialOffers =
-        specialOfferRepository.getSpecialOffersByRestaurantId("restaurant123");
+        specialOfferRepository.getSpecialOffersByRestaurantId(RESTAURANT_ID);
 
     assertThat(specialOffers).hasSize(1);
     SpecialOffer retrievedSpecialOffer = specialOffers.get(0);
