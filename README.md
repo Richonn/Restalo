@@ -1,13 +1,67 @@
-# Projet - Restalo
+# Restalo
 
-Le meilleur logiciel de réservation en restauration!
+[![CI - Modular](https://github.com/IFT-3003-A25-Equipe-7/Restalo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/IFT-3003-A25-Equipe-7/Restalo/actions/workflows/ci.yml)
 
-## Requis
+[![CD - Docker Deploy](https://github.com/IFT-3003-A25-Equipe-7/Restalo/actions/workflows/cd.yml/badge.svg?branch=main)](https://github.com/IFT-3003-A25-Equipe-7/Restalo/actions/workflows/cd.yml)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Restalo** est une API REST moderne pour la gestion de réservations de restaurants. Développée en Java avec Jersey (JAX-RS), elle offre une solution complète pour gérer les restaurants, les clients, et leurs réservations avec une base de données MongoDB.
+
+## Fonctionnalités principales
+
+- Gestion complète des restaurants (création, modification, consultation)
+- Système de réservations avec validation
+- Gestion des clients
+- API RESTful suivant les bonnes pratiques
+- Persistance avec MongoDB via Morphia ODM
+- Pipeline CI/CD automatisé avec GitHub Actions
+- Conteneurisation Docker
+
+## Documentation
+
+- [Guide de contribution](CONTRIBUTING.md) - Comment contribuer au projet
+- [Code de conduite](CODE_OF_CONDUCT.md) - Nos standards communautaires
+- [Licence](LICENSE) - Licence MIT
+
+## Démarrage rapide
+
+### Prérequis
 
 - Java 21
 - Maven 3.x
+- Docker & Docker Compose (pour MongoDB)
 
-## Commandes
+### Installation
+
+1. Clonez le repository :
+   ```bash
+   git clone https://github.com/IFT-3003-A25-Equipe-7/Restalo.git
+   cd Restalo
+   ```
+
+2. Configurez les variables d'environnement :
+   ```bash
+   cp .env.example .env
+   # Éditez .env selon vos besoins
+   ```
+
+3. Démarrez MongoDB avec Docker :
+   ```bash
+   docker-compose up -d
+   ```
+
+   Pour plus de détails sur la configuration de la base de données, consultez [DATABASE_SETUP.md](DATABASE_SETUP.md).
+
+4. Compilez et lancez l'application :
+   ```bash
+   mvn clean compile
+   mvn exec:java
+   ```
+
+L'API sera accessible sur `http://localhost:8080`.
+
+## Commandes Maven
 
 ### Clean
 
@@ -26,6 +80,22 @@ mvn compile
 ```
 mvn exec:java
 ```
+
+### Tests
+
+Lancer tous les tests :
+
+```
+mvn test
+```
+
+Lancer les tests avec rapport de couverture :
+
+```
+mvn clean test jacoco:report
+```
+
+Le rapport de couverture sera disponible dans `target/site/jacoco/index.html`.
 
 ---
 
@@ -157,3 +227,19 @@ docker run -p 8080:8080 ghcr.io/ift-3003-a25-equipe-7/restalo:latest
 - `mvn verify`
 
 Corrigez les erreurs indiquées par Checkstyle/SpotBugs avant de push.
+
+---
+
+## Contribuer
+
+Nous accueillons chaleureusement les contributions de tous ! Que vous souhaitiez corriger un bug, améliorer la documentation ou proposer une nouvelle fonctionnalité, votre aide est précieuse.
+
+Avant de contribuer, veuillez :
+1. Lire le [Guide de contribution](CONTRIBUTING.md)
+2. Consulter le [Code de conduite](CODE_OF_CONDUCT.md)
+3. Vérifier les issues existantes
+
+## Licence
+
+Ce projet est sous licence MIT. Consultez le fichier [LICENSE](LICENSE) pour plus de détails.
+
