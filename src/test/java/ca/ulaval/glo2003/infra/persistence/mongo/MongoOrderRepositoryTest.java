@@ -22,6 +22,7 @@ public class MongoOrderRepositoryTest extends AbstractOrderRepositoryTest {
   private static final MongoDBContainer mongoDBContainer =
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
+  private static MongoConnection mongoConnection;
   private static OrderRepository orderRepository;
 
   @BeforeEach
@@ -36,17 +37,15 @@ public class MongoOrderRepositoryTest extends AbstractOrderRepositoryTest {
     System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
     System.setProperty(MONGO_DATABASE_PROPERTY, TEST_DATABASE_NAME);
 
-    try {
-      MongoConnection.getInstance().close();
-    } catch (Exception e) {
-    }
-
-    orderRepository = new MongoOrderRepository(MongoConnection.getInstance());
+    mongoConnection = new MongoConnection();
+    orderRepository = new MongoOrderRepository(mongoConnection);
   }
 
   @AfterAll
   static void closeMongoConnection() {
-    MongoConnection.getInstance().close();
+    if (mongoConnection != null) {
+      mongoConnection.close();
+    }
     mongoDBContainer.stop();
   }
 
@@ -58,9 +57,10 @@ public class MongoOrderRepositoryTest extends AbstractOrderRepositoryTest {
   @Override
   protected void clearOrderRepository() {
     try {
-      MongoConnection.getInstance().getDatastore().getDatabase().drop();
-      MongoConnection.getInstance().close();
-      orderRepository = new MongoOrderRepository(MongoConnection.getInstance());
+      mongoConnection.getDatastore().getDatabase().drop();
+      mongoConnection.close();
+      mongoConnection = new MongoConnection();
+      orderRepository = new MongoOrderRepository(mongoConnection);
     } catch (Exception e) {
     }
   }

@@ -32,7 +32,7 @@ public class ApplicationBinder extends AbstractBinder {
   @Override
   protected void configure() {
     if (!PersistenceConfig.isInMemoryMode()) {
-      bindFactory(MongoConnectionFactory.class).to(MongoConnection.class).in(Singleton.class);
+      bindAsContract(MongoConnection.class).in(Singleton.class);
     }
 
     bindAsContract(RestaurantService.class).in(Singleton.class);

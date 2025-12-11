@@ -38,6 +38,7 @@ public class MongoSpecialOfferRepositoryTest {
   private static final MongoDBContainer mongoDBContainer =
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
+  private static MongoConnection mongoConnection;
   private static SpecialOfferRepository specialOfferRepository;
 
   @BeforeAll
@@ -47,18 +48,21 @@ public class MongoSpecialOfferRepositoryTest {
     System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
     System.setProperty(MONGO_DATABASE_PROPERTY, TEST_DATABASE_NAME);
 
-    specialOfferRepository = new MongoSpecialOfferRepository(MongoConnection.getInstance());
+    mongoConnection = new MongoConnection();
+    specialOfferRepository = new MongoSpecialOfferRepository(mongoConnection);
   }
 
   @AfterAll
   static void closeMongoConnection() {
-    MongoConnection.getInstance().close();
+    if (mongoConnection != null) {
+      mongoConnection.close();
+    }
     mongoDBContainer.stop();
   }
 
   @BeforeEach
   public void clearRepository() {
-    MongoConnection.getInstance().getDatastore().getDatabase().drop();
+    mongoConnection.getDatastore().getDatabase().drop();
   }
 
   @Test
