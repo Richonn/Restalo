@@ -21,6 +21,7 @@ public class MongoReservationRepositoryTest extends AbstractReservationRepositor
   private static final MongoDBContainer mongoDBContainer =
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
+  private static MongoConnection mongoConnection;
   private static ReservationRepository reservationRepository;
 
   @BeforeAll
@@ -30,17 +31,15 @@ public class MongoReservationRepositoryTest extends AbstractReservationRepositor
     System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
     System.setProperty(MONGO_DATABASE_PROPERTY, TEST_DATABASE_NAME);
 
-    try {
-      MongoConnection.getInstance().close();
-    } catch (Exception e) {
-    }
-
-    reservationRepository = new MongoReservationRepository(MongoConnection.getInstance());
+    mongoConnection = new MongoConnection();
+    reservationRepository = new MongoReservationRepository(mongoConnection);
   }
 
   @AfterAll
   static void closeMongoConnection() {
-    MongoConnection.getInstance().close();
+    if (mongoConnection != null) {
+      mongoConnection.close();
+    }
     mongoDBContainer.stop();
   }
 
@@ -52,9 +51,10 @@ public class MongoReservationRepositoryTest extends AbstractReservationRepositor
   @Override
   protected void clearRepository() {
     try {
-      MongoConnection.getInstance().getDatastore().getDatabase().drop();
-      MongoConnection.getInstance().close();
-      reservationRepository = new MongoReservationRepository(MongoConnection.getInstance());
+      mongoConnection.getDatastore().getDatabase().drop();
+      mongoConnection.close();
+      mongoConnection = new MongoConnection();
+      reservationRepository = new MongoReservationRepository(mongoConnection);
     } catch (Exception e) {
     }
   }

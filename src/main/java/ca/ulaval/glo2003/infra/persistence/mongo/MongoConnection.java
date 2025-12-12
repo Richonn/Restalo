@@ -6,28 +6,17 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
+import jakarta.annotation.PreDestroy;
 import java.util.concurrent.TimeUnit;
 
 public class MongoConnection {
-  private static volatile MongoConnection instance;
   private final MongoClient mongoClient;
   private final Datastore datastore;
 
-  private MongoConnection(MongoConfig config) {
+  public MongoConnection() {
+    MongoConfig config = new MongoConfig();
     this.mongoClient = createMongoClient(config.getClusterUrl());
     this.datastore = createDatastore(config.getDatabase());
-  }
-
-  public static MongoConnection getInstance() {
-    if (instance == null) {
-      synchronized (MongoConnection.class) {
-        if (instance == null) {
-          MongoConfig config = new MongoConfig();
-          instance = new MongoConnection(config);
-        }
-      }
-    }
-    return instance;
   }
 
   private MongoClient createMongoClient(String clusterUrl) {
@@ -68,11 +57,12 @@ public class MongoConnection {
     return datastore;
   }
 
+  @PreDestroy
   public synchronized void close() {
     if (mongoClient != null) {
       try {
+        System.out.println("Closing MongoDB connection...");
         mongoClient.close();
-        instance = null;
       } catch (Exception e) {
         System.err.println("Error closing MongoDB connection: " + e.getMessage());
         e.printStackTrace();

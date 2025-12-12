@@ -3,7 +3,6 @@ package ca.ulaval.glo2003;
 import ca.ulaval.glo2003.api.exceptions.mappers.IllegalArgumentExceptionMapper;
 import ca.ulaval.glo2003.infra.monitoring.SentryConfig;
 import ca.ulaval.glo2003.infra.persistence.PersistenceConfig;
-import ca.ulaval.glo2003.infra.persistence.mongo.MongoConnection;
 import io.github.cdimascio.dotenv.Dotenv;
 import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -41,16 +40,6 @@ public class Main {
     System.out.printf(
         "Starting application with persistence mode: %s%n",
         PersistenceConfig.getPersistenceMode().getValue());
-
-    if (PersistenceConfig.isMongoMode()) {
-      Runtime.getRuntime()
-          .addShutdownHook(
-              new Thread(
-                  () -> {
-                    System.out.println("Closing MongoDB connection...");
-                    MongoConnection.getInstance().close();
-                  }));
-    }
 
     startServer();
     System.out.printf("Jersey app started with endpoints available at %s%n", baseUri);

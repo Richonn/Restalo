@@ -21,6 +21,7 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
   private static final MongoDBContainer mongoDBContainer =
       new MongoDBContainer(DockerImageName.parse(MONGO_DOCKER_IMAGE));
 
+  private static MongoConnection mongoConnection;
   private static RestaurantRepository restaurantRepository;
 
   @BeforeAll
@@ -30,17 +31,15 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
     System.setProperty(MONGO_CLUSTER_URL_PROPERTY, mongoDBContainer.getReplicaSetUrl());
     System.setProperty(MONGO_DATABASE_PROPERTY, TEST_DATABASE_NAME);
 
-    try {
-      MongoConnection.getInstance().close();
-    } catch (Exception e) {
-    }
-
-    restaurantRepository = new MongoRestaurantRepository(MongoConnection.getInstance());
+    mongoConnection = new MongoConnection();
+    restaurantRepository = new MongoRestaurantRepository(mongoConnection);
   }
 
   @AfterAll
   static void closeMongoConnection() {
-    MongoConnection.getInstance().close();
+    if (mongoConnection != null) {
+      mongoConnection.close();
+    }
     mongoDBContainer.stop();
   }
 
@@ -52,9 +51,10 @@ public class MongoRestaurantRepositoryTest extends AbstractRestaurantRepositoryT
   @Override
   protected void clearRepository() {
     try {
-      MongoConnection.getInstance().getDatastore().getDatabase().drop();
-      MongoConnection.getInstance().close();
-      restaurantRepository = new MongoRestaurantRepository(MongoConnection.getInstance());
+      mongoConnection.getDatastore().getDatabase().drop();
+      mongoConnection.close();
+      mongoConnection = new MongoConnection();
+      restaurantRepository = new MongoRestaurantRepository(mongoConnection);
     } catch (Exception e) {
     }
   }
